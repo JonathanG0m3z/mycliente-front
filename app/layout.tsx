@@ -5,13 +5,18 @@ import { App, ConfigProvider } from 'antd'
 import theme from '../config/themeConfig'
 import esES from 'antd/lib/locale/es_ES'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
+const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html lang='en'>
     <body style={{ backgroundColor: 'rgb(17 24 39)' }}>
       <AntdRegistry>
         <ConfigProvider locale={esES} theme={theme}>
-          <App>{children}</App>
+          <GoogleOAuthProvider clientId={NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ''}>
+            <App>{children}</App>
+          </GoogleOAuthProvider>
         </ConfigProvider>
       </AntdRegistry>
     </body>

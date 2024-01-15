@@ -1,13 +1,22 @@
 'use client'
-import { Button, Form, Typography, Input, Checkbox, Col, Card, Row } from 'antd'
+import { Button, Form, Typography, Input, Checkbox, Col, Card, Row, Flex, Divider } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import { GoogleLogin } from '@react-oauth/google'
 
 const { Title } = Typography
 
 export default function Login () {
   const [form] = Form.useForm()
+
+  const handleErrorGoogle = () => {
+    console.log('error')
+  }
+
+  const handleSuccesGoogle = () => {
+    console.log('success')
+  }
 
   const onFinish = (values: any) => {
     console.log('values:', values)
@@ -103,9 +112,6 @@ export default function Login () {
               >
                 <Image src='/favicon.ico' width={45} height={45} alt='' />
               </div>
-              <Title level={2} className='text-center'>
-                Ingresar
-              </Title>
               <Form.Item
                 name='email'
                 hasFeedback
@@ -137,7 +143,10 @@ export default function Login () {
                     required: true,
                     message: 'Ingresa tú contraseña'
                   },
-                  { min: 6, message: 'Tú contraseña debe tener mínimo 6 caracteres' }
+                  {
+                    min: 6,
+                    message: 'Tú contraseña debe tener mínimo 6 caracteres'
+                  }
                 ]}
               >
                 <Input.Password placeholder='Contraseña' size='large' />
@@ -152,17 +161,25 @@ export default function Login () {
                   ¿Olvidaste la contraseña?
                 </a>
               </Form.Item>
-
-              <Button
-                // loading={auth.loading}
-                type='primary'
-                htmlType='submit'
-                shape='round'
-                icon={<FontAwesomeIcon icon={faRightToBracket} />}
-                size='large'
-              >
-                Ingresar
-              </Button>
+              <Flex justify='center' vertical align='center'>
+                <Button
+                  // loading={auth.loading}
+                  type='primary'
+                  htmlType='submit'
+                  shape='round'
+                  icon={<FontAwesomeIcon icon={faRightToBracket} />}
+                  size='large'
+                >
+                  Ingresar
+                </Button>
+                <Divider />
+                <GoogleLogin
+                  onError={handleErrorGoogle}
+                  onSuccess={handleSuccesGoogle}
+                  theme='filled_black'
+                  width='30px'
+                />
+              </Flex>
             </Form>
           </Card>
         </Col>
