@@ -1,21 +1,89 @@
 'use client'
-import { Button, Form, Typography, Input, Checkbox, Col, Card, Row, Flex, Divider } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  Checkbox,
+  Col,
+  Card,
+  Row,
+  Flex,
+  Divider,
+  notification
+} from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
-import { GoogleLogin } from '@react-oauth/google'
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
+import { jwtDecode } from 'jwt-decode'
+import { decryptValue, encryptValue } from '@/utils/cryptoHooks'
+import { useRouter } from 'next/navigation'
 
-const { Title } = Typography
+const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
+interface GoogleAuthData {
+  iss: string
+  azp: string
+  aud: string
+  sub: string
+  email: string
+  email_verified: boolean
+  nbf: number
+  name: string
+  picture: string
+  given_name: string
+  family_name: string
+  locale: string
+  iat: number
+  exp: number
+  jti: string
+}
 
 export default function Login () {
   const [form] = Form.useForm()
-
+  const router = useRouter()
   const handleErrorGoogle = () => {
-    console.log('error')
+    notification.error({
+      message: 'Error en la autenticación',
+      description: 'Por favor, intenta nuevamente'
+    })
   }
 
-  const handleSuccesGoogle = () => {
-    console.log('success')
+  const handleSuccesGoogle = (credentialResponse: CredentialResponse) => {
+    const token: GoogleAuthData = jwtDecode(credentialResponse.credential ?? '')
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}users/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: token.name,
+        email: token.email,
+        picture: token.picture,
+        password: encryptValue(token.sub)
+      })
+    })
+      .then(response => {
+        if (response.ok) {
+          response.json().then(res => {
+            localStorage.setItem('token', decryptValue(res.token))
+            router.push('/home')
+          })
+        } else {
+          response.json().then(res => {
+            notification.error({
+              message: 'Credenciales incorrectas',
+              description: res.message
+            })
+          })
+        }
+      })
+      .catch(error => {
+        notification.error({
+          message: 'Algo salió mal',
+          description: error.message
+        })
+      })
   }
 
   const onFinish = (values: any) => {
