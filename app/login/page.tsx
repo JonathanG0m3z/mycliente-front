@@ -1,15 +1,30 @@
 'use client'
 import { Col, Card, Row } from 'antd'
 import LoginForm from './LoginForm'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import RegisterForm from './RegisterForm'
+import { TokenType } from '@/utils/authMiddleware'
+import { jwtDecode } from 'jwt-decode'
+import { useRouter } from 'next/navigation'
 
 export default function Login () {
+  const router = useRouter()
   const [cardState, setCardState] = useState<'LOGIN' | 'REGISTER'>('LOGIN')
 
   const onChangeForm = (value: 'LOGIN' | 'REGISTER') => {
     setCardState(value)
   }
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      const decodedToken: TokenType = jwtDecode(token)
+      const currentTime = Date.now() / 1000
+      if (decodedToken.exp > currentTime) {
+        router.push('/home')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div
       style={{

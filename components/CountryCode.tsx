@@ -49,7 +49,7 @@ export default function CountryCode ({ onChange }: CountryCodeProps) {
       labelInValue
     >
       {countriesData.map((country: any) => (
-        <Option value={country.name.common} key={country.name.common}>
+        <Option value={country.name.common} key={`${country.idd.root}${country.idd.suffixes[0]}`}>
           <Flex justify='left' align='center'>
             <Image
               src={country.flags.png}

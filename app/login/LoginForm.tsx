@@ -90,11 +90,37 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
   }
 
   const onFinish = (values: any) => {
-    console.log('values:', values)
-  }
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}users/validate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...values,
+        password: encryptValue(values.password)
+      })
+    })
+      .then(response => {
+        if (response.ok) {
+          response.json().then(res => {
+            localStorage.setItem('token', decryptValue(res.token))
+            router.push('/home')
+          })
+        } else {
+          response.json().then(res => {
+            notification.error({
+              message: 'Credenciales incorrectas',
+              description: res.message
+            })
+          })
+        }
+      })
+      .catch(error => {
+        notification.error({
+          message: 'Algo salió mal',
+          description: error.message
+        })
+      })
   }
   return (
     <>
@@ -105,8 +131,6 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
           remember: false
         }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete='off'
       >
         <div
           style={{
@@ -198,7 +222,11 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
       </Form>
       <Flex vertical align='center' style={{ marginTop: '1rem' }}>
         <label>¿Aún no tienes una cuenta?</label>
-        <a className='login-form-forgot' href='#' onClick={() => onChangeForm('REGISTER')}>
+        <a
+          className='login-form-forgot'
+          href='#'
+          onClick={() => onChangeForm('REGISTER')}
+        >
           Registrate aqui
         </a>
       </Flex>

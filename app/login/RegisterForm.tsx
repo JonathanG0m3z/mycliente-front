@@ -1,4 +1,5 @@
 import CountryCode from '@/components/CountryCode'
+import { encryptValue } from '@/utils/cryptoHooks'
 import {
   faCircleUser,
   faEnvelope,
@@ -6,7 +7,9 @@ import {
   faMobileScreenButton
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Checkbox, Flex, Form, Input, InputNumber } from 'antd'
+import { Button, Flex, Form, Input, InputNumber, notification } from 'antd'
+
+const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 interface DataNodeType {
   value: string
@@ -49,8 +52,47 @@ export default function RegisterForm ({ onChangeForm }: RegisterFormProps) {
     form.setFieldsValue({ country: value })
   }
 
+  const handleCloseForm = () => {
+    form.resetFields()
+    onChangeForm('LOGIN')
+  }
+
   const onFinish = (values: any) => {
-    console.log('Received values of form: ', values)
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...values,
+        password: encryptValue(values.password),
+        confirm: true,
+        country: values.country.value
+      })
+    })
+      .then(response => {
+        if (response.ok) {
+          response.json().then(res => {
+            handleCloseForm()
+            notification.success({
+              message: `${res.message}`
+            })
+          })
+        } else {
+          response.json().then(res => {
+            notification.error({
+              message: 'Error al crear el usuario',
+              description: res.message
+            })
+          })
+        }
+      })
+      .catch(error => {
+        notification.error({
+          message: 'Algo salió mal',
+          description: error.message
+        })
+      })
   }
 
   return (
