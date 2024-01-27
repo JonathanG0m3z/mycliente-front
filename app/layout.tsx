@@ -7,6 +7,8 @@ import esES from 'antd/lib/locale/es_ES'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { useAuthMiddleware } from '@/utils/authMiddleware'
+import Navbar from '@/components/Navbar'
+import { usePathname } from 'next/navigation'
 
 const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
@@ -18,7 +20,9 @@ const RootLayout = ({ children }: React.PropsWithChildren) => {
         <AntdRegistry>
           <ConfigProvider locale={esES} theme={theme}>
             <GoogleOAuthProvider clientId={NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ''}>
-              <App>{children}</App>
+              <App>
+                {usePathname() === '/login' ? (children) : (<Navbar>{children}</Navbar>)}
+              </App>
             </GoogleOAuthProvider>
           </ConfigProvider>
         </AntdRegistry>

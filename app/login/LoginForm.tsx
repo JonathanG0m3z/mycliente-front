@@ -70,7 +70,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
         if (response.ok) {
           response.json().then(res => {
             localStorage.setItem('token', decryptValue(res.token))
-            router.push('/home')
+            router.push('/sales')
           })
         } else {
           response.json().then(res => {
@@ -104,7 +104,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
         if (response.ok) {
           response.json().then(res => {
             localStorage.setItem('token', decryptValue(res.token))
-            router.push('/home')
+            router.push('/sales')
           })
         } else {
           response.json().then(res => {

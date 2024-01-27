@@ -20,7 +20,7 @@ export default function Login () {
       const decodedToken: TokenType = jwtDecode(token)
       const currentTime = Date.now() / 1000
       if (decodedToken.exp > currentTime) {
-        router.push('/home')
+        router.push('/sales')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
