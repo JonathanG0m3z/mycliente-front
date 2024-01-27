@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { notification } from 'antd'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export interface TokenType {
   id: string
@@ -19,10 +19,16 @@ export interface TokenType {
   exp: number
 }
 
+let times = 0
+
 export function useAuthMiddleware () {
   const router = useRouter()
+  const path = usePathname()
 
   useEffect(() => {
+    if (times > 0) return
+    times++
+    if (path === '/login' || path === '/') return
     const token = localStorage.getItem('token')
 
     if (!token) {
@@ -31,19 +37,19 @@ export function useAuthMiddleware () {
         message: 'Por favor ingresar'
       })
       router.push('/login')
-      return
-    }
+    } else {
+      const decodedToken: TokenType = jwtDecode(token)
+      const currentTime = Date.now() / 1000
 
-    const decodedToken: TokenType = jwtDecode(token)
-    const currentTime = Date.now() / 1000
-
-    if (decodedToken.exp < currentTime) {
-      localStorage.removeItem('token')
-      notification.warning({
-        message: 'Inicio de sesión expirado',
-        description: 'Por favor ingresar de nuevo'
-      })
-      router.push('/login')
+      if (decodedToken.exp < currentTime) {
+        localStorage.removeItem('token')
+        notification.warning({
+          message: 'Inicio de sesión expirado',
+          description: 'Por favor ingresar de nuevo'
+        })
+        router.push('/login')
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

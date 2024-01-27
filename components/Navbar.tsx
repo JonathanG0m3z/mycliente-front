@@ -1,9 +1,29 @@
-import React from 'react'
-import { Layout, Menu, theme } from 'antd'
+'use client'
+import React, { useEffect, useState } from 'react'
+import {
+  Avatar,
+  Col,
+  Dropdown,
+  Layout,
+  Menu,
+  Row,
+  notification,
+  theme
+} from 'antd'
 import { ItemType, MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCirclePlay } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCirclePlay,
+  faRightFromBracket,
+  faUser
+} from '@fortawesome/free-solid-svg-icons'
+import { TokenType } from '@/utils/authMiddleware'
+import { jwtDecode } from 'jwt-decode'
+import { MenuProps } from 'antd/lib'
+import { useRouter } from 'next/navigation'
+import { encryptValue } from '@/utils/cryptoHooks'
 
+const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 const { Header, Content, Footer } = Layout
 
 interface Props {
@@ -19,24 +39,92 @@ const items: ItemType<MenuItemType>[] = [
 ]
 
 const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
+  const router = useRouter()
+  const [decodedToken, setDecodedToken] = useState<TokenType | undefined>(
+    undefined
+  )
   const {
     token: { colorBgContainer, borderRadiusLG }
   } = theme.useToken()
 
+  const closeSession = () => {
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}users/logOut`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${encryptValue(
+          localStorage.getItem('token') ?? ''
+        )}`
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          response.json().then(() => {
+            localStorage.removeItem('token')
+            router.push('/login')
+          })
+        } else {
+          response.json().then(res => {
+            notification.error({
+              message: 'Token invalido',
+              description: res.message
+            })
+          })
+        }
+      })
+      .catch(error => {
+        notification.error({
+          message: 'Algo salió mal',
+          description: error.message
+        })
+      })
+  }
+  const avatarOptions: MenuProps['items'] = [
+    {
+      key: 'log_out',
+      label: 'Cerrar sesión',
+      icon: <FontAwesomeIcon icon={faRightFromBracket} />,
+      onClick: closeSession
+    }
+  ]
+
   //   const route = usePathname()
   //   const arrayRoute = route?.split('/').filter(item => item !== '')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const cachedToken = localStorage.getItem('token')
+      const decodedToken: TokenType | undefined = cachedToken
+        ? jwtDecode(cachedToken)
+        : undefined
+      setDecodedToken(decodedToken)
+    }
+  }, [])
 
   return (
     <Layout>
       <Header style={{ padding: 0 }}>
-        <div className='demo-logo' />
-        <Menu
-          theme='dark'
-          mode='horizontal'
-          defaultSelectedKeys={['sales']}
-          items={items}
-          style={{ flex: 1, minWidth: '100%' }}
-        />
+        <Row>
+          <Col span={23}>
+            <Menu
+              theme='dark'
+              mode='horizontal'
+              defaultSelectedKeys={['sales']}
+              items={items}
+              style={{ flex: 1, minWidth: '100%' }}
+            />
+          </Col>
+          <Col span={1}>
+            <Dropdown menu={{ items: avatarOptions }} trigger={['click']}>
+              <Avatar
+                src={decodedToken?.picture}
+                size='large'
+                icon={<FontAwesomeIcon icon={faUser} />}
+                style={{ cursor: 'pointer' }}
+              />
+            </Dropdown>
+          </Col>
+        </Row>
       </Header>
       <Content style={{ padding: '0 15px' }}>
         {/* <Breadcrumb style={{ margin: '14px 0' }}>
