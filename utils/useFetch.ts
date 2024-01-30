@@ -77,6 +77,7 @@ export const useLazyFetch = () => {
     body: any = undefined
   ) => {
     try {
+      setLoading(true)
       const request = await fetch(`${NEXT_PUBLIC_BACKEND_URL}${endPoint}`, {
         method,
         headers: {

@@ -1,14 +1,12 @@
 'use client'
 import { Flex, Select, notification } from 'antd'
+import { SelectProps } from 'antd/lib'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const { Option } = Select
 
-interface CountryCodeProps {
-  onChange: (value: string) => void
-}
-export default function CountryCode ({ onChange }: CountryCodeProps) {
+const CountryCode: React.FC<SelectProps> = ({ ...props }) => {
   const [countriesData, setCountriesData] = useState<any[]>([])
   const fields = 'fields=fifa,flags,idd,name'
   const url = `https://restcountries.com/v3.1/lang/spanish?${fields}`
@@ -41,15 +39,18 @@ export default function CountryCode ({ onChange }: CountryCodeProps) {
   }, [])
   return (
     <Select
-      onChange={value => onChange(value)}
       allowClear
       showSearch
       optionFilterProp='children'
-      filterOption={filterOption}
       labelInValue
+      filterOption={filterOption}
+      {...props}
     >
       {countriesData.map((country: any) => (
-        <Option value={country.name.common} key={`${country.idd.root}${country.idd.suffixes[0]}`}>
+        <Option
+          value={country.name.common}
+          key={`${country.idd.root}${country.idd.suffixes[0]}`}
+        >
           <Flex justify='left' align='center'>
             <Image
               src={country.flags.png}
@@ -65,3 +66,5 @@ export default function CountryCode ({ onChange }: CountryCodeProps) {
     </Select>
   )
 }
+
+export default CountryCode

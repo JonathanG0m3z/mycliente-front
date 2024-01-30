@@ -48,10 +48,6 @@ interface RegisterFormProps {
 export default function RegisterForm ({ onChangeForm }: RegisterFormProps) {
   const [form] = Form.useForm()
 
-  const handleCountryChange = (value: string) => {
-    form.setFieldsValue({ country: value })
-  }
-
   const handleCloseForm = () => {
     form.resetFields()
     onChangeForm('LOGIN')
@@ -219,7 +215,7 @@ export default function RegisterForm ({ onChangeForm }: RegisterFormProps) {
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
       >
-        <CountryCode onChange={handleCountryChange} />
+        <CountryCode />
       </Form.Item>
 
       <Form.Item

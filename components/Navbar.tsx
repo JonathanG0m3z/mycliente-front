@@ -103,7 +103,7 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
 
   return (
     <Layout>
-      <Header style={{ padding: 0 }}>
+      <Header style={{ padding: 0, maxHeight: '55px' }}>
         <Row>
           <Col span={23}>
             <Menu
@@ -111,14 +111,13 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
               mode='horizontal'
               defaultSelectedKeys={['sales']}
               items={items}
-              style={{ flex: 1, minWidth: '100%' }}
+              style={{ flex: 1, minWidth: '100%', maxHeight: '55px' }}
             />
           </Col>
           <Col span={1}>
             <Dropdown menu={{ items: avatarOptions }} trigger={['click']}>
               <Avatar
                 src={decodedToken?.picture}
-                size='large'
                 icon={<FontAwesomeIcon icon={faUser} />}
                 style={{ cursor: 'pointer' }}
               />
@@ -136,14 +135,15 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
           style={{
             background: colorBgContainer,
             // minHeight: '77vh',
-            minHeight: 'calc(100vh - 169px)',
+            minHeight: 'calc(100vh - 132px)',
+            minWidth: '100%',
             borderRadius: borderRadiusLG
           }}
         >
           {children}
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
+      <Footer style={{ textAlign: 'center', padding: 10 }}>
         MyCliente ©{new Date().getFullYear()} Created by{' '}
         <a target='_blank' href='https://github.com/JonathanG0m3z'>
           JonathanG0m3z
