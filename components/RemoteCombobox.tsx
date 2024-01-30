@@ -1,33 +1,29 @@
 'use client'
 import { Col, Pagination, Row, Select, Tooltip, notification } from 'antd'
-import { useLazyFetch } from '@/utils/useFetch'
 import React, { useState } from 'react'
 import { SelectProps } from 'antd/lib'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons'
+import { useLazyFetch } from '@/utils/useFetch'
 
-// types.ts
 export interface OptionType {
   value: string
   label: string
 }
 
-// utils/api.ts
-
 const { Option } = Select
 
 interface RemoteComboboxProps extends SelectProps<string> {
-  // fetchData: (variables: any) => void
-  // data: any
-  // dataKey: string
-  // optionIdKey?: string
-  // optionValueKey?: string
+  originalQuery: string
+  dataKey: string
+  optionValueKey: string
+  optionLabelKey: string
   // valueTemplate?: string
   // labelTemplate?: string
   pageSize?: number
   // defaultVariables?: any
   // error: any
-  // addDropRender: React.ReactNode
+  addDropRender?: React.ReactNode
 }
 
 const DEFAULT_FILTERS = {
@@ -35,18 +31,17 @@ const DEFAULT_FILTERS = {
   search: ''
 }
 
-const Ejemplo: React.FC<RemoteComboboxProps> = ({
-  // fetchData,
-  // data,
-  // dataKey,
-  // optionIdKey,
-  // optionValueKey,
+const RemoteCombobox: React.FC<RemoteComboboxProps> = ({
+  originalQuery,
+  dataKey,
+  optionValueKey,
+  optionLabelKey,
   // valueTemplate,
   // labelTemplate,
   pageSize = 10,
   // defaultVariables = {},
   // error,
-  // addDropRender,
+  addDropRender,
   ...props
 }) => {
   const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
@@ -56,9 +51,7 @@ const Ejemplo: React.FC<RemoteComboboxProps> = ({
     const { page, search } = newFilters
     setLocalFilters(newFilters)
     fetchApiData(
-      `accounts/combobox?search=${
-        search !== '' ? search : ''
-      }&page=${page}&limit=${pageSize || ''}`,
+      `${originalQuery}?search=${search}&page=${page}&limit=${pageSize || ''}`,
       'GET'
     ).catch(error => {
       notification.error({
@@ -112,11 +105,11 @@ const Ejemplo: React.FC<RemoteComboboxProps> = ({
                   />
                 </Tooltip>
               </Col>
-              {/* {addDropRender && (
+              {addDropRender && (
                 <Col flex='auto' style={{ width: '100%' }}>
                   {addDropRender}
                 </Col>
-              )} */}
+              )}
             </Row>
           </>
         )}
@@ -124,25 +117,34 @@ const Ejemplo: React.FC<RemoteComboboxProps> = ({
     )
   }
 
+  const onSelectValue = () => {
+    applyFilters({ ...localFilters, search: '' })
+  }
   return (
     <Select
       style={{ width: '100%' }}
       placeholder='Selecciona una opción'
-      loading={loading}
       onDropdownVisibleChange={onDropdownVisibleChange}
       onSearch={onSearch}
       showSearch
       filterOption={false}
       dropdownRender={dropdownRender}
+      loading={loading}
+      labelInValue
+      searchValue={localFilters.search}
+      onSelect={onSelectValue}
+      allowClear
+      // mode='tags'
+      // maxCount={1}
       {...props}
     >
-      {apiData?.accounts?.map((option: any) => (
-        <Option key={option.id} value={option.id}>
-          {option.email}
+      {apiData?.[dataKey]?.map((option: any) => (
+        <Option key={option?.[optionValueKey]} value={option?.[optionValueKey]}>
+          {option?.[optionLabelKey]}
         </Option>
       ))}
     </Select>
   )
 }
 
-export default Ejemplo
+export default RemoteCombobox

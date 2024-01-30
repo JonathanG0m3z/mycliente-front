@@ -1,5 +1,5 @@
-import { Button, Form, Input } from 'antd'
-import Ejemplo from './AccountsCombobox'
+import RemoteCombobox from '@/components/RemoteCombobox'
+import { Button, Form } from 'antd'
 
 export default function SalesForm () {
   const onFinish = (values: any) => {
@@ -8,13 +8,21 @@ export default function SalesForm () {
   return (
     <Form onFinish={onFinish}>
       <Form.Item
-        rules={[{ required: true, message: 'Por favor, ingresa el total' }]}
-        name='total'
+        name='account'
+        rules={[
+          { required: true, message: 'Por favor, selecciona una cuenta' }
+        ]}
       >
-        <Input style={{ width: '100%' }} placeholder='Total' />
-      </Form.Item>
-      <Form.Item name='account' rules={[{ required: true, message: 'Por favor, selecciona una cuenta' }]}>
-        <Ejemplo allowClear pageSize={5} />
+        <RemoteCombobox
+          originalQuery='accounts/combobox'
+          pageSize={5}
+          dataKey='accounts'
+          optionValueKey='id'
+          optionLabelKey='email'
+          mode='tags'
+          maxCount={1}
+          placeholder='Selecciona una cuenta o agregala'
+        />
       </Form.Item>
       <Form.Item>
         <Button htmlType='submit'>Aceptar</Button>
