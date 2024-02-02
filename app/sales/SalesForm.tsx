@@ -9,14 +9,11 @@ import {
   InputNumber,
   Row
 } from 'antd'
-import { DatePickerProps } from 'antd/lib'
 import dayjs from 'dayjs'
 
 export default function SalesForm () {
   const [form] = Form.useForm()
   const account = Form.useWatch(['account', 'email'], form)
-  const customFormat: DatePickerProps['format'] = value =>
-    `Vencimiento: ${value.format('DD/MM/YYYY')}`
   const onFinish = (values: any) => {
     console.log('Success:', values)
   }
@@ -29,13 +26,36 @@ export default function SalesForm () {
           expiration: dayjs().add(1, 'month')
         }
       }}
+      layout='vertical'
     >
+      <Col span={24}>
+        <Form.Item
+          name={['client', 'name']}
+          rules={[
+            { required: true, message: 'Por favor, selecciona un cliente' }
+          ]}
+          label='Cliente'
+        >
+          <RemoteCombobox
+            originalQuery='clients/combobox'
+            pageSize={5}
+            dataKey='clients'
+            optionValueKey='id'
+            optionLabelKey='name'
+            labelTemplate='{{name}} - ({{phone}})'
+            mode='tags'
+            maxCount={1}
+            placeholder='Selecciona un cliente o agregalo'
+          />
+        </Form.Item>
+      </Col>
       <Col span={24}>
         <Form.Item
           name={['account', 'email']}
           rules={[
             { required: true, message: 'Por favor, selecciona una cuenta' }
           ]}
+          label='Cuenta'
         >
           <RemoteCombobox
             originalQuery='accounts/combobox'
@@ -62,6 +82,7 @@ export default function SalesForm () {
                     message: 'Por favor, ingresa la contraseña'
                   }
                 ]}
+                label='Contraseña'
               >
                 <Input placeholder='Contraseña de la cuenta' />
               </Form.Item>
@@ -75,11 +96,12 @@ export default function SalesForm () {
                     message: 'Por favor, ingresa la fecha de vencimiento'
                   }
                 ]}
+                label='Fecha de vencimiento'
               >
                 <DatePicker
                   placeholder='Fecha de vencimiento cuenta'
                   style={{ width: '100%' }}
-                  format={customFormat}
+                  format='DD/MM/YYYY'
                 />
               </Form.Item>
             </Col>
@@ -92,6 +114,7 @@ export default function SalesForm () {
                     message: 'Por favor, selecciona un servicio'
                   }
                 ]}
+                label='Servicio'
               >
                 <RemoteCombobox
                   originalQuery='services'
@@ -114,6 +137,7 @@ export default function SalesForm () {
                     message: 'Por favor, ingresa la cantidad de perfiles'
                   }
                 ]}
+                label='Perfiles'
               >
                 <InputNumber
                   style={{ width: '100%' }}

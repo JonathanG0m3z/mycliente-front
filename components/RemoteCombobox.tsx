@@ -5,6 +5,7 @@ import { SelectProps } from 'antd/lib'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateRight } from '@fortawesome/free-solid-svg-icons'
 import { useLazyFetch } from '@/utils/useFetch'
+import Mustache from 'mustache'
 
 export interface OptionType {
   value: string
@@ -19,7 +20,7 @@ interface RemoteComboboxProps extends SelectProps<string> {
   optionValueKey: string
   optionLabelKey: string
   // valueTemplate?: string
-  // labelTemplate?: string
+  labelTemplate?: string
   pageSize?: number
   // defaultVariables?: any
   // error: any
@@ -37,7 +38,7 @@ const RemoteCombobox: React.FC<RemoteComboboxProps> = ({
   optionValueKey,
   optionLabelKey,
   // valueTemplate,
-  // labelTemplate,
+  labelTemplate,
   pageSize = 10,
   // defaultVariables = {},
   // error,
@@ -72,11 +73,7 @@ const RemoteCombobox: React.FC<RemoteComboboxProps> = ({
 
   const fetchNewPage = (page = 1) => {
     const pagination =
-      pageSize >= 0
-        ? {
-            page
-          }
-        : {}
+      pageSize >= 0 ? { page } : {}
     applyFilters({ ...localFilters, ...pagination })
   }
 
@@ -140,7 +137,7 @@ const RemoteCombobox: React.FC<RemoteComboboxProps> = ({
     >
       {apiData?.[dataKey]?.map((option: any) => (
         <Option key={option?.[optionValueKey]} value={option?.[optionValueKey]}>
-          {option?.[optionLabelKey]}
+          {labelTemplate ? Mustache.render(labelTemplate, option) : option?.[optionLabelKey]}
         </Option>
       ))}
     </Select>
