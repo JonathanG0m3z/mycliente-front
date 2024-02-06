@@ -1,3 +1,4 @@
+import CountryCode from '@/components/CountryCode'
 import RemoteCombobox from '@/components/RemoteCombobox'
 import {
   Alert,
@@ -14,6 +15,7 @@ import dayjs from 'dayjs'
 export default function SalesForm () {
   const [form] = Form.useForm()
   const account = Form.useWatch(['account', 'email'], form)
+  const client = Form.useWatch(['client', 'search'], form)
   const onFinish = (values: any) => {
     console.log('Success:', values)
   }
@@ -30,7 +32,7 @@ export default function SalesForm () {
     >
       <Col span={24}>
         <Form.Item
-          name={['client', 'name']}
+          name={['client', 'search']}
           rules={[
             { required: true, message: 'Por favor, selecciona un cliente' }
           ]}
@@ -49,6 +51,74 @@ export default function SalesForm () {
           />
         </Form.Item>
       </Col>
+      {client?.length > 0 &&
+        client[0].label === undefined &&
+        client[0].value !== undefined && (
+          <Row gutter={8}>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Form.Item
+                name={['client', 'name']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, ingresa un nombre'
+                  }
+                ]}
+                label='Nombre'
+              >
+                <Input placeholder='Nombre del cliente' />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Form.Item
+                name={['client', 'email']}
+                label='Email'
+                rules={[
+                  {
+                    type: 'email',
+                    message: 'Tú correo no es válido'
+                  }
+                ]}
+              >
+                <Input placeholder='Email del cliente' />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Form.Item
+                name={['client', 'country']}
+                label='Código - país'
+                rules={[{ required: true, message: 'Por favor, ingresa un país' }]}
+              >
+                <CountryCode placeholder='Pais y código' />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Form.Item
+                name={['client', 'phone']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, ingresa la cantidad de perfiles'
+                  }
+                ]}
+                label='Télefono'
+              >
+                <InputNumber
+                  style={{ width: '100%' }}
+                  placeholder='Télefono o whatsapp'
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+      )}
+      {client?.length > 0 &&
+        client[0].label !== undefined &&
+        client[0].value !== undefined && (
+          <Alert
+            message='Ya se tiene la información del cliente'
+            type='success'
+          />
+      )}
       <Col span={24}>
         <Form.Item
           name={['account', 'email']}
