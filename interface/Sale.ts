@@ -3,9 +3,9 @@ export type AddSaleResponse = {
   sale: {
     id: number
     userId: string
-    price: number
-    profile: string
-    pin: string
+    price: number | null
+    profile: string | null
+    pin: string | null
     expiration: string
     accountId: number
     clientId: string
@@ -28,7 +28,7 @@ export type AddSaleResponse = {
     id: string
     name: string
     phone: string | null
-    email: string
+    email: string | null
     userId: string
   }
 }

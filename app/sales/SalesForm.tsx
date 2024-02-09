@@ -18,6 +18,7 @@ import dayjs from 'dayjs'
 import SaleModel from '../../model/Sale'
 import { AddSaleResponse } from '@/interface/Sale'
 import { useState } from 'react'
+import SaleResponse from './SaleResponse'
 
 export default function SalesForm () {
   const [form] = Form.useForm()
@@ -45,7 +46,7 @@ export default function SalesForm () {
     console.log('body:', body)
     createSale('sales', 'POST', body)
       .then((res: AddSaleResponse) => {
-        console.log('res:', res)
+        onOpenDialog(res)
         // refreshTable();
         // handleCloseForm();
         form.resetFields()
@@ -135,7 +136,7 @@ export default function SalesForm () {
                 </Form.Item>
               </Col>
             </Row>
-          )}
+        )}
         {client?.length > 0 &&
           client[0].label !== undefined &&
           client[0].value !== undefined && (
@@ -143,7 +144,7 @@ export default function SalesForm () {
               message='Ya se tiene la información del cliente'
               type='success'
             />
-          )}
+        )}
         <Col span={24}>
           <Form.Item
             name={['account', 'email']}
@@ -241,7 +242,7 @@ export default function SalesForm () {
                 </Form.Item>
               </Col>
             </Row>
-          )}
+        )}
         {account?.length > 0 &&
           account[0].label !== undefined &&
           account[0].value !== undefined && (
@@ -249,7 +250,7 @@ export default function SalesForm () {
               message='Ya se tiene la información de la cuenta'
               type='success'
             />
-          )}
+        )}
         <Divider>Datos de la venta</Divider>
         <Row gutter={8}>
           <Col xs={24} sm={12} md={12} lg={12}>
@@ -276,8 +277,7 @@ export default function SalesForm () {
                 style={{ width: '100%' }}
                 placeholder='Precio (Opcional)'
                 formatter={value =>
-                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value!.replace(/\$\s?|(,*)/g, '')}
               />
             </Form.Item>
@@ -304,21 +304,11 @@ export default function SalesForm () {
       </Form>
       <Modal
         open={modalSettings.open}
-        title='Venta realizada'
+        title={null}
         onCancel={onCloseDialog}
-        footer={(_, { OkBtn, CancelBtn }) => (
-          <>
-            <Button>Custom Button</Button>
-            <CancelBtn />
-            <OkBtn />
-          </>
-        )}
+        footer={null}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <SaleResponse sale={modalSettings.sale} onClose={onCloseDialog} />
       </Modal>
     </>
   )
