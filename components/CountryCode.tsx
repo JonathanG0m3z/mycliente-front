@@ -5,11 +5,12 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
 const { Option } = Select
+const NEXT_PUBLIC_COUUNTRY_API_URL = process.env.NEXT_PUBLIC_COUUNTRY_API_URL
 
 const CountryCode: React.FC<SelectProps> = ({ ...props }) => {
   const [countriesData, setCountriesData] = useState<any[]>([])
   const fields = 'fields=fifa,flags,idd,name'
-  const url = `https://restcountries.com/v3.1/lang/spanish?${fields}`
+  const url = `${NEXT_PUBLIC_COUUNTRY_API_URL}/lang/spanish?${fields}`
   const getDialCodes = async () => {
     try {
       const response = await fetch(url)

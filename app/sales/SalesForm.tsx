@@ -43,7 +43,6 @@ export default function SalesForm () {
   }
   const onFinish = (values: any) => {
     const body = SaleModel.fromUiToApi(values)
-    console.log('body:', body)
     createSale('sales', 'POST', body)
       .then((res: AddSaleResponse) => {
         onOpenDialog(res)

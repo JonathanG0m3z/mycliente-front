@@ -17,7 +17,7 @@ export const useFetch = (
 
   const fetchData = useCallback(async () => {
     try {
-      const request = await fetch(`${NEXT_PUBLIC_BACKEND_URL}${endPoint}`, {
+      const request = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/${endPoint}`, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export const useLazyFetch = () => {
   ) => {
     try {
       setLoading(true)
-      const request = await fetch(`${NEXT_PUBLIC_BACKEND_URL}${endPoint}`, {
+      const request = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/${endPoint}`, {
         method,
         headers: {
           'Content-Type': 'application/json',

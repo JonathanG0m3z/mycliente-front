@@ -30,5 +30,6 @@ export type AddSaleResponse = {
     phone: string | null
     email: string | null
     userId: string
+    country: string
   }
 }

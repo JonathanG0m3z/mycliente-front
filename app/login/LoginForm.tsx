@@ -54,7 +54,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
   }
   const handleSuccesGoogle = (credentialResponse: CredentialResponse) => {
     const token: GoogleAuthData = jwtDecode(credentialResponse.credential ?? '')
-    fetch(`${NEXT_PUBLIC_BACKEND_URL}users/signin`, {
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
   }
 
   const onFinish = (values: any) => {
-    fetch(`${NEXT_PUBLIC_BACKEND_URL}users/validate`, {
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

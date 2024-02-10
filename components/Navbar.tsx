@@ -48,7 +48,7 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
   } = theme.useToken()
 
   const closeSession = () => {
-    fetch(`${NEXT_PUBLIC_BACKEND_URL}users/logOut`, {
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/logOut`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

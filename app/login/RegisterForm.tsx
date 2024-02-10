@@ -54,7 +54,7 @@ export default function RegisterForm ({ onChangeForm }: RegisterFormProps) {
   }
 
   const onFinish = (values: any) => {
-    fetch(`${NEXT_PUBLIC_BACKEND_URL}users`, {
+    fetch(`${NEXT_PUBLIC_BACKEND_URL}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
