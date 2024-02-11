@@ -15,21 +15,29 @@ import {
   notification
 } from 'antd'
 import dayjs from 'dayjs'
-import SaleModel from '../../model/Sale'
-import { AddSaleResponse } from '@/interface/Sale'
+import SaleModel from '../../../model/Sale'
+import { SaleData } from '@/interface/Sale'
 import { useState } from 'react'
 import SaleResponse from './SaleResponse'
+import { on } from 'events'
 
-export default function SalesForm () {
+interface Props {
+  onCancel: () => void
+  onSave: () => void
+}
+export default function SalesForm ({ onCancel, onSave }: Props) {
   const [form] = Form.useForm()
   const account = Form.useWatch(['account', 'email'], form)
   const client = Form.useWatch(['client', 'search'], form)
   const { loading: loadingSubmit, fetchApiData: createSale } = useLazyFetch()
-  const [modalSettings, setModalSettings] = useState<{open: boolean, sale: null | AddSaleResponse}>({
+  const [modalSettings, setModalSettings] = useState<{
+    open: boolean
+    sale: null | SaleData
+  }>({
     open: false,
     sale: null
   })
-  const onOpenDialog = (sale: AddSaleResponse) => {
+  const onOpenDialog = (sale: SaleData) => {
     setModalSettings({
       open: true,
       sale
@@ -44,12 +52,11 @@ export default function SalesForm () {
   const onFinish = (values: any) => {
     const body = SaleModel.fromUiToApi(values)
     createSale('sales', 'POST', body)
-      .then((res: AddSaleResponse) => {
+      .then((res: SaleData) => {
         onOpenDialog(res)
-        // refreshTable();
+        onSave()
         // handleCloseForm();
         form.resetFields()
-        // onOpenDialog(res);
       })
       .catch(err => {
         notification.error({
@@ -135,7 +142,7 @@ export default function SalesForm () {
                 </Form.Item>
               </Col>
             </Row>
-        )}
+          )}
         {client?.length > 0 &&
           client[0].label !== undefined &&
           client[0].value !== undefined && (
@@ -143,7 +150,7 @@ export default function SalesForm () {
               message='Ya se tiene la información del cliente'
               type='success'
             />
-        )}
+          )}
         <Col span={24}>
           <Form.Item
             name={['account', 'email']}
@@ -241,7 +248,7 @@ export default function SalesForm () {
                 </Form.Item>
               </Col>
             </Row>
-        )}
+          )}
         {account?.length > 0 &&
           account[0].label !== undefined &&
           account[0].value !== undefined && (
@@ -249,7 +256,7 @@ export default function SalesForm () {
               message='Ya se tiene la información de la cuenta'
               type='success'
             />
-        )}
+          )}
         <Divider>Datos de la venta</Divider>
         <Row gutter={8}>
           <Col xs={24} sm={12} md={12} lg={12}>
@@ -276,7 +283,8 @@ export default function SalesForm () {
                 style={{ width: '100%' }}
                 placeholder='Precio (Opcional)'
                 formatter={value =>
-                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
                 parser={value => value!.replace(/\$\s?|(,*)/g, '')}
               />
             </Form.Item>
@@ -295,11 +303,18 @@ export default function SalesForm () {
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item>
-          <Button loading={loadingSubmit} htmlType='submit'>
-            Aceptar
-          </Button>
-        </Form.Item>
+        <Row justify='space-around'>
+          <Form.Item>
+            <Button type='primary' loading={loadingSubmit} htmlType='submit'>
+              Aceptar
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <Button danger loading={loadingSubmit} onClick={onCancel}>
+              Cancelar
+            </Button>
+          </Form.Item>
+        </Row>
       </Form>
       <Modal
         open={modalSettings.open}

@@ -6,10 +6,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FloatButton, Modal } from 'antd'
-import { useState } from 'react'
-import SalesForm from './SalesForm'
+import { useRef, useState } from 'react'
+import SalesForm from './create/SalesForm'
+import { SalesTable, SalesTableRef } from './table/SalesTable'
 
 export default function Sales () {
+  const salesTableRef = useRef<SalesTableRef>(null)
   const [isOpenForm, setIsOpenForm] = useState(false)
   const openForm = () => {
     setIsOpenForm(true)
@@ -17,11 +19,13 @@ export default function Sales () {
   const closeForm = () => {
     setIsOpenForm(false)
   }
+  const onSaveSale = () => {
+    salesTableRef.current?.refresh()
+    closeForm()
+  }
   return (
     <>
-      <div>
-        <h1>Ventas</h1>
-      </div>
+      <SalesTable ref={salesTableRef} />
       <FloatButton.Group
         trigger='click'
         style={{ right: 24 }}
@@ -41,7 +45,7 @@ export default function Sales () {
         onCancel={closeForm}
         footer={null}
       >
-        <SalesForm />
+        <SalesForm onCancel={closeForm} onSave={onSaveSale} />
       </Modal>
     </>
   )

@@ -1,4 +1,4 @@
-export type AddSaleResponse = {
+export type SaleData = {
   message: string
   sale: {
     id: number

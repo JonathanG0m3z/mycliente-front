@@ -1,4 +1,4 @@
-import { AddSaleResponse } from '@/interface/Sale'
+import { SaleData } from '@/interface/Sale'
 import { decryptValue } from '@/utils/cryptoHooks'
 import { deleteSpaces } from '@/utils/deleteSpaces'
 import { getDialByCountry } from '@/utils/getDialByCountry'
@@ -12,7 +12,7 @@ import { useState } from 'react'
 const YOUTUBE_ACTIVATION = 'Activación youtube'
 
 interface Props {
-  sale: null | AddSaleResponse
+  sale: null | SaleData
   onClose: () => void
 }
 const SaleResponse = ({ sale, onClose }: Props) => {
