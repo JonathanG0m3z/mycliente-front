@@ -19,7 +19,6 @@ import SaleModel from '../../../model/Sale'
 import { SaleData } from '@/interface/Sale'
 import { useState } from 'react'
 import SaleResponse from './SaleResponse'
-import { on } from 'events'
 
 interface Props {
   onCancel: () => void
@@ -142,7 +141,7 @@ export default function SalesForm ({ onCancel, onSave }: Props) {
                 </Form.Item>
               </Col>
             </Row>
-          )}
+        )}
         {client?.length > 0 &&
           client[0].label !== undefined &&
           client[0].value !== undefined && (
@@ -150,7 +149,7 @@ export default function SalesForm ({ onCancel, onSave }: Props) {
               message='Ya se tiene la información del cliente'
               type='success'
             />
-          )}
+        )}
         <Col span={24}>
           <Form.Item
             name={['account', 'email']}
@@ -248,7 +247,7 @@ export default function SalesForm ({ onCancel, onSave }: Props) {
                 </Form.Item>
               </Col>
             </Row>
-          )}
+        )}
         {account?.length > 0 &&
           account[0].label !== undefined &&
           account[0].value !== undefined && (
@@ -256,7 +255,7 @@ export default function SalesForm ({ onCancel, onSave }: Props) {
               message='Ya se tiene la información de la cuenta'
               type='success'
             />
-          )}
+        )}
         <Divider>Datos de la venta</Divider>
         <Row gutter={8}>
           <Col xs={24} sm={12} md={12} lg={12}>
@@ -283,8 +282,7 @@ export default function SalesForm ({ onCancel, onSave }: Props) {
                 style={{ width: '100%' }}
                 placeholder='Precio (Opcional)'
                 formatter={value =>
-                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 parser={value => value!.replace(/\$\s?|(,*)/g, '')}
               />
             </Form.Item>

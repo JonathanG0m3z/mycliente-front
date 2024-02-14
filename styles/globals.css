@@ -1,0 +1,14 @@
+
+.popup {
+    animation-duration: 0.4s;
+    position: fixed;
+    overflow: hidden;
+    z-index: 10000;
+  }
+  
+  .popup li {
+    clear: both;
+    transition: all .3s;
+    white-space: nowrap;
+    -webkit-transition: all .3s;
+  }

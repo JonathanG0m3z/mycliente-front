@@ -3,7 +3,9 @@ import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { SaleTableColumns } from './SaleTableColumns'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSync } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSync } from '@fortawesome/free-solid-svg-icons'
+import { MenuProps } from 'antd/lib'
+import ContextMenu from './ContextMenu'
 
 const DEFAULT_FILTERS = {
   page: 1,
@@ -19,7 +21,6 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch()
   const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
-  console.log('data:', data)
   const applyFilters = (filters = localFilters) => {
     setLocalFilters(filters)
     getData(
@@ -29,6 +30,44 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
       notification.error({ message: 'Algo saió mal', description: err.message })
     )
   }
+  /** CONTEXT MENU */
+  const [menuContext, setMenuContext] = useState({
+    popup: {
+      record: [],
+      visible: false,
+      x: 0,
+      y: 0
+    }
+  })
+  const onRow = (record: any) => ({
+    onContextMenu: (event: any) => {
+      event.preventDefault()
+      if (!menuContext.popup.visible) {
+        document.addEventListener('click', function onClickOutside () {
+          setMenuContext({
+            popup: { record: [], visible: false, x: 0, y: 0 }
+          })
+          document.removeEventListener('click', onClickOutside)
+        })
+      }
+      setMenuContext({
+        popup: {
+          record,
+          visible: true,
+          x: event.clientX,
+          y: event.clientY
+        }
+      })
+    }
+  })
+  const contextMenuOptions: MenuProps['items'] = [
+    {
+      key: 'edit',
+      label: 'Editar venta',
+      icon: <FontAwesomeIcon icon={faEdit} />
+      // onClick: closeSession
+    }
+  ]
 
   useImperativeHandle(ref, () => ({
     refresh () {
@@ -45,9 +84,10 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
       <Table
         loading={loading}
         dataSource={data?.sales}
-        columns={SaleTableColumns()}
+        columns={SaleTableColumns({ contextMenuOptions })}
         scroll={{ x: 'max-content' }}
         pagination={false}
+        onRow={(record) => onRow(record)}
       />
       <Row justify='center'>
         <Pagination
@@ -72,6 +112,12 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
           />
         </Tooltip>
       </Row>
+      <ContextMenu
+        visible={menuContext.popup.visible}
+        x={menuContext.popup.x}
+        y={menuContext.popup.y}
+        contextMenuOptions={contextMenuOptions}
+      />
     </>
   )
 })

@@ -9,6 +9,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { useAuthMiddleware } from '@/utils/authMiddleware'
 import Navbar from '@/components/Navbar'
 import { usePathname } from 'next/navigation'
+import '../styles/globals.css'
 
 const NEXT_PUBLIC_GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
