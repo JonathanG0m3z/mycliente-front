@@ -33,3 +33,18 @@ export type SaleData = {
     country: string
   }
 }
+
+export type Sale = {
+  id: number
+  userId: string
+  price: number | null
+  profile: string | null
+  pin: string | null
+  expiration: string
+  accountId: number
+  clientId: string
+  updatedAt: string
+  createdAt: string
+  account: SaleData['account']
+  client: SaleData['client']
+}

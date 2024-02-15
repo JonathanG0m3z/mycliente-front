@@ -16,15 +16,17 @@ import {
 } from 'antd'
 import dayjs from 'dayjs'
 import SaleModel from '../../../model/Sale'
-import { SaleData } from '@/interface/Sale'
+import { Sale, SaleData } from '@/interface/Sale'
 import { useState } from 'react'
 import SaleResponse from './SaleResponse'
 
 interface Props {
+  record: Sale| null
   onCancel: () => void
   onSave: () => void
 }
-export default function SalesForm ({ onCancel, onSave }: Props) {
+export default function SalesForm ({ onCancel, onSave, record }: Props) {
+  console.log('record:', record)
   const [form] = Form.useForm()
   const account = Form.useWatch(['account', 'email'], form)
   const client = Form.useWatch(['client', 'search'], form)
@@ -73,7 +75,13 @@ export default function SalesForm ({ onCancel, onSave }: Props) {
           account: {
             expiration: dayjs().add(1, 'month')
           },
-          expiration: dayjs().add(1, 'month')
+          client: {
+            search: {
+              label: record?.client?.name,
+              value: record?.client.id
+            }
+          },
+          expiration: record ? dayjs(record.expiration) : dayjs().add(1, 'month')
         }}
         layout='vertical'
       >

@@ -9,6 +9,7 @@ import { FloatButton, Modal } from 'antd'
 import { useRef, useState } from 'react'
 import SalesForm from './create/SalesForm'
 import { SalesTable, SalesTableRef } from './table/SalesTable'
+import { Sale } from '@/interface/Sale'
 
 export default function Sales () {
   const salesTableRef = useRef<SalesTableRef>(null)
@@ -18,14 +19,22 @@ export default function Sales () {
   }
   const closeForm = () => {
     setIsOpenForm(false)
+    setSelectedSale(null)
   }
   const onSaveSale = () => {
     salesTableRef.current?.refresh()
     closeForm()
   }
+  /** CONTEXT MENU */
+  const [selectedSale, setSelectedSale] = useState<Sale| null>(null)
+  /** EDIT */
+  const onEdit = (record: Sale) => {
+    setSelectedSale(record)
+    openForm()
+  }
   return (
     <>
-      <SalesTable ref={salesTableRef} />
+      <SalesTable ref={salesTableRef} onEdit={onEdit} />
       <FloatButton.Group
         trigger='click'
         style={{ right: 24 }}
@@ -41,11 +50,10 @@ export default function Sales () {
       <Modal
         open={isOpenForm}
         title='Registrar venta'
-        // onOk={handleOk}
         onCancel={closeForm}
         footer={null}
       >
-        <SalesForm onCancel={closeForm} onSave={onSaveSale} />
+        <SalesForm onCancel={closeForm} onSave={onSaveSale} record={selectedSale} />
       </Modal>
     </>
   )

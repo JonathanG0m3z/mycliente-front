@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faSync } from '@fortawesome/free-solid-svg-icons'
 import { MenuProps } from 'antd/lib'
 import ContextMenu from './ContextMenu'
+import { Sale } from '@/interface/Sale'
 
 const DEFAULT_FILTERS = {
   page: 1,
@@ -15,8 +16,12 @@ export interface SalesTableRef {
   refresh: () => void
 }
 
-export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
-  props,
+interface Props {
+  onEdit: (record: Sale) => void
+}
+
+export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
+  { onEdit },
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch()
@@ -65,7 +70,6 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
       key: 'edit',
       label: 'Editar venta',
       icon: <FontAwesomeIcon icon={faEdit} />
-      // onClick: closeSession
     }
   ]
 
@@ -87,7 +91,7 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
         columns={SaleTableColumns({ contextMenuOptions })}
         scroll={{ x: 'max-content' }}
         pagination={false}
-        onRow={(record) => onRow(record)}
+        onRow={record => onRow(record)}
       />
       <Row justify='center'>
         <Pagination
@@ -113,10 +117,11 @@ export const SalesTable = forwardRef<SalesTableRef>(function SalesTable (
         </Tooltip>
       </Row>
       <ContextMenu
+        record={menuContext.popup.record}
         visible={menuContext.popup.visible}
         x={menuContext.popup.x}
         y={menuContext.popup.y}
-        contextMenuOptions={contextMenuOptions}
+        onEdit={onEdit}
       />
     </>
   )
