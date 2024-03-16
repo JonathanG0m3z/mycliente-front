@@ -14,23 +14,21 @@ import {
   Row,
   notification
 } from 'antd'
-import dayjs from 'dayjs'
 import SaleModel from '../../../model/Sale'
 import { Sale, SaleData } from '@/interface/Sale'
 import { useState } from 'react'
 import SaleResponse from './SaleResponse'
 
 interface Props {
-  record: Sale| null
+  record: Sale | null
   onCancel: () => void
   onSave: () => void
 }
 export default function SalesForm ({ onCancel, onSave, record }: Props) {
-  console.log('record:', record)
   const [form] = Form.useForm()
   const account = Form.useWatch(['account', 'email'], form)
   const client = Form.useWatch(['client', 'search'], form)
-  const { loading: loadingSubmit, fetchApiData: createSale } = useLazyFetch()
+  const { loading: loadingSubmit, fetchApiData: fetchSale } = useLazyFetch()
   const [modalSettings, setModalSettings] = useState<{
     open: boolean
     sale: null | SaleData
@@ -49,40 +47,44 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
       open: false,
       sale: null
     })
+    onCancel()
   }
   const onFinish = (values: any) => {
     const body = SaleModel.fromUiToApi(values)
-    createSale('sales', 'POST', body)
-      .then((res: SaleData) => {
-        onOpenDialog(res)
-        onSave()
-        // handleCloseForm();
-        form.resetFields()
-      })
-      .catch(err => {
-        notification.error({
-          message: 'Error',
-          description: err
+    if (record) {
+      fetchSale(`sales/${record.id}`, 'POST', body)
+        .then((res: SaleData) => {
+          onOpenDialog(res)
+          onSave()
+          form.resetFields()
         })
-      })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    } else {
+      fetchSale('sales', 'POST', body)
+        .then((res: SaleData) => {
+          onOpenDialog(res)
+          onSave()
+          form.resetFields()
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    }
   }
   return (
     <>
       <Form
         onFinish={onFinish}
         form={form}
-        initialValues={{
-          account: {
-            expiration: dayjs().add(1, 'month')
-          },
-          client: {
-            search: {
-              label: record?.client?.name,
-              value: record?.client.id
-            }
-          },
-          expiration: record ? dayjs(record.expiration) : dayjs().add(1, 'month')
-        }}
+        initialValues={SaleModel.createInitialValues(record)}
         layout='vertical'
       >
         <Col span={24}>
@@ -149,7 +151,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
                 </Form.Item>
               </Col>
             </Row>
-        )}
+          )}
         {client?.length > 0 &&
           client[0].label !== undefined &&
           client[0].value !== undefined && (
@@ -157,7 +159,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
               message='Ya se tiene la información del cliente'
               type='success'
             />
-        )}
+          )}
         <Col span={24}>
           <Form.Item
             name={['account', 'email']}
@@ -255,7 +257,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
                 </Form.Item>
               </Col>
             </Row>
-        )}
+          )}
         {account?.length > 0 &&
           account[0].label !== undefined &&
           account[0].value !== undefined && (
@@ -263,7 +265,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
               message='Ya se tiene la información de la cuenta'
               type='success'
             />
-        )}
+          )}
         <Divider>Datos de la venta</Divider>
         <Row gutter={8}>
           <Col xs={24} sm={12} md={12} lg={12}>
@@ -290,7 +292,8 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
                 style={{ width: '100%' }}
                 placeholder='Precio (Opcional)'
                 formatter={value =>
-                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
                 parser={value => value!.replace(/\$\s?|(,*)/g, '')}
               />
             </Form.Item>
@@ -312,7 +315,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
         <Row justify='space-around'>
           <Form.Item>
             <Button type='primary' loading={loadingSubmit} htmlType='submit'>
-              Aceptar
+              {record ? 'Actualizar' : 'Crear'}
             </Button>
           </Form.Item>
           <Form.Item>

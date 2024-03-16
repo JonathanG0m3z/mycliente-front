@@ -6,7 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FloatButton, Modal } from 'antd'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import SalesForm from './create/SalesForm'
 import { SalesTable, SalesTableRef } from './table/SalesTable'
 import { Sale } from '@/interface/Sale'
@@ -14,18 +14,16 @@ import { Sale } from '@/interface/Sale'
 export default function Sales () {
   const salesTableRef = useRef<SalesTableRef>(null)
   const [isOpenForm, setIsOpenForm] = useState(false)
-  const openForm = () => {
+  const openForm = useCallback(() => {
     setIsOpenForm(true)
-  }
-  const closeForm = () => {
+  }, [])
+  const closeForm = useCallback(() => {
     setIsOpenForm(false)
     setSelectedSale(null)
-  }
+  }, [])
   const onSaveSale = () => {
     salesTableRef.current?.refresh()
-    closeForm()
   }
-  /** CONTEXT MENU */
   const [selectedSale, setSelectedSale] = useState<Sale| null>(null)
   /** EDIT */
   const onEdit = (record: Sale) => {
@@ -49,9 +47,10 @@ export default function Sales () {
       </FloatButton.Group>
       <Modal
         open={isOpenForm}
-        title='Registrar venta'
+        title={selectedSale ? 'Editar venta' : 'Registrar venta'}
         onCancel={closeForm}
         footer={null}
+        destroyOnClose
       >
         <SalesForm onCancel={closeForm} onSave={onSaveSale} record={selectedSale} />
       </Modal>

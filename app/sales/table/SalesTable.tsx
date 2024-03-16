@@ -1,12 +1,13 @@
 import { useLazyFetch } from '@/utils/useFetch'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { SaleTableColumns } from './SaleTableColumns'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faSync } from '@fortawesome/free-solid-svg-icons'
 import { MenuProps } from 'antd/lib'
-import ContextMenu from './ContextMenu'
+import SalesContextMenu from './SalesContextMenu'
 import { Sale } from '@/interface/Sale'
+import { ContextMenuRef } from '@/components/ContextMenu'
 
 const DEFAULT_FILTERS = {
   page: 1,
@@ -35,43 +36,28 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       notification.error({ message: 'Algo saió mal', description: err.message })
     )
   }
-  /** CONTEXT MENU */
-  const [menuContext, setMenuContext] = useState({
-    popup: {
-      record: [],
-      visible: false,
-      x: 0,
-      y: 0
-    }
-  })
+
+  const contextMenuRef = useRef<ContextMenuRef>(null)
+  const [selectedRecord, setSelectedRecord] = useState<Sale | null>(null)
   const onRow = (record: any) => ({
-    onContextMenu: (event: any) => {
-      event.preventDefault()
-      if (!menuContext.popup.visible) {
-        document.addEventListener('click', function onClickOutside () {
-          setMenuContext({
-            popup: { record: [], visible: false, x: 0, y: 0 }
-          })
-          document.removeEventListener('click', onClickOutside)
-        })
-      }
-      setMenuContext({
-        popup: {
-          record,
-          visible: true,
-          x: event.clientX,
-          y: event.clientY
-        }
-      })
+    onContextMenu: (e: any) => {
+      setSelectedRecord(record)
+      contextMenuRef.current?.onContextMenu(e)
     }
+
   })
-  const contextMenuOptions: MenuProps['items'] = [
+  const contextMenuOptions: MenuProps['items'] = useMemo(() => [
     {
       key: 'edit',
       label: 'Editar venta',
       icon: <FontAwesomeIcon icon={faEdit} />
     }
-  ]
+  ], [])
+
+  const functionsDictionary = useMemo(() => ({
+    edit: onEdit
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [])
 
   useImperativeHandle(ref, () => ({
     refresh () {
@@ -88,7 +74,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       <Table
         loading={loading}
         dataSource={data?.sales}
-        columns={SaleTableColumns({ contextMenuOptions })}
+        columns={SaleTableColumns({ contextMenuOptions, functionsDictionary })}
         scroll={{ x: 'max-content' }}
         pagination={false}
         onRow={record => onRow(record)}
@@ -116,12 +102,11 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
           />
         </Tooltip>
       </Row>
-      <ContextMenu
-        record={menuContext.popup.record}
-        visible={menuContext.popup.visible}
-        x={menuContext.popup.x}
-        y={menuContext.popup.y}
-        onEdit={onEdit}
+      <SalesContextMenu
+        contextMenuRef={contextMenuRef}
+        record={selectedRecord}
+        items={contextMenuOptions}
+        functionsDictionary={functionsDictionary}
       />
     </>
   )

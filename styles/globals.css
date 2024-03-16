@@ -1,7 +1,7 @@
 
 .popup {
     animation-duration: 0.4s;
-    position: fixed;
+    position: absolute;
     overflow: hidden;
     z-index: 10000;
   }

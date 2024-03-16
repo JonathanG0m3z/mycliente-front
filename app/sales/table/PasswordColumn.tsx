@@ -1,4 +1,4 @@
-import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Space, Tag } from 'antd'
 import { useState } from 'react'
@@ -19,7 +19,7 @@ const PasswordColumn = ({ value }: Props) => {
       <Button
         size='small'
         shape='circle'
-        icon={<FontAwesomeIcon icon={faEye} />}
+        icon={<FontAwesomeIcon icon={visible ? faEyeSlash : faEye} />}
         onClick={changeState}
       />
     </Space>

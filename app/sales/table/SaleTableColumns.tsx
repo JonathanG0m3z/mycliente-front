@@ -8,13 +8,16 @@ import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import PasswordColumn from './PasswordColumn'
 import { MenuProps } from 'antd/lib'
+import SaleModel from '@/model/Sale'
 
 interface Props {
   contextMenuOptions: MenuProps['items']
+  functionsDictionary: { [key: string]: (record: any) => void }
 }
 
 export const SaleTableColumns: (props: Props) => ColumnsType<SaleData> = ({
-  contextMenuOptions
+  contextMenuOptions,
+  functionsDictionary
 }) => {
   return [
     {
@@ -92,8 +95,17 @@ export const SaleTableColumns: (props: Props) => ColumnsType<SaleData> = ({
       title: 'Opciones',
       dataIndex: '',
       key: '',
-      render: () => (
-        <Dropdown menu={{ items: contextMenuOptions }} trigger={['click']}>
+      render: (value, record) => (
+        <Dropdown
+          menu={{
+            items: SaleModel.createMenuContext(
+              record,
+              contextMenuOptions,
+              functionsDictionary
+            )
+          }}
+          trigger={['click']}
+        >
           <Button
             shape='circle'
             icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
