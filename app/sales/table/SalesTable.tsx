@@ -3,7 +3,7 @@ import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { SaleTableColumns } from './SaleTableColumns'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faSync } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { MenuProps } from 'antd/lib'
 import SalesContextMenu from './SalesContextMenu'
 import { Sale } from '@/interface/Sale'
@@ -19,10 +19,11 @@ export interface SalesTableRef {
 
 interface Props {
   onEdit: (record: Sale) => void
+  onDelete: (record: Sale) => void
 }
 
 export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
-  { onEdit },
+  { onEdit, onDelete },
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch()
@@ -36,7 +37,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       notification.error({ message: 'Algo saió mal', description: err.message })
     )
   }
-
+  /** CONTEXT MENU */
   const contextMenuRef = useRef<ContextMenuRef>(null)
   const [selectedRecord, setSelectedRecord] = useState<Sale | null>(null)
   const onRow = (record: any) => ({
@@ -51,11 +52,17 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       key: 'edit',
       label: 'Editar venta',
       icon: <FontAwesomeIcon icon={faEdit} />
+    },
+    {
+      key: 'delete',
+      label: 'Eliminar venta',
+      icon: <FontAwesomeIcon icon={faTrash} />
     }
   ], [])
 
   const functionsDictionary = useMemo(() => ({
-    edit: onEdit
+    edit: onEdit,
+    delete: onDelete
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 
