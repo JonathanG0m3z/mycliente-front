@@ -1,24 +1,27 @@
-import { SaleData } from '@/interface/Sale'
+import { Sale } from '@/interface/Sale'
 import { decryptValue } from '@/utils/cryptoHooks'
 import { WhatsAppOutlined } from '@ant-design/icons'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Tag } from 'antd'
+import { Button, Dropdown, Spin, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import PasswordColumn from './PasswordColumn'
 import { MenuProps } from 'antd/lib'
 import SaleModel from '@/model/Sale'
+import SaleReminderWpp from '../notification/SaleReminderWpp'
+import { useState } from 'react'
 
 interface Props {
   contextMenuOptions: MenuProps['items']
   functionsDictionary: { [key: string]: (record: any) => void }
 }
 
-export const SaleTableColumns: (props: Props) => ColumnsType<SaleData> = ({
+export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
   contextMenuOptions,
   functionsDictionary
 }) => {
+  const [loadingWhatsapp, setLoadingWhatsapp] = useState(false)
   return [
     {
       title: 'Cliente',
@@ -30,7 +33,7 @@ export const SaleTableColumns: (props: Props) => ColumnsType<SaleData> = ({
       title: 'Días para renovación',
       dataIndex: 'expiration',
       key: 'account',
-      render: value => {
+      render: (value, record) => {
         const days = dayjs(value)
           .startOf('day')
           .diff(dayjs().startOf('day'), 'days')
@@ -38,8 +41,13 @@ export const SaleTableColumns: (props: Props) => ColumnsType<SaleData> = ({
           <Tag
             color={days <= 1 ? 'red' : days <= 5 ? 'warning' : undefined}
             bordered={days <= 5}
-            icon={days <= 5 ? <WhatsAppOutlined /> : undefined}
+            icon={days <= 5 ? (loadingWhatsapp ? <Spin spinning size='small' /> : <WhatsAppOutlined />) : undefined}
             style={{ cursor: days <= 5 ? 'pointer' : undefined }}
+            onClick={() => {
+              setLoadingWhatsapp(true)
+              SaleReminderWpp.sendByWhatsapp(record)
+                .then(() => setLoadingWhatsapp(false))
+            }}
           >
             {days}
           </Tag>
