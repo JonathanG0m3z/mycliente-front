@@ -23,15 +23,16 @@ export default function Sales () {
     setIsOpenForm(false)
     setSelectedSale(null)
   }, [])
-  const onSaveSale = () => {
+  const onSaveSale = useCallback(() => {
     salesTableRef.current?.refresh()
-  }
+  }, [])
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null)
   /** EDIT */
-  const onEdit = (record: Sale) => {
+  const onEdit = useCallback((record: Sale) => {
     setSelectedSale(record)
     openForm()
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   /** DELETE */
   const { fetchApiData: fetchDelete } = useLazyFetch()
   const onDelete = (record: Sale) => {
@@ -61,14 +62,21 @@ export default function Sales () {
   }
   /** RENEW */
   const [renewIsOpen, setRenewIsOpen] = useState(false)
-  const openRenew = (record: Sale) => {
+  const openRenew = useCallback((record: Sale) => {
     setSelectedSale(record)
     setRenewIsOpen(true)
-  }
-  const closeRenew = () => {
+  }, [])
+  const closeRenew = useCallback(() => {
     setRenewIsOpen(false)
     setSelectedSale(null)
-  }
+  }, [])
+  const onSaveRenew = useCallback(() => {
+    salesTableRef.current?.refresh()
+  }, [])
+
+  const onRenewAccount = useCallback((sale: Sale['account']) => {
+    console.log(sale)
+  }, [])
   return (
     <>
       <SalesTable
@@ -111,8 +119,9 @@ export default function Sales () {
       >
         <RenewForm
           onCancel={closeRenew}
-          // onSave={onSaveSale}
+          onSave={onSaveRenew}
           record={selectedSale}
+          onRenewAccount={onRenewAccount}
         />
       </Modal>
     </>

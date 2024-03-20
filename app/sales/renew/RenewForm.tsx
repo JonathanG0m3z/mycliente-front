@@ -8,19 +8,56 @@ import {
   Form,
   Input,
   InputNumber,
-  Row
+  Modal,
+  Row,
+  notification
 } from 'antd'
 import dayjs from 'dayjs'
+import { useState } from 'react'
+import RenewResponse from './RenewResponse'
 
 interface Props {
   record: Sale | null
   onCancel: () => void
+  onSave: () => void
+  onRenewAccount: (sale: Sale['account']) => void
 }
 
-const RenewForm = ({ record, onCancel }: Props) => {
+const RenewForm = ({ record, onCancel, onSave, onRenewAccount }: Props) => {
+  const [msgModalSettings, setMsgModalSettings] = useState({
+    open: false,
+    sale: record
+  })
   const { loading: loadingSubmit, fetchApiData: fetchRenew } = useLazyFetch()
   const onFinish = (values: any) => {
-    console.log('values:', values)
+    if (record) {
+      fetchRenew(`sales/renew/${record.id}`, 'POST', {
+        ...values,
+        expiration: dayjs(values.expiration).format('YYYY-MM-DD')
+      })
+        .then((res: any) => {
+          setMsgModalSettings({
+            open: true,
+            sale: { ...record, ...res.renewedSale }
+          })
+          onSave()
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    }
+  }
+  const onCloseMsgModal = () => {
+    setMsgModalSettings({ ...msgModalSettings, open: false })
+    onCancel()
+  }
+  const renewAccount = (account: Sale['account']) => {
+    onRenewAccount(account)
+    onCloseMsgModal()
+    onCancel()
   }
   return (
     <Form
@@ -87,7 +124,7 @@ const RenewForm = ({ record, onCancel }: Props) => {
       <Row justify='space-around'>
         <Form.Item>
           <Button type='primary' loading={loadingSubmit} htmlType='submit'>
-            {record ? 'Actualizar' : 'Crear'}
+            Renovar
           </Button>
         </Form.Item>
         <Form.Item>
@@ -96,6 +133,19 @@ const RenewForm = ({ record, onCancel }: Props) => {
           </Button>
         </Form.Item>
       </Row>
+      <Modal
+        open={msgModalSettings.open}
+        title={null}
+        onCancel={onCloseMsgModal}
+        footer={null}
+        destroyOnClose
+      >
+        <RenewResponse
+          sale={msgModalSettings.sale}
+          onClose={onCloseMsgModal}
+          onRenewAccount={renewAccount}
+        />
+      </Modal>
     </Form>
   )
 }

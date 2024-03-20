@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import PasswordColumn from './PasswordColumn'
 import { MenuProps } from 'antd/lib'
 import SaleModel from '@/model/Sale'
-import SaleReminderWpp from '../notification/SaleReminderWpp'
+import SaleWpp from '../notification/SaleReminderWpp'
 import { useState } from 'react'
 
 interface Props {
@@ -45,7 +45,7 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
             style={{ cursor: days <= 5 ? 'pointer' : undefined }}
             onClick={() => {
               setLoadingWhatsapp(true)
-              SaleReminderWpp.sendByWhatsapp(record)
+              SaleWpp.sendReminderByWhatsapp(record)
                 .then(() => setLoadingWhatsapp(false))
             }}
           >
