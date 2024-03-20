@@ -11,6 +11,7 @@ import SalesForm from './create/SalesForm'
 import { SalesTable, SalesTableRef } from './table/SalesTable'
 import { Sale } from '@/interface/Sale'
 import { useLazyFetch } from '@/utils/useFetch'
+import RenewForm from './renew/RenewForm'
 
 export default function Sales () {
   const salesTableRef = useRef<SalesTableRef>(null)
@@ -58,9 +59,24 @@ export default function Sales () {
       }
     })
   }
+  /** RENEW */
+  const [renewIsOpen, setRenewIsOpen] = useState(false)
+  const openRenew = (record: Sale) => {
+    setSelectedSale(record)
+    setRenewIsOpen(true)
+  }
+  const closeRenew = () => {
+    setRenewIsOpen(false)
+    setSelectedSale(null)
+  }
   return (
     <>
-      <SalesTable ref={salesTableRef} onEdit={onEdit} onDelete={onDelete} />
+      <SalesTable
+        ref={salesTableRef}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onRenew={openRenew}
+      />
       <FloatButton.Group
         trigger='click'
         style={{ right: 24 }}
@@ -83,6 +99,19 @@ export default function Sales () {
         <SalesForm
           onCancel={closeForm}
           onSave={onSaveSale}
+          record={selectedSale}
+        />
+      </Modal>
+      <Modal
+        open={renewIsOpen}
+        title='Renovar venta'
+        onCancel={closeRenew}
+        footer={null}
+        destroyOnClose
+      >
+        <RenewForm
+          onCancel={closeRenew}
+          // onSave={onSaveSale}
           record={selectedSale}
         />
       </Modal>

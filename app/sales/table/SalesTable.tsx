@@ -3,7 +3,7 @@ import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { SaleTableColumns } from './SaleTableColumns'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { MenuProps } from 'antd/lib'
 import SalesContextMenu from './SalesContextMenu'
 import { Sale } from '@/interface/Sale'
@@ -20,10 +20,11 @@ export interface SalesTableRef {
 interface Props {
   onEdit: (record: Sale) => void
   onDelete: (record: Sale) => void
+  onRenew: (record: Sale) => void
 }
 
 export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
-  { onEdit, onDelete },
+  { onEdit, onDelete, onRenew },
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch()
@@ -57,12 +58,18 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       key: 'delete',
       label: 'Eliminar venta',
       icon: <FontAwesomeIcon icon={faTrash} />
+    },
+    {
+      key: 'renew',
+      label: 'Renovar',
+      icon: <FontAwesomeIcon icon={faRepeat} />
     }
   ], [])
 
   const functionsDictionary = useMemo(() => ({
     edit: onEdit,
-    delete: onDelete
+    delete: onDelete,
+    renew: onRenew
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 

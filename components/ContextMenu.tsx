@@ -5,14 +5,13 @@ import React, {
   MouseEvent,
   forwardRef,
   useImperativeHandle,
+  useMemo,
   useState
 } from 'react'
 interface ContextMenuState {
-  popup: {
-    visible: boolean
-    x: number
-    y: number
-  }
+  visible: boolean
+  x: number
+  y: number
 }
 interface Props {
   items?: ItemType<MenuItemType>[]
@@ -25,26 +24,22 @@ const ContextMenu = forwardRef<ContextMenuRef, Props>(function ContextMenu (
   ref
 ) {
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
-    popup: {
-      visible: false,
-      x: 0,
-      y: 0
-    }
+    visible: false,
+    x: 0,
+    y: 0
   })
   const onContextMenu = (event: MouseEvent<any, MouseEvent>) => {
     event.preventDefault()
-    if (!contextMenu.popup.visible) {
+    if (!contextMenu.visible) {
       document.addEventListener('click', function onClickOutside () {
-        setContextMenu({ popup: { ...contextMenu.popup, visible: false } })
+        setContextMenu({ ...contextMenu, visible: false })
         document.removeEventListener('click', onClickOutside)
       })
     }
     setContextMenu({
-      popup: {
-        visible: true,
-        x: event.pageX,
-        y: event.pageY
-      }
+      visible: true,
+      x: event.pageX,
+      y: event.pageY
     })
   }
   useImperativeHandle(ref, () => ({
@@ -52,16 +47,33 @@ const ContextMenu = forwardRef<ContextMenuRef, Props>(function ContextMenu (
       onContextMenu(e)
     }
   }))
+
+  const options: ItemType<MenuItemType>[] = useMemo(() => {
+    if (items === null || items === undefined) {
+      return []
+    }
+    return items.map(item => {
+      if (item === null || item === undefined) {
+        throw new Error('Invalid item found in items array')
+      }
+      return {
+        ...item,
+        style: { padding: 0, marginTop: 0, marginBottom: 0 }
+      }
+    })
+  }, [items])
+
   return (
     <>
-      {contextMenu.popup.visible
+      {contextMenu.visible
         ? (
           <Menu
-            items={items}
+            items={options}
             className='popup'
             style={{
-              left: `${contextMenu.popup.x - 0}px`,
-              top: `${contextMenu.popup.y - 0}px`
+              left: `${contextMenu.x - 0}px`,
+              top: `${contextMenu.y - 0}px`,
+              transform: `translate(${window.innerWidth - contextMenu.x < 230 ? '-100%' : '0'}, ${document.documentElement.scrollHeight - contextMenu.y < (options.length ?? 0) * 40 ? '-100%' : '0'})`
             }}
           />
           )

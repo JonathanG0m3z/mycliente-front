@@ -274,7 +274,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
               rules={[
                 {
                   required: true,
-                  message: 'Por favor, ingresa la cantidad de perfiles'
+                  message: 'Por favor, ingresa la fecha de renovación'
                 }
               ]}
               label='Fecha de renovación'
