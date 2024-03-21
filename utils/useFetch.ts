@@ -65,8 +65,8 @@ export const useFetch = (
   return { data, error, loading, refetch }
 }
 
-export const useLazyFetch = () => {
-  const [data, setData] = useState<any | null>(null)
+export const useLazyFetch = <T = any>() => {
+  const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState<any | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const router = useRouter()

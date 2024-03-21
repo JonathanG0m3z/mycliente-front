@@ -1,11 +1,12 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Avatar,
   Col,
   Dropdown,
   Layout,
   Menu,
+  Modal,
   Row,
   notification,
   theme
@@ -14,13 +15,14 @@ import { ItemType, MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCirclePlay,
+  faMoneyBill,
   faRightFromBracket,
   faUser
 } from '@fortawesome/free-solid-svg-icons'
 import { TokenType } from '@/utils/authMiddleware'
 import { jwtDecode } from 'jwt-decode'
 import { MenuProps } from 'antd/lib'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { encryptValue } from '@/utils/cryptoHooks'
 
 const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -29,14 +31,6 @@ const { Header, Content, Footer } = Layout
 interface Props {
   children: React.ReactNode
 }
-
-const items: ItemType<MenuItemType>[] = [
-  {
-    key: 'sales',
-    label: 'Ventas',
-    icon: <FontAwesomeIcon icon={faCirclePlay} />
-  }
-]
 
 const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
   const router = useRouter()
@@ -47,49 +41,70 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
     token: { colorBgContainer, borderRadiusLG }
   } = theme.useToken()
 
+  const route = usePathname()
+  const currentModule = route?.split('/')[1] ?? 'sales'
+
   const closeSession = () => {
-    fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/logOut`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${encryptValue(
-          localStorage.getItem('token') ?? ''
-        )}`
+    Modal.confirm({
+      title: 'Cierre de sesión',
+      content: '¿Estás seguro de cerrar la sesión?',
+      onOk: () => {
+        return new Promise((resolve, reject) => {
+          fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/logOut`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${encryptValue(
+                localStorage.getItem('token') ?? ''
+              )}`
+            }
+          })
+            .then(response => {
+              if (response.ok) {
+                response.json().then(() => {
+                  resolve(true)
+                  localStorage.removeItem('token')
+                  router.push('/login')
+                })
+              }
+            })
+            .catch(error => {
+              reject(error)
+              notification.error({
+                message: 'Algo salió mal',
+                description: error.message
+              })
+            })
+        })
       }
     })
-      .then(response => {
-        if (response.ok) {
-          response.json().then(() => {
-            localStorage.removeItem('token')
-            router.push('/login')
-          })
-        } else {
-          response.json().then(res => {
-            notification.error({
-              message: 'Token invalido',
-              description: res.message
-            })
-          })
-        }
-      })
-      .catch(error => {
-        notification.error({
-          message: 'Algo salió mal',
-          description: error.message
-        })
-      })
   }
-  const avatarOptions: MenuProps['items'] = [
+
+  const navbarItems: ItemType<MenuItemType>[] = useMemo(() => [
+    {
+      key: 'sales',
+      label: 'Ventas',
+      icon: <FontAwesomeIcon icon={faMoneyBill} />,
+      onClick: () => router.push('/sales')
+    },
+    {
+      key: 'accounts',
+      label: 'Cuentas',
+      icon: <FontAwesomeIcon icon={faCirclePlay} />,
+      onClick: () => router.push('/accounts')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], [])
+
+  const avatarOptions: MenuProps['items'] = useMemo(() => [
     {
       key: 'log_out',
       label: 'Cerrar sesión',
       icon: <FontAwesomeIcon icon={faRightFromBracket} />,
       onClick: closeSession
     }
-  ]
-
-  //   const route = usePathname()
-  //   const arrayRoute = route?.split('/').filter(item => item !== '')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], [])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -107,14 +122,14 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
         <Row>
           <Col span={23}>
             <Menu
-              theme='dark'
+              // theme='dark'
               mode='horizontal'
-              defaultSelectedKeys={['sales']}
-              items={items}
+              selectedKeys={[currentModule]}
+              items={navbarItems}
               style={{ flex: 1, minWidth: '100%', maxHeight: '55px' }}
             />
           </Col>
-          <Col span={1}>
+          <Col span={1} style={{ backgroundColor: colorBgContainer }}>
             <Dropdown menu={{ items: avatarOptions }} trigger={['click']}>
               <Avatar
                 src={decodedToken?.picture}
@@ -126,11 +141,6 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
         </Row>
       </Header>
       <Content style={{ padding: '0 15px' }}>
-        {/* <Breadcrumb style={{ margin: '14px 0' }}>
-          {arrayRoute.map((item, index) => (
-            <Breadcrumb.Item key={index + 1}>{item}</Breadcrumb.Item>
-          ))}
-        </Breadcrumb> */}
         <div
           style={{
             background: colorBgContainer,
