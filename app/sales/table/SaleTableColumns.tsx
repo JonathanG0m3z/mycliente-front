@@ -8,9 +8,9 @@ import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import PasswordColumn from './PasswordColumn'
 import { MenuProps } from 'antd/lib'
-import SaleModel from '@/model/Sale'
 import SaleWpp from '../notification/SaleReminderWpp'
 import { useState } from 'react'
+import { ContextMenuModel } from '@/utils/GlobalModel'
 
 interface Props {
   contextMenuOptions: MenuProps['items']
@@ -106,7 +106,7 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
       render: (value, record) => (
         <Dropdown
           menu={{
-            items: SaleModel.createMenuContext(
+            items: ContextMenuModel.createMenuContext(
               record,
               contextMenuOptions,
               functionsDictionary

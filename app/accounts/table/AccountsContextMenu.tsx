@@ -1,16 +1,17 @@
 import ContextMenu, { ContextMenuRef } from '@/components/ContextMenu'
+import { Account } from '@/interface/Account'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { MenuProps } from 'antd/lib'
 import { RefObject } from 'react'
 
 interface Props {
   contextMenuRef: RefObject<ContextMenuRef>
-  record: any
+  record: Account | null
   items: MenuProps['items']
   functionsDictionary: { [key: string]: (record: any) => void }
 }
 
-const SalesContextMenu = ({ record, contextMenuRef, items, functionsDictionary }: Props) => {
+const AccountssContextMenu = ({ record, contextMenuRef, items, functionsDictionary }: Props) => {
   return (
     <ContextMenu
       ref={contextMenuRef}
@@ -23,4 +24,4 @@ const SalesContextMenu = ({ record, contextMenuRef, items, functionsDictionary }
   )
 }
 
-export default SalesContextMenu
+export default AccountssContextMenu

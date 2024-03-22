@@ -14,9 +14,16 @@ import {
   useState
 } from 'react'
 import { AccountsTableColumns } from './AccountsTableColumns'
+import AccountssContextMenu from './AccountsContextMenu'
 
-interface Props {}
-interface AccountsTableRef {}
+interface Props {
+  onEdit: (record: Account) => void
+  onDelete: (record: Account) => void
+  onRenew: (record: Account) => void
+}
+export interface AccountsTableRef {
+  refresh: () => void
+}
 
 const DEFAULT_FILTERS = {
   page: 1,
@@ -24,7 +31,7 @@ const DEFAULT_FILTERS = {
 }
 
 const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
-  props,
+  { onEdit, onDelete, onRenew },
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch<AccountData>()
@@ -54,12 +61,12 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
     () => [
       {
         key: 'edit',
-        label: 'Editar venta',
+        label: 'Editar cuenta',
         icon: <FontAwesomeIcon icon={faEdit} />
       },
       {
         key: 'delete',
-        label: 'Eliminar venta',
+        label: 'Eliminar cuenta',
         icon: <FontAwesomeIcon icon={faTrash} />
       },
       {
@@ -71,15 +78,13 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
     []
   )
 
-  // const functionsDictionary = useMemo(
-  //   () => ({
-  //     edit: onEdit,
-  //     delete: onDelete,
-  //     renew: onRenew
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }),
-  //   []
-  // )
+  const functionsDictionary = useMemo(
+    () => ({
+      edit: onEdit,
+      delete: onDelete,
+      renew: onRenew
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }), [])
 
   useImperativeHandle(ref, () => ({
     refresh () {
@@ -96,14 +101,19 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
       <Table
         loading={loading}
         dataSource={data?.accounts}
-        //   columns={SaleTableColumns({
-        //     contextMenuOptions,
-        //     functionsDictionary
-        //   })}
-        columns={AccountsTableColumns({})}
+        columns={AccountsTableColumns({
+          contextMenuOptions,
+          functionsDictionary
+        })}
         scroll={{ x: 'max-content' }}
         pagination={false}
         onRow={record => onRow(record)}
+      />
+      <AccountssContextMenu
+        contextMenuRef={contextMenuRef}
+        record={selectedRecord}
+        items={contextMenuOptions}
+        functionsDictionary={functionsDictionary}
       />
     </>
   )

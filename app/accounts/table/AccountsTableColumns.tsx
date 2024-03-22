@@ -5,9 +5,9 @@ import { Button, Dropdown, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import { MenuProps } from 'antd/lib'
-import SaleModel from '@/model/Sale'
 import PasswordColumn from '@/app/sales/table/PasswordColumn'
 import { Account } from '@/interface/Account'
+import { ContextMenuModel } from '@/utils/GlobalModel'
 
 interface Props {
   contextMenuOptions: MenuProps['items']
@@ -77,7 +77,7 @@ export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
       render: (value, record) => (
         <Dropdown
           menu={{
-            items: SaleModel.createMenuContext(
+            items: ContextMenuModel.createMenuContext(
               record,
               contextMenuOptions,
               functionsDictionary
