@@ -12,6 +12,8 @@ import { SalesTable, SalesTableRef } from './table/SalesTable'
 import { Sale } from '@/interface/Sale'
 import { useLazyFetch } from '@/utils/useFetch'
 import RenewForm from './renew/RenewForm'
+import RenewAccountForm from '../accounts/renew/RenewAccountForm'
+import { Account } from '@/interface/Account'
 
 export default function Sales () {
   const salesTableRef = useRef<SalesTableRef>(null)
@@ -31,7 +33,7 @@ export default function Sales () {
   const onEdit = useCallback((record: Sale) => {
     setSelectedSale(record)
     openForm()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   /** DELETE */
   const { fetchApiData: fetchDelete } = useLazyFetch()
@@ -73,9 +75,24 @@ export default function Sales () {
   const onSaveRenew = useCallback(() => {
     salesTableRef.current?.refresh()
   }, [])
-
+  const [selectedAccount, setSelectedAccount] = useState<
+    Account | null
+  >(null)
+  const [renewAccountFormOpen, setRenewAccountFormOpen] = useState(false)
   const onRenewAccount = useCallback((sale: Sale['account']) => {
-    console.log(sale)
+    const account = sale
+    setSelectedAccount(account)
+    setRenewAccountFormOpen(true)
+  }, [])
+  const onCloseRenewAccountForm = useCallback(() => {
+    setRenewAccountFormOpen(false)
+    setSelectedAccount(null)
+  }, [])
+  const onSaveRenewAccount = useCallback(() => {
+    salesTableRef.current?.refresh()
+    notification.success({
+      message: 'Cuenta renovada exitosamente'
+    })
   }, [])
   return (
     <>
@@ -122,6 +139,19 @@ export default function Sales () {
           onSave={onSaveRenew}
           record={selectedSale}
           onRenewAccount={onRenewAccount}
+        />
+      </Modal>
+      <Modal
+        open={renewAccountFormOpen}
+        title='Renovar cuenta'
+        onCancel={onCloseRenewAccountForm}
+        footer={null}
+        destroyOnClose
+      >
+        <RenewAccountForm
+          onCancel={onCloseRenewAccountForm}
+          onSave={onSaveRenewAccount}
+          record={selectedAccount}
         />
       </Modal>
     </>

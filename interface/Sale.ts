@@ -13,16 +13,17 @@ export type SaleData = {
     createdAt: string
   }
   account: {
-    id: number
+    id: string
     email: string
     password: string
-    expiration: string
+    expiration: Date
     profiles: number
-    serviceId: number
+    serviceId: string
     userId: string
     service: {
       name: string
     }
+    deleted_at: null | Date
   }
   client: {
     id: string

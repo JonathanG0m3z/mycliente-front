@@ -7,6 +7,7 @@ import { useLazyFetch } from '@/utils/useFetch'
 import { Modal, notification } from 'antd'
 import AccountsToolbar from './AccountsToolbar'
 import AccountsForm from './create/AccountsForm'
+import RenewAccountForm from './renew/RenewAccountForm'
 
 const Accounts = () => {
   const AccountsTableRef = useRef<AccountsTableRef>(null)
@@ -22,6 +23,9 @@ const Accounts = () => {
     setSelectedAccount(null)
   }, [])
   const onSaveAccount = useCallback(() => {
+    notification.success({
+      message: 'Información guardada'
+    })
     refreshTable()
   }, [])
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
@@ -39,7 +43,7 @@ const Accounts = () => {
       content: '¿Estás seguro de eliminar esta cuenta?',
       onOk: () => {
         return new Promise((resolve, reject) => {
-          fetchDelete(`sales/${record.id}`, 'DELETE')
+          fetchDelete(`accounts/${record.id}`, 'DELETE')
             .then(() => {
               notification.success({
                 message: 'Cuenta eliminada'
@@ -69,6 +73,9 @@ const Accounts = () => {
     setSelectedAccount(null)
   }, [])
   const onSaveRenew = useCallback(() => {
+    notification.success({
+      message: 'Renovación exitosa'
+    })
     refreshTable()
   }, [])
   return (
@@ -93,20 +100,19 @@ const Accounts = () => {
           record={selectedAccount}
         />
       </Modal>
-      {/* <Modal
+      <Modal
         open={renewIsOpen}
         title='Renovar cuenta'
         onCancel={closeRenew}
         footer={null}
         destroyOnClose
       >
-        <RenewForm
+        <RenewAccountForm
           onCancel={closeRenew}
           onSave={onSaveRenew}
           record={selectedAccount}
-          onRenewAccount={onRenewAccount}
         />
-      </Modal> */}
+      </Modal>
     </>
   )
 }

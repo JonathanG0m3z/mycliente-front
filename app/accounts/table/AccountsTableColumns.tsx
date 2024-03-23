@@ -26,6 +26,12 @@ export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
       align: 'center'
     },
     {
+      title: 'Perfiles disponibles',
+      dataIndex: 'profilesAvailable',
+      key: 'profilesAvailable',
+      align: 'center'
+    },
+    {
       title: 'Días para renovación',
       dataIndex: 'expiration',
       key: 'account',

@@ -1,6 +1,17 @@
 import RemoteCombobox from '@/components/RemoteCombobox'
 import { Account } from '@/interface/Account'
-import { Button, Col, DatePicker, Form, Input, InputNumber, Row } from 'antd'
+import AccountModel from '@/model/Account'
+import { useLazyFetch } from '@/utils/useFetch'
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  notification
+} from 'antd'
 
 interface Props {
   record: Account | null
@@ -9,8 +20,41 @@ interface Props {
 }
 
 const AccountsForm = ({ record, onCancel, onSave }: Props) => {
+  const { loading: loadingSubmit, fetchApiData: fetchAccount } = useLazyFetch()
+  const onFinish = (values: any) => {
+    const body = AccountModel.fromUiToApi(values)
+    if (record) {
+      fetchAccount(`accounts/${record.id}`, 'POST', body)
+        .then((res: Account) => {
+          onSave()
+          onCancel()
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    } else {
+      fetchAccount('accounts', 'POST', body)
+        .then((res: Account) => {
+          onSave()
+          onCancel()
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    }
+  }
   return (
-    <Form layout='vertical'>
+    <Form
+      layout='vertical'
+      onFinish={onFinish}
+      initialValues={AccountModel.createInitialValues(record)}
+    >
       <Row>
         <Col span={24}>
           <Form.Item
@@ -28,7 +72,7 @@ const AccountsForm = ({ record, onCancel, onSave }: Props) => {
         </Col>
         <Col xs={24} sm={12} md={12} lg={12}>
           <Form.Item
-            name={['account', 'password']}
+            name='password'
             rules={[
               {
                 required: true,
@@ -42,7 +86,7 @@ const AccountsForm = ({ record, onCancel, onSave }: Props) => {
         </Col>
         <Col xs={24} sm={12} md={12} lg={12}>
           <Form.Item
-            name={['account', 'expiration']}
+            name='expiration'
             rules={[
               {
                 required: true,
@@ -60,7 +104,7 @@ const AccountsForm = ({ record, onCancel, onSave }: Props) => {
         </Col>
         <Col xs={24} sm={12} md={12} lg={12}>
           <Form.Item
-            name={['account', 'service']}
+            name='service'
             rules={[
               {
                 required: true,
@@ -83,7 +127,7 @@ const AccountsForm = ({ record, onCancel, onSave }: Props) => {
         </Col>
         <Col xs={24} sm={12} md={12} lg={12}>
           <Form.Item
-            name={['account', 'profiles']}
+            name='profiles'
             rules={[
               {
                 required: true,
@@ -101,12 +145,12 @@ const AccountsForm = ({ record, onCancel, onSave }: Props) => {
       </Row>
       <Row justify='space-around'>
         <Form.Item>
-          <Button type='primary' loading={false} htmlType='submit'>
+          <Button type='primary' loading={loadingSubmit} htmlType='submit'>
             {record ? 'Actualizar' : 'Crear'}
           </Button>
         </Form.Item>
         <Form.Item>
-          <Button danger loading={false} onClick={onCancel}>
+          <Button danger loading={loadingSubmit} onClick={onCancel}>
             Cancelar
           </Button>
         </Form.Item>

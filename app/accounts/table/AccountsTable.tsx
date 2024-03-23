@@ -1,9 +1,9 @@
 import { ContextMenuRef } from '@/components/ContextMenu'
 import { Account, AccountData } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
-import { faEdit, faRepeat, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Table, notification } from 'antd'
+import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { MenuProps } from 'antd/lib'
 import {
   forwardRef,
@@ -109,6 +109,29 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
         pagination={false}
         onRow={record => onRow(record)}
       />
+      <Row justify='center'>
+        <Pagination
+          current={localFilters?.page}
+          pageSize={localFilters?.pageSize}
+          total={data?.total}
+          onChange={(page, pageSize) => {
+            applyFilters({ page, pageSize })
+          }}
+          showSizeChanger
+          showTotal={total => `${data?.accounts?.length} de ${total} resultados`}
+          disabled={loading}
+          style={{ marginRight: 7 }}
+          pageSizeOptions={[5, 10, 50, 100]}
+        />
+        <Tooltip title='Recargar'>
+          <Button
+            loading={loading}
+            shape='circle'
+            icon={<FontAwesomeIcon icon={faSync} />}
+            onClick={() => applyFilters()}
+          />
+        </Tooltip>
+      </Row>
       <AccountssContextMenu
         contextMenuRef={contextMenuRef}
         record={selectedRecord}
