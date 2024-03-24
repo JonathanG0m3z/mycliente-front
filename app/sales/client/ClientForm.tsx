@@ -1,7 +1,8 @@
 import CountryCode from '@/components/CountryCode'
 import { Sale } from '@/interface/Sale'
+import ClientModel from '@/model/Client'
 import { useLazyFetch } from '@/utils/useFetch'
-import { Button, Col, Form, Input, InputNumber, Row } from 'antd'
+import { Button, Col, Form, Input, InputNumber, Row, notification } from 'antd'
 
 interface Props {
   record: null | Sale['client']
@@ -11,8 +12,34 @@ interface Props {
 
 const ClientForm = ({ record, onCancel, onSave }: Props) => {
   const { loading: loadingSubmit, fetchApiData: fetchSale } = useLazyFetch()
+  const onFinish = (values: any) => {
+    const body = ClientModel.fromUiToApi(values)
+    if (record) {
+      fetchSale(`clients/${record.id}`, 'POST', body)
+        .then(() => {
+          onSave()
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    } else {
+      fetchSale('clients', 'POST', body)
+        .then(() => {
+          onSave()
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+        })
+    }
+  }
   return (
-    <Form layout='vertical' initialValues={{ ...(record ?? {}) }}>
+    <Form layout='vertical' initialValues={{ ...(record ?? {}) }} onFinish={onFinish}>
       <Row gutter={8}>
         <Col xs={24} sm={12} md={12} lg={12}>
           <Form.Item

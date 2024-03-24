@@ -112,9 +112,11 @@ export default function Sales () {
   }, [])
   const onSaveClient = useCallback(() => {
     salesTableRef.current?.refresh()
+    onCloseClientForm()
     notification.success({
       message: 'Cliente editado exitosamente'
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <>

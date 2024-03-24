@@ -32,6 +32,7 @@ export type SaleData = {
     email: string | null
     userId: string
     country: string
+    deleted_at: null | Date
   }
 }
 
