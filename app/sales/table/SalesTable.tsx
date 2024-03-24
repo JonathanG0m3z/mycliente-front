@@ -3,7 +3,7 @@ import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { SaleTableColumns } from './SaleTableColumns'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faRepeat, faSync, faTrash, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { MenuProps } from 'antd/lib'
 import SalesContextMenu from './SalesContextMenu'
 import { Sale } from '@/interface/Sale'
@@ -21,10 +21,11 @@ interface Props {
   onEdit: (record: Sale) => void
   onDelete: (record: Sale) => void
   onRenew: (record: Sale) => void
+  onEditClient: (record: Sale) => void
 }
 
 export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
-  { onEdit, onDelete, onRenew },
+  { onEdit, onDelete, onRenew, onEditClient },
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch()
@@ -63,13 +64,19 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       key: 'renew',
       label: 'Renovar',
       icon: <FontAwesomeIcon icon={faRepeat} />
+    },
+    {
+      key: 'editClient',
+      label: 'Editar cliente',
+      icon: <FontAwesomeIcon icon={faUserPen} />
     }
   ], [])
 
   const functionsDictionary = useMemo(() => ({
     edit: onEdit,
     delete: onDelete,
-    renew: onRenew
+    renew: onRenew,
+    editClient: onEditClient
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [])
 

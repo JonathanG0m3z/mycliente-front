@@ -1,6 +1,6 @@
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Space, Tag } from 'antd'
+import { Button, Space, Tag, Typography } from 'antd'
 import { useState } from 'react'
 
 interface Props {
@@ -15,7 +15,7 @@ const PasswordColumn = ({ value }: Props) => {
   }
   return (
     <Space>
-      <Tag color='blue'>{visible ? value : '***'}</Tag>
+      <Tag color='blue'>{visible ? <Typography.Text copyable>{value}</Typography.Text> : '***'}</Tag>
       <Button
         size='small'
         shape='circle'
