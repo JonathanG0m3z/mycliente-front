@@ -5,6 +5,7 @@ import { ColumnsType } from 'antd/es/table'
 import { MenuProps } from 'antd/lib'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { Service } from '@/interface/Service'
+import { useGetPayload } from '@/utils/useGetPayload'
 
 interface Props {
   contextMenuOptions: MenuProps['items']
@@ -15,6 +16,7 @@ export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
   contextMenuOptions,
   functionsDictionary
 }) => {
+  const userId = useGetPayload()?.id
   return [
     {
       title: 'Nombre',
@@ -32,7 +34,8 @@ export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
             items: ContextMenuModel.createMenuContext(
               record,
               contextMenuOptions,
-              functionsDictionary
+              functionsDictionary,
+              (record) => record?.userId !== userId
             )
           }}
           trigger={['click']}

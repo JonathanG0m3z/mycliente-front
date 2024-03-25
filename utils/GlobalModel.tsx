@@ -4,8 +4,9 @@ export class ContextMenuModel {
   static createMenuContext: (
     record: any,
     itemList: MenuProps['items'],
-    functions: { [key: string]: (record: any) => void }
-  ) => MenuProps['items'] = (record, itemList, functions) => {
+    functions: { [key: string]: (record: any) => void },
+    disabledCondition?: (record: any) => boolean
+  ) => MenuProps['items'] = (record, itemList, functions, disabledCondition) => {
       return (
         itemList?.map(item => {
           if (!item) {
@@ -21,7 +22,8 @@ export class ContextMenuModel {
           }
           return {
             ...item,
-            onClick: () => onClickFunction(record)
+            onClick: () => onClickFunction(record),
+            disabled: disabledCondition ? disabledCondition(record) : false
           }
         }) ?? []
       )

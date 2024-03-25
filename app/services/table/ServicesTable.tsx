@@ -17,11 +17,12 @@ import {
 } from 'react'
 import ServicesContextMenu from './ServicesContextMenu'
 import { ServicesTableColumns } from './ServicesTableColumns'
-import { useGetPayload } from '@/utils/useGetPayload'
+import ServicesToolbar from './ServicesToolbar'
 
 interface Props {
   onEdit: (record: Service) => void
   onDelete: (record: Service) => void
+  onCreate: () => void
 }
 export interface ServicesTableRef {
   refresh: () => void
@@ -32,8 +33,7 @@ const DEFAULT_FILTERS = {
   pageSize: 10
 }
 const ServicesTable = forwardRef<ServicesTableRef, Props>(
-  function ServicesTable ({ onEdit, onDelete }, ref) {
-    const userId = useGetPayload()?.id
+  function ServicesTable ({ onEdit, onDelete, onCreate }, ref) {
     const { data, loading, fetchApiData: getData } = useLazyFetch<ServiceData>()
     const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
     const applyFilters = (filters = localFilters) => {
@@ -62,17 +62,15 @@ const ServicesTable = forwardRef<ServicesTableRef, Props>(
         {
           key: 'edit',
           label: 'Editar servicio',
-          icon: <FontAwesomeIcon icon={faEdit} />,
-          disabled: selectedRecord?.userId !== userId
+          icon: <FontAwesomeIcon icon={faEdit} />
         },
         {
           key: 'delete',
           label: 'Eliminar servicio',
-          icon: <FontAwesomeIcon icon={faTrash} />,
-          disabled: selectedRecord?.userId !== userId
+          icon: <FontAwesomeIcon icon={faTrash} />
         }
       ],
-      [selectedRecord, userId]
+      []
     )
 
     const functionsDictionary = useMemo(
@@ -96,6 +94,7 @@ const ServicesTable = forwardRef<ServicesTableRef, Props>(
     }, [])
     return (
       <>
+        <ServicesToolbar onCreate={onCreate} />
         <Table
           loading={loading}
           dataSource={data?.services}

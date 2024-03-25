@@ -49,7 +49,8 @@ const Services = () => {
           fetchDelete(`services/${record.id}`, 'DELETE')
             .then(() => {
               notification.success({
-                message: 'Cuenta eliminada'
+                message: 'Servicio eliminado',
+                description: 'Se eliminó el servicio junto con todas sus cuentas y ventas asociadas'
               })
               refreshTable()
               resolve(null)
@@ -67,7 +68,7 @@ const Services = () => {
   }
   return (
     <>
-      <ServicesTable onDelete={onDelete} onEdit={onEdit} />
+      <ServicesTable onDelete={onDelete} onEdit={onEdit} onCreate={openForm} ref={ServicesTableRef} />
       <Modal
         open={isOpenForm}
         title={selectedService ? 'Editar servicio' : 'Registrar servicio'}
