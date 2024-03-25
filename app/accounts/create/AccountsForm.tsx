@@ -114,7 +114,7 @@ const AccountsForm = ({ record, onCancel, onSave }: Props) => {
             label='Servicio'
           >
             <RemoteCombobox
-              originalQuery='services'
+              originalQuery='services/combobox'
               pageSize={5}
               dataKey='services'
               optionValueKey='id'

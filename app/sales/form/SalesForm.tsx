@@ -228,7 +228,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
                   label='Servicio'
                 >
                   <RemoteCombobox
-                    originalQuery='services'
+                    originalQuery='services/combobox'
                     pageSize={5}
                     dataKey='services'
                     optionValueKey='id'

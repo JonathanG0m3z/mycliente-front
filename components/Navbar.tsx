@@ -15,6 +15,7 @@ import { ItemType, MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCirclePlay,
+  faEnvelope,
   faMoneyBill,
   faRightFromBracket,
   faUser
@@ -90,8 +91,14 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
     {
       key: 'accounts',
       label: 'Cuentas',
-      icon: <FontAwesomeIcon icon={faCirclePlay} />,
+      icon: <FontAwesomeIcon icon={faEnvelope} />,
       onClick: () => router.push('/accounts')
+    },
+    {
+      key: 'services',
+      label: 'Servicios',
+      icon: <FontAwesomeIcon icon={faCirclePlay} />,
+      onClick: () => router.push('/services')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [])
