@@ -18,6 +18,9 @@ import SaleModel from '../../../model/Sale'
 import { Sale, SaleData } from '@/interface/Sale'
 import { useState } from 'react'
 import SaleResponse from './SaleResponse'
+import SaleResponseYoutube from './SaleResponseYoutube'
+
+const YOUTUBE_ACTIVATION = 'Activación youtube'
 
 interface Props {
   record: Sale | null
@@ -174,6 +177,7 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
               dataKey='accounts'
               optionValueKey='id'
               optionLabelKey='email'
+              labelTemplate='{{email}} ({{service_name}})'
               mode='tags'
               maxCount={1}
               placeholder='Selecciona una cuenta o agregala'
@@ -330,7 +334,11 @@ export default function SalesForm ({ onCancel, onSave, record }: Props) {
         onCancel={onCloseDialog}
         footer={null}
       >
-        <SaleResponse sale={modalSettings.sale} onClose={onCloseDialog} />
+        {
+          modalSettings.sale?.account.service.name === YOUTUBE_ACTIVATION
+            ? <SaleResponseYoutube sale={modalSettings.sale} onClose={onCloseDialog} />
+            : <SaleResponse sale={modalSettings.sale} onClose={onCloseDialog} />
+        }
       </Modal>
     </>
   )

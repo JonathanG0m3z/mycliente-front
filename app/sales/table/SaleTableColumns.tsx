@@ -8,7 +8,7 @@ import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import PasswordColumn from './PasswordColumn'
 import { MenuProps } from 'antd/lib'
-import SaleWpp from '../notification/SaleReminderWpp'
+import SendMsgWhatsapp from '../../../utils/SendMsgWhatsapp'
 import { useState } from 'react'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 
@@ -45,11 +45,11 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
             style={{ cursor: days <= 5 ? 'pointer' : undefined }}
             onClick={() => {
               setLoadingWhatsapp(true)
-              SaleWpp.sendReminderByWhatsapp(record)
+              SendMsgWhatsapp.sendReminderByWhatsapp(record)
                 .then(() => setLoadingWhatsapp(false))
             }}
           >
-            {days}
+            {'' + days}
           </Tag>
         )
       },

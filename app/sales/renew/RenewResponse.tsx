@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Col, Row, Tooltip, Typography, notification } from 'antd'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import SaleWpp from '../notification/SaleReminderWpp'
+import SendMsgWhatsapp from '../../../utils/SendMsgWhatsapp'
 
 interface Props {
   sale: Sale | null
@@ -18,7 +18,7 @@ const RenewResponse = ({ sale, onClose, onRenewAccount }: Props) => {
   const sendByWhatsApp = () => {
     if (sale) {
       setWhatsappLoading(true)
-      SaleWpp.sendRenewMsgByWhatsapp(sale)
+      SendMsgWhatsapp.sendRenewMsgByWhatsapp(sale)
         .then(() => setWhatsappLoading(false))
         .catch(() => {
           setWhatsappLoading(false)

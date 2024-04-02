@@ -1,8 +1,21 @@
-import { Sale } from '@/interface/Sale'
+import { Sale, SaleData } from '@/interface/Sale'
 import { getDialByCountry } from '@/utils/getDialByCountry'
 import dayjs from 'dayjs'
 
-class SaleWpp {
+class SendMsgWhatsapp {
+  static sendGenericMsg: (sale: SaleData | null, text: string) => Promise<any> = (sale, text) => {
+    return new Promise(resolve => {
+      getDialByCountry(sale?.client.country ?? '').then((dial = '') => {
+        const baseUrl = `https://api.whatsapp.com/send?phone=${dial}${sale?.client.phone}&text=`
+        const msgWithoutFormat = text
+        const msgWithFormat = encodeURIComponent(msgWithoutFormat)
+        const url = baseUrl + msgWithFormat
+        window.open(url, '_blank')
+        resolve(null)
+      })
+    })
+  }
+
   static sendReminderByWhatsapp: (sale: Sale) => Promise<any> = sale => {
     return new Promise(resolve => {
       getDialByCountry(sale?.client.country ?? '').then((dial = '') => {
@@ -33,4 +46,4 @@ Tú cuenta de ${sale.account.service.name} con correo ${sale.account.email} se r
   }
 }
 
-export default SaleWpp
+export default SendMsgWhatsapp

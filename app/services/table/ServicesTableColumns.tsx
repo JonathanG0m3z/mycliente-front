@@ -22,7 +22,10 @@ export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
-      align: 'center'
+      align: 'center',
+      render: (value, record) => (
+        `${value} ${record.userId !== null ? '' : '(Servicio común)'}`
+      )
     },
     {
       title: 'Opciones',
@@ -39,6 +42,7 @@ export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
             )
           }}
           trigger={['click']}
+          disabled={record.userId === null}
         >
           <Button
             shape='circle'
