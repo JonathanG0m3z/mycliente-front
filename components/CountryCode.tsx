@@ -23,7 +23,7 @@ const CountryCode: React.FC<SelectProps> = ({ ...props }) => {
       })
     }
   }
-  const filterOption = (
+  const filterOption: any = (
     input: string,
     option?: { label: string; value: string; children: any }
   ) => {
