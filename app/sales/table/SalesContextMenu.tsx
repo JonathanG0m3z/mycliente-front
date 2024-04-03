@@ -1,3 +1,4 @@
+'use client'
 import ContextMenu, { ContextMenuRef } from '@/components/ContextMenu'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { MenuProps } from 'antd/lib'

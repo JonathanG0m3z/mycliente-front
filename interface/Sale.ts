@@ -1,3 +1,4 @@
+'use client'
 export type SaleData = {
   message: string
   sale: {

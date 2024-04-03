@@ -1,3 +1,4 @@
+'use client'
 import { Button, Row } from 'antd'
 
 interface Props {

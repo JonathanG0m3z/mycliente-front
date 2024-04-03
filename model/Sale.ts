@@ -1,3 +1,4 @@
+'use client'
 import { Sale } from '@/interface/Sale'
 import { encryptValue } from '@/utils/cryptoHooks'
 import dayjs from 'dayjs'

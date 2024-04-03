@@ -1,3 +1,4 @@
+'use client'
 import { Sale } from '@/interface/Sale'
 import { decryptValue } from '@/utils/cryptoHooks'
 import { WhatsAppOutlined } from '@ant-design/icons'

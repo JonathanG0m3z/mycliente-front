@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { encryptValue } from './cryptoHooks'
 import { notification } from 'antd'

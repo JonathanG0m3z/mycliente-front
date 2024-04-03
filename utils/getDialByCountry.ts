@@ -1,3 +1,4 @@
+'use client'
 import { notification } from 'antd'
 
 const NEXT_PUBLIC_COUUNTRY_API_URL = process.env.NEXT_PUBLIC_COUUNTRY_API_URL

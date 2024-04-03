@@ -1,3 +1,4 @@
+'use client'
 import CountryCode from '@/components/CountryCode'
 import RemoteCombobox from '@/components/RemoteCombobox'
 import { useLazyFetch } from '@/utils/useFetch'

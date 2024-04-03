@@ -1,3 +1,4 @@
+'use client'
 import { jwtDecode } from 'jwt-decode'
 import { TokenType } from './authMiddleware'
 import { notification } from 'antd'

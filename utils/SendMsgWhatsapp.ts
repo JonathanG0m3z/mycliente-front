@@ -1,3 +1,4 @@
+'use client'
 import { Sale, SaleData } from '@/interface/Sale'
 import { getDialByCountry } from '@/utils/getDialByCountry'
 import dayjs from 'dayjs'

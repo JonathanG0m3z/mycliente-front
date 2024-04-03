@@ -1,3 +1,4 @@
+'use client'
 import { decryptValue, encryptValue } from '@/utils/cryptoHooks'
 import {
   faEnvelope,

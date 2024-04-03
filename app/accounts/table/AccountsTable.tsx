@@ -1,3 +1,4 @@
+'use client'
 import { ContextMenuRef } from '@/components/ContextMenu'
 import { Account, AccountData } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'

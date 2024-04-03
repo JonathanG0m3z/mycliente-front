@@ -1,3 +1,4 @@
+'use client'
 class ClientModel {
   static fromUiToApi (values: any) {
     return {

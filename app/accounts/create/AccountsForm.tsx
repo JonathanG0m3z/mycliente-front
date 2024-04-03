@@ -1,3 +1,4 @@
+'use client'
 import RemoteCombobox from '@/components/RemoteCombobox'
 import { Account } from '@/interface/Account'
 import AccountModel from '@/model/Account'

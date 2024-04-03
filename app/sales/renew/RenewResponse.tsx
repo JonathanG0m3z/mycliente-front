@@ -1,3 +1,4 @@
+'use client'
 import { Sale } from '@/interface/Sale'
 import { deleteSpaces } from '@/utils/deleteSpaces'
 import { WhatsAppOutlined } from '@ant-design/icons'

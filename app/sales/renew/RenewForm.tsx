@@ -1,3 +1,4 @@
+'use client'
 import { Sale } from '@/interface/Sale'
 import { useLazyFetch } from '@/utils/useFetch'
 import {

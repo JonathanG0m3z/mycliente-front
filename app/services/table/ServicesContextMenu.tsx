@@ -1,3 +1,4 @@
+'use client'
 import ContextMenu, { ContextMenuRef } from '@/components/ContextMenu'
 import { Service } from '@/interface/Service'
 import { ContextMenuModel } from '@/utils/GlobalModel'

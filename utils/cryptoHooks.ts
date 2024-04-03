@@ -1,3 +1,4 @@
+'use client'
 import CryptoJS from 'crypto-js'
 const NEXT_PUBLIC_CRYPTOJS_SECRET_KEY =
   process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY

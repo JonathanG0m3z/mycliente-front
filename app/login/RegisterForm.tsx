@@ -1,3 +1,4 @@
+'use client'
 import CountryCode from '@/components/CountryCode'
 import { encryptValue } from '@/utils/cryptoHooks'
 import {

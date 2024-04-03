@@ -1,3 +1,4 @@
+'use client'
 import { Account } from '@/interface/Account'
 import { decryptValue, encryptValue } from '@/utils/cryptoHooks'
 import { useLazyFetch } from '@/utils/useFetch'

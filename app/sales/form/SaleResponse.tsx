@@ -1,3 +1,4 @@
+'use client'
 import { SaleData } from '@/interface/Sale'
 import { decryptValue } from '@/utils/cryptoHooks'
 import { deleteSpaces } from '@/utils/deleteSpaces'

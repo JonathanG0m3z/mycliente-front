@@ -1,3 +1,4 @@
+'use client'
 export interface Account {
     deleted_at: null | Date
     email: string

@@ -1,3 +1,4 @@
+'use client'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Space, Tag, Typography } from 'antd'

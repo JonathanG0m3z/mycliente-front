@@ -1,3 +1,4 @@
+'use client'
 import { decryptValue } from '@/utils/cryptoHooks'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

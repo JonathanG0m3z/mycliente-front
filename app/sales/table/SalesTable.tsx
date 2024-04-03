@@ -1,3 +1,4 @@
+'use client'
 import { useLazyFetch } from '@/utils/useFetch'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import { SaleTableColumns } from './SaleTableColumns'

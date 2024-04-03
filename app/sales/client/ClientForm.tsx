@@ -1,3 +1,4 @@
+'use client'
 import CountryCode from '@/components/CountryCode'
 import { Sale } from '@/interface/Sale'
 import ClientModel from '@/model/Client'

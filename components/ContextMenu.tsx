@@ -1,3 +1,4 @@
+'use client'
 import { Menu } from 'antd'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'

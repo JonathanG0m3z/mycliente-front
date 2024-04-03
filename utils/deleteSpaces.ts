@@ -1,3 +1,4 @@
+'use client'
 export const deleteSpaces = (text: string) =>
   text
     .split('\n')

@@ -1,3 +1,4 @@
+'use client'
 import { SaleData } from '@/interface/Sale'
 import SendMsgWhatsapp from '@/utils/SendMsgWhatsapp'
 import { deleteSpaces } from '@/utils/deleteSpaces'
