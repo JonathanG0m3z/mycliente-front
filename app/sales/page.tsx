@@ -2,6 +2,7 @@
 
 import {
   faEllipsisVertical,
+  faEnvelope,
   faHandHoldingDollar
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -40,14 +41,14 @@ export default function Sales () {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   /** DELETE */
-  const { fetchApiData: fetchDelete } = useLazyFetch()
+  const { fetchApiData: fetchApi } = useLazyFetch()
   const onDelete = (record: Sale) => {
     Modal.confirm({
       title: 'Eliminar venta',
       content: '¿Estás seguro de eliminar esta venta?',
       onOk: () => {
         return new Promise((resolve, reject) => {
-          fetchDelete(`sales/${record.id}`, 'DELETE')
+          fetchApi(`sales/${record.id}`, 'DELETE')
             .then(() => {
               notification.success({
                 message: 'Venta eliminada'
@@ -118,6 +119,26 @@ export default function Sales () {
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  /** REMINDER BY EMAIL CODE */
+  const [reminderLoading, setReminderLoading] = useState(false)
+  const onSendReminder = useCallback(() => {
+    setReminderLoading(true)
+    fetchApi('sales/sendReminder', 'POST')
+      .then(() => {
+        notification.success({
+          message: 'Recordatorios enviados exitosamente'
+        })
+        setReminderLoading(false)
+      })
+      .catch(err => {
+        notification.error({
+          message: 'Error',
+          description: err
+        })
+        setReminderLoading(false)
+      })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <>
       <SalesTable
@@ -137,6 +158,11 @@ export default function Sales () {
           onClick={openForm}
           tooltip='Registrar venta'
           icon={<FontAwesomeIcon icon={faHandHoldingDollar} />}
+        />
+        <FloatButton
+          onClick={reminderLoading ? () => {} : onSendReminder}
+          tooltip='Enviar recordatorios email'
+          icon={<FontAwesomeIcon icon={faEnvelope} />}
         />
       </FloatButton.Group>
       <Modal
