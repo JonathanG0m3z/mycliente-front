@@ -18,6 +18,7 @@ import {
   faEnvelope,
   faMoneyBill,
   faRightFromBracket,
+  faShareNodes,
   faUser
 } from '@fortawesome/free-solid-svg-icons'
 import { TokenType } from '@/utils/authMiddleware'
@@ -99,6 +100,12 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
       label: 'Servicios',
       icon: <FontAwesomeIcon icon={faCirclePlay} />,
       onClick: () => router.push('/services')
+    },
+    {
+      key: 'sharedBoards',
+      label: 'Tableros compartidos',
+      icon: <FontAwesomeIcon icon={faShareNodes} />,
+      onClick: () => router.push('/sharedBoards')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [])
