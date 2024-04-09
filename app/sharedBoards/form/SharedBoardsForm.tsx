@@ -35,7 +35,7 @@ const SharedBoardsForm = ({ record, onCancel, onSave }: Props) => {
       fetchAccount('sharedBoards', 'POST', {
         ...body,
         users: {
-          [values?.user]: true
+          [values?.user]: ['SELECT']
         }
       })
         .then((res: Account) => {

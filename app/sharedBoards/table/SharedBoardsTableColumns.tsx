@@ -1,7 +1,7 @@
 'use client'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Row, Tag } from 'antd'
+import { Button, Dropdown, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { MenuProps } from 'antd/lib'
 import { ContextMenuModel } from '@/utils/GlobalModel'
@@ -28,11 +28,9 @@ export const SharedBoardsTableColumns: (
       key: 'users',
       align: 'center',
       render: value => (
-        <Row>
-          {Object.keys(value ?? {}).map(email => (
-            <Tag key={email}>{email}</Tag>
-          ))}
-        </Row>
+        Object.keys(value ?? {}).map(email => (
+          <Tag key={email}>{email}</Tag>
+        ))
       )
     },
     {

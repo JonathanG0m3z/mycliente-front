@@ -11,6 +11,9 @@ export interface Account {
     }
     serviceId: string
     userId: string
+    extras?: {
+      comment?: string
+    }
   }
 
 export interface AccountData {
