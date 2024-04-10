@@ -1,25 +1,23 @@
 'use client'
 import ContextMenu, { ContextMenuRef } from '@/components/ContextMenu'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 import { SharedBoard } from '@/interface/SharedBoard'
 import { ContextMenuModel } from '@/utils/GlobalModel'
-import { MenuProps } from 'antd/lib'
 import { RefObject } from 'react'
 
 interface Props {
   contextMenuRef: RefObject<ContextMenuRef>
   record: SharedBoard | null
-  items: MenuProps['items']
-  functionsDictionary: { [key: string]: (record: any) => void }
+  items: CustomMenuItem[]
 }
 
-const SharedBoardsContextMenu = ({ record, contextMenuRef, items, functionsDictionary }: Props) => {
+const SharedBoardsContextMenu = ({ record, contextMenuRef, items }: Props) => {
   return (
     <ContextMenu
       ref={contextMenuRef}
       items={ContextMenuModel.createMenuContext(
         record,
-        items,
-        functionsDictionary
+        items
       )}
     />
   )

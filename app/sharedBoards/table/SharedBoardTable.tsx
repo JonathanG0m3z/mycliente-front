@@ -11,7 +11,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
-import { MenuProps } from 'antd/lib'
 import {
   forwardRef,
   useEffect,
@@ -22,6 +21,7 @@ import {
 } from 'react'
 import { SharedBoardsTableColumns } from './SharedBoardsTableColumns'
 import SharedBoardsContextMenu from './SharedBoardsContextMenu'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
   openBoardView: (record: SharedBoard) => void
@@ -68,12 +68,13 @@ const SharedBoardsTable = forwardRef<SharedBoardsTableRef, Props>(
         contextMenuRef.current?.onContextMenu(e)
       }
     })
-    const contextMenuOptions: MenuProps['items'] = useMemo(
+    const contextMenuOptions: CustomMenuItem[] = useMemo(
       () => [
         {
           key: 'openView',
           label: 'Abrir tablero',
-          icon: <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          icon: <FontAwesomeIcon icon={faArrowUpRightFromSquare} />,
+          onClick: openBoardView
         }
         //   {
         //     key: 'edit',
@@ -91,15 +92,6 @@ const SharedBoardsTable = forwardRef<SharedBoardsTableRef, Props>(
         //     icon: <FontAwesomeIcon icon={faRepeat} />
         //   }
       ],
-      []
-    )
-
-    const functionsDictionary = useMemo(
-      () => ({
-        openView: openBoardView
-        //   edit: onEdit,
-        //   delete: onDelete
-      }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       []
     )
@@ -120,8 +112,7 @@ const SharedBoardsTable = forwardRef<SharedBoardsTableRef, Props>(
           loading={loading}
           dataSource={data?.boards}
           columns={SharedBoardsTableColumns({
-            contextMenuOptions,
-            functionsDictionary
+            contextMenuOptions
           })}
           scroll={{ x: 'max-content' }}
           pagination={false}
@@ -137,8 +128,7 @@ const SharedBoardsTable = forwardRef<SharedBoardsTableRef, Props>(
             }}
             showSizeChanger
             showTotal={total =>
-              `${data?.boards?.length} de ${total} resultados`
-            }
+              `${data?.boards?.length} de ${total} resultados`}
             disabled={loading}
             style={{ marginRight: 7 }}
             pageSizeOptions={[5, 10, 50, 100]}
@@ -156,7 +146,6 @@ const SharedBoardsTable = forwardRef<SharedBoardsTableRef, Props>(
           contextMenuRef={contextMenuRef}
           record={selectedRecord}
           items={contextMenuOptions}
-          functionsDictionary={functionsDictionary}
         />
       </>
     )

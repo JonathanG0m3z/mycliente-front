@@ -1,6 +1,6 @@
 'use client'
 import { ContextMenuRef } from '@/components/ContextMenu'
-import { SharedBoard } from '@/interface/SharedBoard'
+import { SharedBoard, SharedBoardAccountsData } from '@/interface/SharedBoard'
 import { useLazyFetch } from '@/utils/useFetch'
 import {
   faEdit,
@@ -10,7 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
-import { MenuProps } from 'antd/lib'
 import {
   forwardRef,
   useEffect,
@@ -21,7 +20,8 @@ import {
 } from 'react'
 import { TableColumns } from './TableColumns'
 import ContextMenu from './ContextMenu'
-import { Account, AccountData } from '@/interface/Account'
+import { Account } from '@/interface/Account'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
   sharedBoardId: string
@@ -43,7 +43,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     { sharedBoardId, onChangePassword, onEdit, onDelete },
     ref
   ) {
-    const { data, loading, fetchApiData: getData } = useLazyFetch<AccountData>()
+    const { data, loading, fetchApiData: getData } = useLazyFetch<SharedBoardAccountsData>()
     const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
     const applyFilters = (filters = localFilters) => {
       setLocalFilters(filters)
@@ -68,35 +68,32 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
         contextMenuRef.current?.onContextMenu(e)
       }
     })
-    const contextMenuOptions: MenuProps['items'] = useMemo(
+    const contextMenuOptions: CustomMenuItem[] = useMemo(
       () => [
         {
           key: 'changePassword',
           label: 'Cambiar contraseña',
-          icon: <FontAwesomeIcon icon={faKey} />
+          icon: <FontAwesomeIcon icon={faKey} />,
+          disabled: !(data?.permissions === 'admin' || data?.permissions?.includes('CAMBIAR CONTRASEÑA')),
+          onClick: onChangePassword
         },
         {
           key: 'edit',
           label: 'Editar cuenta',
-          icon: <FontAwesomeIcon icon={faEdit} />
+          icon: <FontAwesomeIcon icon={faEdit} />,
+          disabled: !(data?.permissions === 'admin' || data?.permissions?.includes('EDITAR')),
+          onClick: onEdit
         },
         {
           key: 'delete',
           label: 'Eliminar cuenta',
-          icon: <FontAwesomeIcon icon={faTrash} />
+          icon: <FontAwesomeIcon icon={faTrash} />,
+          disabled: !(data?.permissions === 'admin' || data?.permissions?.includes('ELIMINAR')),
+          onClick: onDelete
         }
       ],
-      []
-    )
-
-    const functionsDictionary = useMemo(
-      () => ({
-        changePassword: onChangePassword,
-        edit: onEdit,
-        delete: onDelete
-      }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      []
+      [data]
     )
 
     useImperativeHandle(ref, () => ({
@@ -114,10 +111,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
         <Table
           loading={loading}
           dataSource={data?.accounts}
-          columns={TableColumns({
-            contextMenuOptions,
-            functionsDictionary
-          })}
+          columns={TableColumns({ contextMenuOptions })}
           scroll={{ x: 'max-content' }}
           pagination={false}
           onRow={record => onRow(record)}
@@ -150,7 +144,6 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
           contextMenuRef={contextMenuRef}
           record={selectedRecord}
           items={contextMenuOptions}
-          functionsDictionary={functionsDictionary}
         />
       </>
     )

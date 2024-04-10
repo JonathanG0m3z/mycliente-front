@@ -1,13 +1,13 @@
 'use client'
-import { MenuProps } from 'antd'
+import { CustomMenuItem } from '@/interface/ContextMenu'
+import { MenuProps } from 'antd/lib'
 
 export class ContextMenuModel {
   static createMenuContext: (
     record: any,
-    itemList: MenuProps['items'],
-    functions: { [key: string]: (record: any) => void },
+    itemList: CustomMenuItem[],
     disabledCondition?: (record: any) => boolean
-  ) => MenuProps['items'] = (record, itemList, functions, disabledCondition) => {
+  ) => MenuProps['items'] = (record, itemList, disabledCondition) => {
       return (
         itemList?.map(item => {
           if (!item) {
@@ -17,14 +17,10 @@ export class ContextMenuModel {
           if (!key) {
             throw new Error('Invalid item found in itemList, key is missing')
           }
-          const onClickFunction = functions[`${key}`]
-          if (typeof onClickFunction !== 'function') {
-            throw new Error(`Invalid function for key: ${key}`)
-          }
           return {
             ...item,
-            onClick: () => onClickFunction(record),
-            disabled: disabledCondition ? disabledCondition(record) : false
+            onClick: () => item.onClick(record),
+            disabled: (item.disabled) || (disabledCondition ? disabledCondition(record) : false)
           }
         }) ?? []
       )

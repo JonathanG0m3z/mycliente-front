@@ -6,7 +6,6 @@ import { useLazyFetch } from '@/utils/useFetch'
 import { faEdit, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
-import { MenuProps } from 'antd/lib'
 import {
   forwardRef,
   useEffect,
@@ -18,6 +17,7 @@ import {
 import ServicesContextMenu from './ServicesContextMenu'
 import { ServicesTableColumns } from './ServicesTableColumns'
 import ServicesToolbar from './ServicesToolbar'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
   onEdit: (record: Service) => void
@@ -57,27 +57,21 @@ const ServicesTable = forwardRef<ServicesTableRef, Props>(
         contextMenuRef.current?.onContextMenu(e)
       }
     })
-    const contextMenuOptions: MenuProps['items'] = useMemo(
+    const contextMenuOptions: CustomMenuItem[] = useMemo(
       () => [
         {
           key: 'edit',
           label: 'Editar servicio',
-          icon: <FontAwesomeIcon icon={faEdit} />
+          icon: <FontAwesomeIcon icon={faEdit} />,
+          onClick: onEdit
         },
         {
           key: 'delete',
           label: 'Eliminar servicio',
-          icon: <FontAwesomeIcon icon={faTrash} />
+          icon: <FontAwesomeIcon icon={faTrash} />,
+          onClick: onDelete
         }
       ],
-      []
-    )
-
-    const functionsDictionary = useMemo(
-      () => ({
-        edit: onEdit,
-        delete: onDelete
-      }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       []
     )
@@ -98,10 +92,7 @@ const ServicesTable = forwardRef<ServicesTableRef, Props>(
         <Table
           loading={loading}
           dataSource={data?.services}
-          columns={ServicesTableColumns({
-            contextMenuOptions,
-            functionsDictionary
-          })}
+          columns={ServicesTableColumns({ contextMenuOptions })}
           scroll={{ x: 'max-content' }}
           pagination={false}
           onRow={record => onRow(record)}
@@ -134,7 +125,6 @@ const ServicesTable = forwardRef<ServicesTableRef, Props>(
           contextMenuRef={contextMenuRef}
           record={selectedRecord}
           items={contextMenuOptions}
-          functionsDictionary={functionsDictionary}
         />
       </>
     )

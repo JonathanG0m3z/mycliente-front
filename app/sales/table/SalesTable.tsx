@@ -5,10 +5,10 @@ import { SaleTableColumns } from './SaleTableColumns'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faRepeat, faSync, faTrash, faUserPen } from '@fortawesome/free-solid-svg-icons'
-import { MenuProps } from 'antd/lib'
 import SalesContextMenu from './SalesContextMenu'
 import { Sale } from '@/interface/Sale'
 import { ContextMenuRef } from '@/components/ContextMenu'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 const DEFAULT_FILTERS = {
   page: 1,
@@ -50,36 +50,33 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
     }
 
   })
-  const contextMenuOptions: MenuProps['items'] = useMemo(() => [
+  const contextMenuOptions: CustomMenuItem[] = useMemo(() => [
     {
       key: 'edit',
       label: 'Editar venta',
-      icon: <FontAwesomeIcon icon={faEdit} />
+      icon: <FontAwesomeIcon icon={faEdit} />,
+      onClick: onEdit
     },
     {
       key: 'delete',
       label: 'Eliminar venta',
-      icon: <FontAwesomeIcon icon={faTrash} />
+      icon: <FontAwesomeIcon icon={faTrash} />,
+      onClick: onDelete
     },
     {
       key: 'renew',
       label: 'Renovar',
-      icon: <FontAwesomeIcon icon={faRepeat} />
+      icon: <FontAwesomeIcon icon={faRepeat} />,
+      onClick: onRenew
     },
     {
       key: 'editClient',
       label: 'Editar cliente',
-      icon: <FontAwesomeIcon icon={faUserPen} />
+      icon: <FontAwesomeIcon icon={faUserPen} />,
+      onClick: onEditClient
     }
-  ], [])
-
-  const functionsDictionary = useMemo(() => ({
-    edit: onEdit,
-    delete: onDelete,
-    renew: onRenew,
-    editClient: onEditClient
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [])
+  ], [])
 
   useImperativeHandle(ref, () => ({
     refresh () {
@@ -96,7 +93,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       <Table
         loading={loading}
         dataSource={data?.sales}
-        columns={SaleTableColumns({ contextMenuOptions, functionsDictionary })}
+        columns={SaleTableColumns({ contextMenuOptions })}
         scroll={{ x: 'max-content' }}
         pagination={false}
         onRow={record => onRow(record)}
@@ -128,7 +125,6 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
         contextMenuRef={contextMenuRef}
         record={selectedRecord}
         items={contextMenuOptions}
-        functionsDictionary={functionsDictionary}
       />
     </>
   )

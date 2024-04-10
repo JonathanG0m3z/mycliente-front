@@ -3,18 +3,17 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Dropdown, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { MenuProps } from 'antd/lib'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { SharedBoard } from '@/interface/SharedBoard'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
-  contextMenuOptions: MenuProps['items']
-  functionsDictionary: { [key: string]: (record: any) => void }
+  contextMenuOptions: CustomMenuItem[]
 }
 
 export const SharedBoardsTableColumns: (
   props: Props
-) => ColumnsType<SharedBoard> = ({ contextMenuOptions, functionsDictionary }) => {
+) => ColumnsType<SharedBoard> = ({ contextMenuOptions }) => {
   return [
     {
       title: 'Nombre',
@@ -42,8 +41,7 @@ export const SharedBoardsTableColumns: (
           menu={{
             items: ContextMenuModel.createMenuContext(
               record,
-              contextMenuOptions,
-              functionsDictionary
+              contextMenuOptions
             )
           }}
           trigger={['click']}

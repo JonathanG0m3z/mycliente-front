@@ -8,19 +8,17 @@ import { Button, Dropdown, Spin, Tag, Typography } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import PasswordColumn from './PasswordColumn'
-import { MenuProps } from 'antd/lib'
 import SendMsgWhatsapp from '../../../utils/SendMsgWhatsapp'
 import { useState } from 'react'
 import { ContextMenuModel } from '@/utils/GlobalModel'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
-  contextMenuOptions: MenuProps['items']
-  functionsDictionary: { [key: string]: (record: any) => void }
+  contextMenuOptions: CustomMenuItem[]
 }
 
 export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
-  contextMenuOptions,
-  functionsDictionary
+  contextMenuOptions
 }) => {
   const [loadingWhatsapp, setLoadingWhatsapp] = useState(false)
   return [
@@ -118,8 +116,7 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
           menu={{
             items: ContextMenuModel.createMenuContext(
               record,
-              contextMenuOptions,
-              functionsDictionary
+              contextMenuOptions
             )
           }}
           trigger={['click']}

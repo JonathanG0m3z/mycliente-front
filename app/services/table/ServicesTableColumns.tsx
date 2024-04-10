@@ -3,19 +3,17 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Dropdown } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { MenuProps } from 'antd/lib'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { Service } from '@/interface/Service'
 import { useGetPayload } from '@/utils/useGetPayload'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
-  contextMenuOptions: MenuProps['items']
-  functionsDictionary: { [key: string]: (record: any) => void }
+  contextMenuOptions: CustomMenuItem[]
 }
 
 export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
-  contextMenuOptions,
-  functionsDictionary
+  contextMenuOptions
 }) => {
   const userId = useGetPayload()?.id
   return [
@@ -38,7 +36,6 @@ export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
             items: ContextMenuModel.createMenuContext(
               record,
               contextMenuOptions,
-              functionsDictionary,
               (record) => record?.userId !== userId
             )
           }}

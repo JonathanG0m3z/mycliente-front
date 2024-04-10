@@ -3,21 +3,20 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Dropdown, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { MenuProps } from 'antd/lib'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { Account } from '@/interface/Account'
 import dayjs from 'dayjs'
 import PasswordColumn from '@/app/sales/table/PasswordColumn'
 import { decryptValue } from '@/utils/cryptoHooks'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
-  contextMenuOptions: MenuProps['items']
-  functionsDictionary: { [key: string]: (record: any) => void }
+  contextMenuOptions: CustomMenuItem[]
 }
 
 export const TableColumns: (
   props: Props
-) => ColumnsType<Account> = ({ contextMenuOptions, functionsDictionary }) => {
+) => ColumnsType<Account> = ({ contextMenuOptions }) => {
   return [
     {
       title: 'Cuenta',
@@ -79,8 +78,7 @@ export const TableColumns: (
           menu={{
             items: ContextMenuModel.createMenuContext(
               record,
-              contextMenuOptions,
-              functionsDictionary
+              contextMenuOptions
             )
           }}
           trigger={['click']}

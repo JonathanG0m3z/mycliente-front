@@ -5,19 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Dropdown, Tag } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
-import { MenuProps } from 'antd/lib'
 import PasswordColumn from '@/app/sales/table/PasswordColumn'
 import { Account } from '@/interface/Account'
 import { ContextMenuModel } from '@/utils/GlobalModel'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
-  contextMenuOptions: MenuProps['items']
-  functionsDictionary: { [key: string]: (record: any) => void }
+  contextMenuOptions: CustomMenuItem[]
 }
 
 export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
-  contextMenuOptions,
-  functionsDictionary
+  contextMenuOptions
 }) => {
   return [
     {
@@ -86,8 +84,7 @@ export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
           menu={{
             items: ContextMenuModel.createMenuContext(
               record,
-              contextMenuOptions,
-              functionsDictionary
+              contextMenuOptions
             )
           }}
           trigger={['click']}

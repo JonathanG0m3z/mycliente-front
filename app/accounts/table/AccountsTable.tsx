@@ -5,7 +5,6 @@ import { useLazyFetch } from '@/utils/useFetch'
 import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
-import { MenuProps } from 'antd/lib'
 import {
   forwardRef,
   useEffect,
@@ -16,6 +15,7 @@ import {
 } from 'react'
 import { AccountsTableColumns } from './AccountsTableColumns'
 import AccountssContextMenu from './AccountsContextMenu'
+import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
   onEdit: (record: Account) => void
@@ -58,34 +58,29 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
       contextMenuRef.current?.onContextMenu(e)
     }
   })
-  const contextMenuOptions: MenuProps['items'] = useMemo(
+  const contextMenuOptions: CustomMenuItem[] = useMemo(
     () => [
       {
         key: 'edit',
         label: 'Editar cuenta',
-        icon: <FontAwesomeIcon icon={faEdit} />
+        icon: <FontAwesomeIcon icon={faEdit} />,
+        onClick: onEdit
       },
       {
         key: 'delete',
         label: 'Eliminar cuenta',
-        icon: <FontAwesomeIcon icon={faTrash} />
+        icon: <FontAwesomeIcon icon={faTrash} />,
+        onClick: onDelete
       },
       {
         key: 'renew',
         label: 'Renovar',
-        icon: <FontAwesomeIcon icon={faRepeat} />
+        icon: <FontAwesomeIcon icon={faRepeat} />,
+        onClick: onRenew
       }
     ],
     []
   )
-
-  const functionsDictionary = useMemo(
-    () => ({
-      edit: onEdit,
-      delete: onDelete,
-      renew: onRenew
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [])
 
   useImperativeHandle(ref, () => ({
     refresh () {
@@ -103,8 +98,7 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
         loading={loading}
         dataSource={data?.accounts}
         columns={AccountsTableColumns({
-          contextMenuOptions,
-          functionsDictionary
+          contextMenuOptions
         })}
         scroll={{ x: 'max-content' }}
         pagination={false}
@@ -137,7 +131,6 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
         contextMenuRef={contextMenuRef}
         record={selectedRecord}
         items={contextMenuOptions}
-        functionsDictionary={functionsDictionary}
       />
     </>
   )
