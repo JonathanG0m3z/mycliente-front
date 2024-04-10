@@ -11,7 +11,7 @@ interface Props {
 }
 
 const Toolbar = ({ onCreate, onChangeFilters, filters }: Props) => {
-  const [timer, setTimer] = useState<number | null>(null)
+  const [timer, setTimer] = useState<any | null>(null)
 
   const handleSearchChange = (value: string) => {
     if (timer) {

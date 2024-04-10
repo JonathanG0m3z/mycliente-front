@@ -4,10 +4,7 @@ import { SharedBoard, SharedBoardData } from '@/interface/SharedBoard'
 import { useLazyFetch } from '@/utils/useFetch'
 import {
   faArrowUpRightFromSquare,
-  faEdit,
-  faRepeat,
-  faSync,
-  faTrash
+  faSync
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
