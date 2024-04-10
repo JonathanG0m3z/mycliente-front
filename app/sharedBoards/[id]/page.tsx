@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import Toolbar from './Toolbar'
 import { Modal, notification } from 'antd'
 import AccountsForm from './form/AccountForm'
 import AccountsTable from './table/Table'
@@ -73,13 +72,13 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
   }
   return (
     <>
-      <Toolbar onCreate={createAccount} />
       <AccountsTable
         ref={accountRef}
         sharedBoardId={params.id}
         onChangePassword={onChangePassword}
         onEdit={onEdit}
         onDelete={onDelete}
+        createAccount={createAccount}
       />
       <Modal
         open={isOpenForm}

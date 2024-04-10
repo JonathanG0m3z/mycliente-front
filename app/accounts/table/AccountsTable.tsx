@@ -79,6 +79,7 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
         onClick: onRenew
       }
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 

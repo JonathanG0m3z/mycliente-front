@@ -1,6 +1,10 @@
 'use client'
 import { ContextMenuRef } from '@/components/ContextMenu'
-import { SharedBoard, SharedBoardAccountsData } from '@/interface/SharedBoard'
+import {
+  SharedBoard,
+  SharedBoardAccountFilters,
+  SharedBoardAccountsData
+} from '@/interface/SharedBoard'
 import { useLazyFetch } from '@/utils/useFetch'
 import {
   faEdit,
@@ -22,33 +26,41 @@ import { TableColumns } from './TableColumns'
 import ContextMenu from './ContextMenu'
 import { Account } from '@/interface/Account'
 import { CustomMenuItem } from '@/interface/ContextMenu'
+import Toolbar from './Toolbar'
 
 interface Props {
   sharedBoardId: string
   onChangePassword: (record: Account) => void
   onEdit: (record: Account) => void
   onDelete: (record: Account) => void
+  createAccount: () => void
 }
 export interface SharedBoardsTableRef {
   refresh: () => void
 }
 
-const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS: SharedBoardAccountFilters = {
   page: 1,
-  pageSize: 10
+  pageSize: 10,
+  search: ''
 }
 
 const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
   function AccountsTable (
-    { sharedBoardId, onChangePassword, onEdit, onDelete },
+    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount },
     ref
   ) {
-    const { data, loading, fetchApiData: getData } = useLazyFetch<SharedBoardAccountsData>()
-    const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
+    const {
+      data,
+      loading,
+      fetchApiData: getData
+    } = useLazyFetch<SharedBoardAccountsData>()
+    const [localFilters, setLocalFilters] =
+      useState<SharedBoardAccountFilters>(DEFAULT_FILTERS)
     const applyFilters = (filters = localFilters) => {
       setLocalFilters(filters)
       getData(
-        `sharedBoards/accounts/${sharedBoardId}?page=${filters.page}&limit=${filters.pageSize}`,
+        `sharedBoards/accounts/${sharedBoardId}?page=${filters.page}&limit=${filters.pageSize}&search=${filters.search}`,
         'GET'
       ).catch(err =>
         notification.error({
@@ -74,21 +86,30 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
           key: 'changePassword',
           label: 'Cambiar contraseña',
           icon: <FontAwesomeIcon icon={faKey} />,
-          disabled: !(data?.permissions === 'admin' || data?.permissions?.includes('CAMBIAR CONTRASEÑA')),
+          disabled: !(
+            data?.permissions === 'admin' ||
+            data?.permissions?.includes('CAMBIAR CONTRASEÑA')
+          ),
           onClick: onChangePassword
         },
         {
           key: 'edit',
           label: 'Editar cuenta',
           icon: <FontAwesomeIcon icon={faEdit} />,
-          disabled: !(data?.permissions === 'admin' || data?.permissions?.includes('EDITAR')),
+          disabled: !(
+            data?.permissions === 'admin' ||
+            data?.permissions?.includes('EDITAR')
+          ),
           onClick: onEdit
         },
         {
           key: 'delete',
           label: 'Eliminar cuenta',
           icon: <FontAwesomeIcon icon={faTrash} />,
-          disabled: !(data?.permissions === 'admin' || data?.permissions?.includes('ELIMINAR')),
+          disabled: !(
+            data?.permissions === 'admin' ||
+            data?.permissions?.includes('ELIMINAR')
+          ),
           onClick: onDelete
         }
       ],
@@ -108,6 +129,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     }, [])
     return (
       <>
+        <Toolbar onCreate={createAccount} onChangeFilters={applyFilters} filters={localFilters} />
         <Table
           loading={loading}
           dataSource={data?.accounts}
@@ -122,7 +144,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
             pageSize={localFilters?.pageSize}
             total={data?.total}
             onChange={(page, pageSize) => {
-              applyFilters({ page, pageSize })
+              applyFilters({ ...localFilters, page, pageSize })
             }}
             showSizeChanger
             showTotal={total =>

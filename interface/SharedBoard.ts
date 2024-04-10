@@ -19,3 +19,9 @@ export interface SharedBoardData {
 export interface SharedBoardAccountsData extends AccountData {
     permissions?: string | string[]
 }
+
+export interface SharedBoardAccountFilters {
+    page: number
+    pageSize: number
+    search: string
+}
