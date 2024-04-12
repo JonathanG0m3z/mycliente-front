@@ -1,7 +1,7 @@
 'use client'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Tag } from 'antd'
+import { Button, Dropdown, Tag, Typography } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { Account } from '@/interface/Account'
@@ -22,7 +22,8 @@ export const TableColumns: (
       title: 'Cuenta',
       dataIndex: 'email',
       key: 'email',
-      align: 'center'
+      align: 'center',
+      render: value => <Typography.Text copyable>{value}</Typography.Text>
     },
     {
       title: 'Días para renovación',

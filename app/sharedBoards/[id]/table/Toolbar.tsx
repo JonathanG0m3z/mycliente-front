@@ -48,6 +48,7 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
             <Form.Item name='search' noStyle>
               <Input.Search
                 onChange={e => handleSearchChange(e.target.value)}
+                allowClear
               />
             </Form.Item>
           </Col>
