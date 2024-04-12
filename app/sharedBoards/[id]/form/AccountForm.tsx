@@ -3,6 +3,8 @@ import RemoteCombobox from '@/components/RemoteCombobox'
 import { Account } from '@/interface/Account'
 import SharedBoardModel from '@/model/SharedBoard'
 import { useLazyFetch } from '@/utils/useFetch'
+import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   Button,
   Col,
@@ -72,7 +74,7 @@ const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePasswor
             label='Correo'
             name='email'
           >
-            <Input disabled={isChangePassword} placeholder='ejemplo@ejemplo.com' />
+            <Input prefix={<FontAwesomeIcon icon={faEnvelope} />} disabled={isChangePassword} placeholder='ejemplo@ejemplo.com' />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -86,7 +88,7 @@ const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePasswor
             ]}
             label='Contraseña'
           >
-            <Input placeholder='Contraseña de la cuenta' />
+            <Input prefix={<FontAwesomeIcon icon={faKey} />} placeholder='Contraseña de la cuenta' />
           </Form.Item>
         </Col>
         <Col xs={24} sm={12} md={12} lg={12}>

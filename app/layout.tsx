@@ -17,6 +17,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => {
   useAuthMiddleware()
   return (
     <html lang='en'>
+      <title>MyCliente</title>
       <body style={{ backgroundColor: 'rgb(17 24 39)' }}>
         <AntdRegistry>
           <ConfigProvider locale={esES} theme={theme}>
