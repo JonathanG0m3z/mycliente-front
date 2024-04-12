@@ -1,16 +1,20 @@
-import { SharedBoardAccountFilters } from '@/interface/SharedBoard'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  SharedBoardAccountFilters,
+  SharedBoardAccountsData
+} from '@/interface/SharedBoard'
+import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Col, Form, Input, Row } from 'antd'
-import { useState } from 'react'
+import { Col, FloatButton, Form, Input, Row } from 'antd'
+import { useMemo, useState } from 'react'
 
 interface Props {
   filters: SharedBoardAccountFilters
   onChangeFilters: (filters: SharedBoardAccountFilters) => void
   onCreate: () => void
+  tableData: SharedBoardAccountsData | null
 }
 
-const Toolbar = ({ onCreate, onChangeFilters, filters }: Props) => {
+const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
   const [timer, setTimer] = useState<any | null>(null)
 
   const handleSearchChange = (value: string) => {
@@ -24,27 +28,46 @@ const Toolbar = ({ onCreate, onChangeFilters, filters }: Props) => {
     )
   }
 
+  const doIHaveCreatePermission: boolean = useMemo(() => {
+    return !!(
+      tableData?.permissions === 'admin' ||
+      tableData?.permissions?.includes('CREAR')
+    )
+  }, [tableData?.permissions])
+
   return (
-    <Form>
-      <Row gutter={[8, 8]} justify='space-between' align='middle'>
-        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-          <Form.Item name='search' noStyle>
-            <Input.Search onChange={e => handleSearchChange(e.target.value)} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} sm={12} md={4} lg={4} xl={4}>
-          <Button
-            icon={<FontAwesomeIcon icon={faPlus} />}
+    <>
+      <Form>
+        <Row
+          gutter={[8, 8]}
+          justify='space-between'
+          align='middle'
+          style={{ padding: '4px 0 4px 0' }}
+        >
+          <Col span={24}>
+            <Form.Item name='search' noStyle>
+              <Input.Search
+                onChange={e => handleSearchChange(e.target.value)}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+      <FloatButton.Group
+        trigger='click'
+        style={{ right: 24 }}
+        icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
+        tooltip='Opciones'
+      >
+        {doIHaveCreatePermission && (
+          <FloatButton
             onClick={onCreate}
-            shape='round'
-            type='primary'
-            block
-          >
-            Crear cuenta
-          </Button>
-        </Col>
-      </Row>
-    </Form>
+            tooltip='Crear cuenta'
+            icon={<FontAwesomeIcon icon={faPlus} />}
+          />
+        )}
+      </FloatButton.Group>
+    </>
   )
 }
 

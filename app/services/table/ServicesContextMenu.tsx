@@ -3,7 +3,7 @@ import ContextMenu, { ContextMenuRef } from '@/components/ContextMenu'
 import { CustomMenuItem } from '@/interface/ContextMenu'
 import { Service } from '@/interface/Service'
 import { ContextMenuModel } from '@/utils/GlobalModel'
-import { useGetPayload } from '@/utils/useGetPayload'
+import { getPayload } from '@/utils/getPayload'
 import { RefObject } from 'react'
 
 interface Props {
@@ -17,7 +17,7 @@ const ServicesContextMenu = ({
   contextMenuRef,
   items
 }: Props) => {
-  const userId = useGetPayload()?.id
+  const userId = getPayload()?.id
   return (
     <ContextMenu
       ref={contextMenuRef}

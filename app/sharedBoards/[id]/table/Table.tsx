@@ -129,7 +129,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     }, [])
     return (
       <>
-        <Toolbar onCreate={createAccount} onChangeFilters={applyFilters} filters={localFilters} />
+        <Toolbar tableData={data} onCreate={createAccount} onChangeFilters={applyFilters} filters={localFilters} />
         <Table
           loading={loading}
           dataSource={data?.accounts}

@@ -26,6 +26,7 @@ import { jwtDecode } from 'jwt-decode'
 import { MenuProps } from 'antd/lib'
 import { usePathname, useRouter } from 'next/navigation'
 import { encryptValue } from '@/utils/cryptoHooks'
+import { validatePermission } from '@/utils/validatePermission'
 
 const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 const { Header, Content, Footer } = Layout
@@ -87,19 +88,22 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
       key: 'sales',
       label: 'Ventas',
       icon: <FontAwesomeIcon icon={faMoneyBill} />,
-      onClick: () => router.push('/sales')
+      onClick: () => router.push('/sales'),
+      disabled: !validatePermission('sales')
     },
     {
       key: 'accounts',
       label: 'Cuentas',
       icon: <FontAwesomeIcon icon={faEnvelope} />,
-      onClick: () => router.push('/accounts')
+      onClick: () => router.push('/accounts'),
+      disabled: !validatePermission('accounts')
     },
     {
       key: 'services',
       label: 'Servicios',
       icon: <FontAwesomeIcon icon={faCirclePlay} />,
-      onClick: () => router.push('/services')
+      onClick: () => router.push('/services'),
+      disabled: !validatePermission('services')
     },
     {
       key: 'sharedBoards',

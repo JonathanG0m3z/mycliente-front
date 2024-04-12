@@ -5,7 +5,7 @@ import { Button, Dropdown } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { Service } from '@/interface/Service'
-import { useGetPayload } from '@/utils/useGetPayload'
+import { getPayload } from '@/utils/getPayload'
 import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 export const ServicesTableColumns: (props: Props) => ColumnsType<Service> = ({
   contextMenuOptions
 }) => {
-  const userId = useGetPayload()?.id
+  const userId = getPayload()?.id
   return [
     {
       title: 'Nombre',

@@ -1,4 +1,5 @@
 'use client'
+import { validatePermission } from '@/utils/validatePermission'
 import { Button, Row } from 'antd'
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 const SharedBoardsToolbar = ({ onCreate }: Props) => {
   return (
     <Row>
-      <Button type='primary' shape='round' onClick={onCreate}>
+      <Button disabled={!validatePermission('sharedBoards', 'CRUD')} type='primary' shape='round' onClick={onCreate}>
         Crear
       </Button>
     </Row>

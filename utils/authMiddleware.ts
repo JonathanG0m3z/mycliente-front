@@ -12,7 +12,7 @@ export interface TokenType {
   email: string
   picture: string | null
   google_account: boolean
-  permission: null
+  permission: { [key: string] : string | undefined } | null
   createdAt: string
   updatedAt: string
   iat: number

@@ -71,7 +71,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
         if (response.ok) {
           response.json().then(res => {
             localStorage.setItem('token', decryptValue(res.token))
-            router.push('/sales')
+            router.push('/sharedBoards')
           })
         } else {
           response.json().then(res => {
@@ -105,7 +105,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
         if (response.ok) {
           response.json().then(res => {
             localStorage.setItem('token', decryptValue(res.token))
-            router.push('/sales')
+            router.push('/sharedBoards')
           })
         } else {
           response.json().then(res => {
