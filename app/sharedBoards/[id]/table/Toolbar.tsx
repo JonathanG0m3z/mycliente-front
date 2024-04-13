@@ -25,7 +25,7 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
     }
     setTimer(
       setTimeout(() => {
-        onChangeFilters({ ...filters, search: value })
+        onChangeFilters({ ...filters, search: value, page: 1 })
       }, 300)
     )
   }
