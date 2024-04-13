@@ -9,6 +9,7 @@ import { useLazyFetch } from '@/utils/useFetch'
 import {
   faEdit,
   faKey,
+  faRepeat,
   faSync,
   faTrash
 } from '@fortawesome/free-solid-svg-icons'
@@ -34,6 +35,7 @@ interface Props {
   onEdit: (record: Account) => void
   onDelete: (record: Account) => void
   createAccount: () => void
+  onRenew: (record: Account) => void
 }
 export interface SharedBoardsTableRef {
   refresh: () => void
@@ -47,7 +49,7 @@ const DEFAULT_FILTERS: SharedBoardAccountFilters = {
 
 const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
   function AccountsTable (
-    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount },
+    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount, onRenew },
     ref
   ) {
     const {
@@ -91,6 +93,16 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
             data?.permissions?.includes('CAMBIAR CONTRASEÑA')
           ),
           onClick: onChangePassword
+        },
+        {
+          key: 'renew',
+          label: 'Renovar cuenta',
+          icon: <FontAwesomeIcon icon={faRepeat} />,
+          disabled: !(
+            data?.permissions === 'admin' ||
+            data?.permissions?.includes('RENOVAR')
+          ),
+          onClick: onRenew
         },
         {
           key: 'edit',

@@ -21,9 +21,10 @@ interface Props {
   onCancel: () => void
   onSave: () => void
   isChangePassword?: boolean
+  isRenew?: boolean
 }
 
-const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePassword }: Props) => {
+const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePassword, isRenew }: Props) => {
   const { loading: loadingSubmit, fetchApiData: fetchAccount } = useLazyFetch()
   const onFinish = (values: any) => {
     const body = SharedBoardModel.fromUiToApi({
@@ -60,7 +61,7 @@ const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePasswor
     <Form
       layout='vertical'
       onFinish={onFinish}
-      initialValues={SharedBoardModel.createInitialValues(record)}
+      initialValues={SharedBoardModel.createInitialValues(record, isRenew)}
     >
       <Row gutter={8}>
         <Col span={24}>
@@ -74,7 +75,7 @@ const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePasswor
             label='Correo'
             name='email'
           >
-            <Input prefix={<FontAwesomeIcon icon={faEnvelope} />} disabled={isChangePassword} placeholder='ejemplo@ejemplo.com' />
+            <Input prefix={<FontAwesomeIcon icon={faEnvelope} />} disabled={isChangePassword || isRenew} placeholder='ejemplo@ejemplo.com' />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -130,7 +131,7 @@ const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePasswor
               mode='tags'
               maxCount={1}
               placeholder='Selecciona un servicio o agregalo'
-              disabled={isChangePassword}
+              disabled={isChangePassword || isRenew}
             />
           </Form.Item>
         </Col>
@@ -139,7 +140,7 @@ const AccountsForm = ({ record, onCancel, onSave, sharedBoardId, isChangePasswor
             name='comment'
             label='Comentario'
           >
-            <Input.TextArea disabled={isChangePassword} placeholder='Añadir comentario...' />
+            <Input.TextArea disabled={isChangePassword || isRenew} placeholder='Añadir comentario...' />
           </Form.Item>
         </Col>
       </Row>

@@ -16,10 +16,12 @@ class SharedBoardModel {
     }
   }
 
-  static createInitialValues (record: Account | null) {
+  static createInitialValues (record: Account | null, isRenew?: boolean) {
     return {
       ...record ?? {},
-      expiration: record ? dayjs(record.expiration) : dayjs().add(1, 'month'),
+      expiration: record
+        ? (isRenew ? dayjs(record.expiration).add(1, 'month') : dayjs(record.expiration))
+        : dayjs().add(1, 'month'),
       service: record ? [{ label: record.service.name, value: record.serviceId }] : undefined,
       password: record ? decryptValue(record.password) : undefined,
       comment: record?.extras?.comment

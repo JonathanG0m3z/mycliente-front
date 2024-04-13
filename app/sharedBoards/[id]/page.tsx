@@ -22,6 +22,8 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
   const closeForm = useCallback(() => {
     setIsOpenForm(false)
     setSelectedRecord(null)
+    setIsChangePassword(false)
+    setIsRenew(false)
   }, [])
   const onSaveAccount = useCallback(() => {
     notification.success({
@@ -41,7 +43,6 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
   const onEdit = useCallback((account: Account) => {
     setIsOpenForm(true)
     setSelectedRecord(account)
-    setIsChangePassword(false)
   }, [])
   /** DELETE CODE */
   const { fetchApiData: fetchDelete } = useLazyFetch()
@@ -70,6 +71,13 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
       }
     })
   }
+  /** RENEW CODE */
+  const [isRenew, setIsRenew] = useState(false)
+  const onRenew = useCallback((account: Account) => {
+    setIsOpenForm(true)
+    setSelectedRecord(account)
+    setIsRenew(true)
+  }, [])
   return (
     <>
       <AccountsTable
@@ -79,6 +87,7 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
         onEdit={onEdit}
         onDelete={onDelete}
         createAccount={createAccount}
+        onRenew={onRenew}
       />
       <Modal
         open={isOpenForm}
@@ -93,6 +102,7 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
           record={selectedRecord}
           sharedBoardId={params.id}
           isChangePassword={isChangePassword}
+          isRenew={isRenew}
         />
       </Modal>
     </>
