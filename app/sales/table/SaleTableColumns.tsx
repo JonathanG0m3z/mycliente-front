@@ -95,8 +95,8 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
       align: 'center'
     },
     {
-      title: 'Teléfono cliente',
-      dataIndex: ['client', 'phone'],
+      title: 'Correo cliente',
+      dataIndex: ['client', 'email'],
       key: 'client',
       align: 'center'
     },
