@@ -2,10 +2,11 @@ import {
   SharedBoardAccountFilters,
   SharedBoardAccountsData
 } from '@/interface/SharedBoard'
-import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Col, FloatButton, Form, Input, Row } from 'antd'
-import { useMemo, useState } from 'react'
+import { Button, Col, FloatButton, Form, Input, Row } from 'antd'
+import { useRouter } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
 
 interface Props {
   filters: SharedBoardAccountFilters
@@ -16,6 +17,7 @@ interface Props {
 
 const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
   const [timer, setTimer] = useState<any | null>(null)
+  const router = useRouter()
 
   const handleSearchChange = (value: string) => {
     if (timer) {
@@ -35,6 +37,11 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
     )
   }, [tableData?.permissions])
 
+  const goBack = useCallback(() => {
+    router.push('/sharedBoards')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
       <Form>
@@ -44,7 +51,12 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
           align='middle'
           style={{ padding: '4px 0 4px 0' }}
         >
-          <Col span={24}>
+          <Col flex='none'>
+            <Button shape='circle' onClick={goBack}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Button>
+          </Col>
+          <Col flex='auto'>
             <Form.Item name='search' noStyle>
               <Input.Search
                 onChange={e => handleSearchChange(e.target.value)}

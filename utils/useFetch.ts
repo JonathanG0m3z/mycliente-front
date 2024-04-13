@@ -1,8 +1,8 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
-import { encryptValue } from './cryptoHooks'
 import { notification } from 'antd'
 import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useState } from 'react'
+import { encryptValue } from './cryptoHooks'
 
 const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -29,12 +29,13 @@ export const useFetch = (
         body: JSON.stringify(body)
       })
       if (request.status === 401) {
+        router.push('/login')
+        notification.destroy()
         notification.error({
           message: 'Token invalido',
           description: 'Favor iniciar sesión de nuevo'
         })
         localStorage.removeItem('token')
-        router.push('/login')
         return
       }
       const response = await request.json()
@@ -42,10 +43,12 @@ export const useFetch = (
         setData(response)
         setLoading(false)
       } else {
+        notification.destroy()
         notification.error({
           message: 'Error',
           description: response.message
         })
+        throw new Error(response.message)
       }
     } catch (err: any) {
       setError(err)
@@ -90,12 +93,13 @@ export const useLazyFetch = <T = any>() => {
         body: JSON.stringify(body)
       })
       if (request.status === 401) {
+        notification.destroy()
         notification.error({
           message: 'Token invalido',
           description: 'Favor iniciar sesión de nuevo'
         })
-        localStorage.removeItem('token')
         router.push('/login')
+        localStorage.removeItem('token')
         return
       }
       const response = await request.json()
@@ -103,10 +107,12 @@ export const useLazyFetch = <T = any>() => {
         setData(response)
         setLoading(false)
       } else {
+        notification.destroy()
         notification.error({
           message: 'Error',
           description: response.message
         })
+        throw new Error(response.message)
       }
       return response
     } catch (err: any) {

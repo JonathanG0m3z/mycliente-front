@@ -21,6 +21,7 @@ const SharedBoards = () => {
     setIsOpenForm(false)
   }
   const onSaveSharedBoard = () => {
+    sharedBoardsTableRef.current?.refresh()
     notification.success({
       message: 'Información guardada'
     })

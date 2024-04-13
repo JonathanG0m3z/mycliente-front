@@ -19,6 +19,7 @@ import {
 import { jwtDecode } from 'jwt-decode'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -47,6 +48,7 @@ interface LoginFormProps {
 export default function LoginForm ({ onChangeForm }: LoginFormProps) {
   const [form] = Form.useForm()
   const router = useRouter()
+  const [loadingSignIn, setLoadingSignIn] = useState(false)
   const handleErrorGoogle = () => {
     notification.error({
       message: 'Error en la autenticación',
@@ -54,6 +56,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
     })
   }
   const handleSuccesGoogle = (credentialResponse: CredentialResponse) => {
+    setLoadingSignIn(true)
     const token: GoogleAuthData = jwtDecode(credentialResponse.credential ?? '')
     fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/signin`, {
       method: 'POST',
@@ -72,9 +75,11 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
           response.json().then(res => {
             localStorage.setItem('token', decryptValue(res.token))
             router.push('/sharedBoards')
+            setLoadingSignIn(false)
           })
         } else {
           response.json().then(res => {
+            setLoadingSignIn(false)
             notification.error({
               message: 'Credenciales incorrectas',
               description: res.message
@@ -91,6 +96,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
   }
 
   const onFinish = (values: any) => {
+    setLoadingSignIn(true)
     fetch(`${NEXT_PUBLIC_BACKEND_URL}/users/validate`, {
       method: 'POST',
       headers: {
@@ -106,9 +112,11 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
           response.json().then(res => {
             localStorage.setItem('token', decryptValue(res.token))
             router.push('/sharedBoards')
+            setLoadingSignIn(false)
           })
         } else {
           response.json().then(res => {
+            setLoadingSignIn(false)
             notification.error({
               message: 'Credenciales incorrectas',
               description: res.message
@@ -203,7 +211,7 @@ export default function LoginForm ({ onChangeForm }: LoginFormProps) {
         </Form.Item>
         <Flex justify='center' vertical align='center'>
           <Button
-            // loading={auth.loading}
+            loading={loadingSignIn}
             type='primary'
             htmlType='submit'
             shape='round'
