@@ -85,7 +85,7 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
             </Form.Item>
           </Col>
           <Col flex='none'>
-            <Badge size='small' count={SharedBoardModel.countActiveFilters(filters)}>
+            <Badge size='small' style={{ color: 'white' }} count={SharedBoardModel.countActiveFilters(filters)} color='#5A54F9'>
               <Button shape='circle' onClick={openFilters}>
                 <FontAwesomeIcon icon={faSliders} />
               </Button>
