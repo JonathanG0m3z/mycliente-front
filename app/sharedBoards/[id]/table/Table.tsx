@@ -28,6 +28,9 @@ import ContextMenu from './ContextMenu'
 import { Account } from '@/interface/Account'
 import { CustomMenuItem } from '@/interface/ContextMenu'
 import Toolbar from './Toolbar'
+import SharedBoardModel from '@/model/SharedBoard'
+import { SorterResult } from 'antd/es/table/interface'
+import GlobalModel from '@/model/GlobalModel'
 
 interface Props {
   sharedBoardId: string
@@ -44,7 +47,9 @@ export interface SharedBoardsTableRef {
 const DEFAULT_FILTERS: SharedBoardAccountFilters = {
   page: 1,
   pageSize: 10,
-  search: ''
+  search: '',
+  is_deleted: false,
+  order: 'expiration ASC'
 }
 
 const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
@@ -62,7 +67,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     const applyFilters = (filters = localFilters) => {
       setLocalFilters(filters)
       getData(
-        `sharedBoards/accounts/${sharedBoardId}?page=${filters.page}&limit=${filters.pageSize}&search=${filters.search}`,
+        `sharedBoards/accounts/${sharedBoardId}${SharedBoardModel.transformFilterToUrl(filters)}`,
         'GET'
       ).catch(err =>
         notification.error({
@@ -135,6 +140,10 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
       }
     }))
 
+    const onChangeOrder = (pagination: any, filters: any, sorter: SorterResult<Account>) => {
+      applyFilters({ ...localFilters, order: GlobalModel.generateOrder(sorter) })
+    }
+
     useEffect(() => {
       applyFilters()
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,10 +154,11 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
         <Table
           loading={loading}
           dataSource={data?.accounts}
-          columns={TableColumns({ contextMenuOptions })}
+          columns={TableColumns({ contextMenuOptions, filters: localFilters })}
           scroll={{ x: 'max-content' }}
           pagination={false}
           onRow={record => onRow(record)}
+          onChange={onChangeOrder as any}
         />
         <Row justify='center'>
           <Pagination

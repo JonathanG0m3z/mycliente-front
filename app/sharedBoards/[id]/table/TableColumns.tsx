@@ -9,14 +9,17 @@ import dayjs from 'dayjs'
 import PasswordColumn from '@/app/sales/table/PasswordColumn'
 import { decryptValue } from '@/utils/cryptoHooks'
 import { CustomMenuItem } from '@/interface/ContextMenu'
+import { SharedBoardAccountFilters } from '@/interface/SharedBoard'
+import GlobalModel from '@/model/GlobalModel'
 
 interface Props {
   contextMenuOptions: CustomMenuItem[]
+  filters: SharedBoardAccountFilters
 }
 
 export const TableColumns: (
   props: Props
-) => ColumnsType<Account> = ({ contextMenuOptions }) => {
+) => ColumnsType<Account> = ({ contextMenuOptions, filters }) => {
   return [
     {
       title: 'Cuenta',
@@ -42,7 +45,9 @@ export const TableColumns: (
           </Tag>
         )
       },
-      align: 'center'
+      align: 'center',
+      sorter: true,
+      defaultSortOrder: GlobalModel.getOrderFromFilters('expiration', filters.order)
     },
     {
       title: 'Servicio',

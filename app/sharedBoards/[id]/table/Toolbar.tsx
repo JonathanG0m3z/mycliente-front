@@ -2,11 +2,18 @@ import {
   SharedBoardAccountFilters,
   SharedBoardAccountsData
 } from '@/interface/SharedBoard'
-import { faArrowLeft, faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowLeft,
+  faEllipsisVertical,
+  faPlus,
+  faSliders
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Col, FloatButton, Form, Input, Row } from 'antd'
+import { Badge, Button, Col, Drawer, FloatButton, Form, Input, Row } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
+import FiltersForm from './FiltersForm'
+import SharedBoardModel from '@/model/SharedBoard'
 
 interface Props {
   filters: SharedBoardAccountFilters
@@ -19,13 +26,17 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
   const [timer, setTimer] = useState<any | null>(null)
   const router = useRouter()
 
+  const onChangeToolbarFilters = (filters: SharedBoardAccountFilters) => {
+    onChangeFilters({ ...filters, page: 1 })
+  }
+
   const handleSearchChange = (value: string) => {
     if (timer) {
       clearTimeout(timer)
     }
     setTimer(
       setTimeout(() => {
-        onChangeFilters({ ...filters, search: value, page: 1 })
+        onChangeToolbarFilters({ ...filters, search: value })
       }, 300)
     )
   }
@@ -39,7 +50,16 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
 
   const goBack = useCallback(() => {
     router.push('/sharedBoards')
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /** FILTER DRAWER CODE */
+  const [showFilters, setShowFilters] = useState(false)
+  const openFilters = useCallback(() => {
+    setShowFilters(true)
+  }, [])
+  const closeFilters = useCallback(() => {
+    setShowFilters(false)
   }, [])
 
   return (
@@ -64,6 +84,13 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
               />
             </Form.Item>
           </Col>
+          <Col flex='none'>
+            <Badge size='small' count={SharedBoardModel.countActiveFilters(filters)}>
+              <Button shape='circle' onClick={openFilters}>
+                <FontAwesomeIcon icon={faSliders} />
+              </Button>
+            </Badge>
+          </Col>
         </Row>
       </Form>
       <FloatButton.Group
@@ -80,6 +107,18 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
           />
         )}
       </FloatButton.Group>
+      <Drawer
+        open={showFilters}
+        title='Filtros'
+        onClose={closeFilters}
+        destroyOnClose
+      >
+        <FiltersForm
+          currentFilters={filters}
+          onChangeFilters={onChangeToolbarFilters}
+          onClose={closeFilters}
+        />
+      </Drawer>
     </>
   )
 }

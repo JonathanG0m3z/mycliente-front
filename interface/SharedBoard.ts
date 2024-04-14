@@ -1,5 +1,6 @@
 'use client'
 
+import type { Dayjs } from 'dayjs'
 import { AccountData } from './Account'
 
 export interface SharedBoard {
@@ -24,4 +25,7 @@ export interface SharedBoardAccountFilters {
     page: number
     pageSize: number
     search: string
+    is_deleted?: boolean
+    expiration_range?: [Dayjs, Dayjs]
+    order?: string
 }
