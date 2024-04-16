@@ -40,7 +40,7 @@ const ClientForm = ({ record, onCancel, onSave }: Props) => {
     }
   }
   return (
-    <Form layout='vertical' initialValues={{ ...(record ?? {}) }} onFinish={onFinish}>
+    <Form layout='vertical' initialValues={ClientModel.createInitialValues(record)} onFinish={onFinish}>
       <Row gutter={8}>
         <Col xs={24} sm={12} md={12} lg={12}>
           <Form.Item
