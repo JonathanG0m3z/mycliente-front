@@ -67,8 +67,17 @@ const RemoteCombobox: React.FC<RemoteComboboxProps> = ({
     }
   }
 
+  const [timer, setTimer] = useState<any | null>(null)
+
   const onSearch = (newValue: string) => {
-    applyFilters({ ...localFilters, search: newValue, page: 1 })
+    if (timer) {
+      clearTimeout(timer)
+    }
+    setTimer(
+      setTimeout(() => {
+        applyFilters({ ...localFilters, search: newValue, page: 1 })
+      }, 300)
+    )
   }
 
   const fetchNewPage = (page = 1) => {
@@ -128,7 +137,7 @@ const RemoteCombobox: React.FC<RemoteComboboxProps> = ({
       dropdownRender={dropdownRender}
       loading={loading}
       labelInValue
-      searchValue={localFilters.search}
+      // searchValue={localFilters.search}
       onSelect={onSelectValue}
       allowClear
       // mode='tags'
