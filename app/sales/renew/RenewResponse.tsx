@@ -16,6 +16,7 @@ interface Props {
 }
 const RenewResponse = ({ sale, onClose, onRenewAccount }: Props) => {
   const [whatsappLoading, setWhatsappLoading] = useState(false)
+  const isYoutubeActivation = sale?.account.service.name === 'Activación youtube'
   const sendByWhatsApp = () => {
     if (sale) {
       setWhatsappLoading(true)
@@ -41,7 +42,7 @@ const RenewResponse = ({ sale, onClose, onRenewAccount }: Props) => {
                 {sale.account.service.name.toLocaleLowerCase()}!
               </Typography.Title>
               <Typography.Text>
-                Cuenta: <b>{sale.account.email}</b>
+                Cuenta: <b>{isYoutubeActivation ? sale.client.email : sale.account.email}</b>
                 <br />
                 {sale.profile && (
                   <>
@@ -66,7 +67,7 @@ const RenewResponse = ({ sale, onClose, onRenewAccount }: Props) => {
               keyboard
               copyable={{
                 text: deleteSpaces(`¡Renovación exitosa de ${sale.account.service.name.toLowerCase()}!
-Cuenta: ${sale.account.email}
+Cuenta: ${isYoutubeActivation ? sale.client.email : sale.account.email}
 ${sale.profile ? `Perfil: ${sale.profile}` : ''}
 ${sale.pin ? `PIN: ${sale.pin}` : ''}
 Nueva fecha de vencimiento: ${dayjs(sale?.expiration).format('DD-MM-YYYY')}`)
