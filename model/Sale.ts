@@ -1,5 +1,5 @@
 'use client'
-import { Sale } from '@/interface/Sale'
+import { Sale, SaleFilters } from '@/interface/Sale'
 import { encryptValue } from '@/utils/cryptoHooks'
 import dayjs from 'dayjs'
 
@@ -51,6 +51,11 @@ class SaleModel {
       profile: record?.profile,
       pin: record?.pin
     }
+  }
+
+  static transformFiltersToUrl: (filters: SaleFilters) => string = (filters) => {
+    const url = `?page=${filters.page}&limit=${filters.pageSize}&search=${filters.search}`
+    return url
   }
 }
 

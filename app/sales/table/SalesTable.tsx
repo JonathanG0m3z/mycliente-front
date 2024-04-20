@@ -6,13 +6,16 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faRepeat, faSync, faTrash, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import SalesContextMenu from './SalesContextMenu'
-import { Sale } from '@/interface/Sale'
+import { Sale, SaleFilters } from '@/interface/Sale'
 import { ContextMenuRef } from '@/components/ContextMenu'
 import { CustomMenuItem } from '@/interface/ContextMenu'
+import SalesToolbar from './SalesToolbar'
+import SaleModel from '@/model/Sale'
 
-const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS: SaleFilters = {
   page: 1,
-  pageSize: 10
+  pageSize: 10,
+  search: ''
 }
 export interface SalesTableRef {
   refresh: () => void
@@ -30,11 +33,11 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch()
-  const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
-  const applyFilters = (filters = localFilters) => {
+  const [localFilters, setLocalFilters] = useState<SaleFilters>(DEFAULT_FILTERS)
+  const applyFilters = (filters: SaleFilters) => {
     setLocalFilters(filters)
     getData(
-      `sales?page=${filters.page}&limit=${filters.pageSize}`,
+      `sales${SaleModel.transformFiltersToUrl(filters)}`,
       'GET'
     ).catch(err =>
       notification.error({ message: 'Algo saió mal', description: err.message })
@@ -80,16 +83,17 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
 
   useImperativeHandle(ref, () => ({
     refresh () {
-      applyFilters()
+      applyFilters(localFilters)
     }
   }))
 
   useEffect(() => {
-    applyFilters()
+    applyFilters(localFilters)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <>
+      <SalesToolbar filters={localFilters} onChangeFilters={applyFilters} />
       <Table
         loading={loading}
         dataSource={data?.sales}
@@ -97,6 +101,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
         scroll={{ x: 'max-content' }}
         pagination={false}
         onRow={record => onRow(record)}
+        rowKey={record => record.id}
       />
       <Row justify='center'>
         <Pagination
@@ -104,7 +109,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
           pageSize={localFilters?.pageSize}
           total={data?.total}
           onChange={(page, pageSize) => {
-            applyFilters({ page, pageSize })
+            applyFilters({ ...localFilters, page, pageSize })
           }}
           showSizeChanger
           showTotal={total => `${data?.sales?.length} de ${total} resultados`}
@@ -117,7 +122,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
             loading={loading}
             shape='circle'
             icon={<FontAwesomeIcon icon={faSync} />}
-            onClick={() => applyFilters()}
+            onClick={() => applyFilters(localFilters)}
           />
         </Tooltip>
       </Row>

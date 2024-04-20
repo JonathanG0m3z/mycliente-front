@@ -159,6 +159,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
           pagination={false}
           onRow={record => onRow(record)}
           onChange={onChangeOrder as any}
+          rowKey={record => record.id}
         />
         <Row justify='center'>
           <Pagination

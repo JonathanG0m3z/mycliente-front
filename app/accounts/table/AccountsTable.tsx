@@ -104,6 +104,7 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
         scroll={{ x: 'max-content' }}
         pagination={false}
         onRow={record => onRow(record)}
+        rowKey={record => record.id}
       />
       <Row justify='center'>
         <Pagination

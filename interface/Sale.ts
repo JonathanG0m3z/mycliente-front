@@ -51,3 +51,9 @@ export type Sale = {
   account: SaleData['account']
   client: SaleData['client']
 }
+
+export type SaleFilters = {
+  page: number
+  pageSize: number
+  search: string
+}
