@@ -43,16 +43,12 @@ export const useFetch = (
         setData(response)
         setLoading(false)
       } else {
-        notification.destroy()
-        notification.error({
-          message: 'Error',
-          description: response.message
-        })
         throw new Error(response.message)
       }
     } catch (err: any) {
       setError(err)
       setLoading(false)
+      throw err.message
     }
   }, [endPoint, method, body, router])
 
@@ -106,18 +102,14 @@ export const useLazyFetch = <T = any>() => {
       if (request.ok) {
         setData(response)
         setLoading(false)
+        return response
       } else {
-        notification.destroy()
-        notification.error({
-          message: 'Error',
-          description: response.message
-        })
         throw new Error(response.message)
       }
-      return response
     } catch (err: any) {
       setError(err)
       setLoading(false)
+      throw err.message
     }
   }
 
