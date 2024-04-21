@@ -23,9 +23,11 @@ class SendMsgWhatsapp {
       getDialByCountry(sale?.client.country ?? '').then((dial = '') => {
         const days = dayjs(sale.expiration).diff(dayjs().startOf('day'), 'days')
         const baseUrl = `https://api.whatsapp.com/send?phone=${dial}${sale?.client.phone}&text=`
-        const msgWithoutFormat = `*Notificación de pronta finalización de suscripción*
+        const msgSoonExpiration = `*Notificación de pronta finalización de suscripción*
 Atención tu suscripción a ${sale.account.service.name} con la cuenta ${isYoutubeActivation ? sale.client.email : sale.account.email}, finaliza en ${days} días. Por favor hacer el pago correspondiente para poder seguir disfrutando de nuestros servicios. Nequi: 3213411415 ¡No te quedes sin tu activación!`
-        const msgWithFormat = encodeURIComponent(msgWithoutFormat)
+        const msgExpirated = `*Suscripción vencida*
+Atención tu suscripción a ${sale.account.service.name} con la cuenta ${isYoutubeActivation ? sale.client.email : sale.account.email}, se venció el ${dayjs(sale.expiration).format('DD-MM-YYYY')}. Así que en unos instantes perderás el acceso. Nequi: 3213411415 ¡No te quedes sin tu activación!`
+        const msgWithFormat = encodeURIComponent(days < 0 ? msgExpirated : msgSoonExpiration)
         const url = baseUrl + msgWithFormat
         window.open(url, '_blank')
         resolve(null)
