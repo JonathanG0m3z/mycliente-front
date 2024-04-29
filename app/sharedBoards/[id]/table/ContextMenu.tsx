@@ -17,8 +17,7 @@ const SharedBoardsContextMenu = ({ record, contextMenuRef, items }: Props) => {
       ref={contextMenuRef}
       items={ContextMenuModel.createMenuContext(
         record,
-        items,
-        (record: any) => record?.deleted_at !== null
+        items
       )}
     />
   )
