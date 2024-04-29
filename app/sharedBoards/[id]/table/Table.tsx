@@ -7,6 +7,7 @@ import {
 } from '@/interface/SharedBoard'
 import { useLazyFetch } from '@/utils/useFetch'
 import {
+  faCalendarCheck,
   faEdit,
   faKey,
   faRepeat,
@@ -39,6 +40,7 @@ interface Props {
   onDelete: (record: Account) => void
   createAccount: () => void
   onRenew: (record: Account) => void
+  onReactivate: (record: Account) => void
 }
 export interface SharedBoardsTableRef {
   refresh: () => void
@@ -54,7 +56,7 @@ const DEFAULT_FILTERS: SharedBoardAccountFilters = {
 
 const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
   function AccountsTable (
-    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount, onRenew },
+    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount, onRenew, onReactivate },
     ref
   ) {
     const {
@@ -128,6 +130,16 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
             data?.permissions?.includes('ELIMINAR')
           ),
           onClick: onDelete
+        },
+        {
+          key: 'activate',
+          label: 'Reactivar cuenta',
+          icon: <FontAwesomeIcon icon={faCalendarCheck} />,
+          disabled: !(
+            data?.permissions === 'admin' ||
+            data?.permissions?.includes('ELIMINAR')
+          ),
+          onClick: onReactivate
         }
       ],
       // eslint-disable-next-line react-hooks/exhaustive-deps

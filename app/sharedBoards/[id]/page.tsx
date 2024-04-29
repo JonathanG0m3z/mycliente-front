@@ -10,6 +10,7 @@ import { useLazyFetch } from '@/utils/useFetch'
 
 function SharedBoardView ({ params }: { params: { id: string } }) {
   const accountRef = useRef<SharedBoardsTableRef>(null)
+  const { fetchApiData: fetchAccount } = useLazyFetch()
   const refreshTable = useCallback(() => {
     accountRef.current?.refresh()
   }, [])
@@ -30,7 +31,7 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
       message: 'Información guardada'
     })
     refreshTable()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   /** CHANGE PASSWORD CODE */
   const [isChangePassword, setIsChangePassword] = useState(false)
@@ -45,14 +46,13 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
     setSelectedRecord(account)
   }, [])
   /** DELETE CODE */
-  const { fetchApiData: fetchDelete } = useLazyFetch()
   const onDelete = (record: Account) => {
     Modal.confirm({
       title: 'Eliminar cuenta',
       content: '¿Estás seguro de eliminar esta cuenta?',
       onOk: () => {
         return new Promise((resolve, reject) => {
-          fetchDelete(`sharedBoards/accounts/${record.id}`, 'DELETE')
+          fetchAccount(`sharedBoards/accounts/${record.id}`, 'DELETE')
             .then(() => {
               notification.success({
                 message: 'Cuenta eliminada'
@@ -78,6 +78,32 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
     setSelectedRecord(account)
     setIsRenew(true)
   }, [])
+  /** REACTIVATE CODE */
+  const onReactivate = (account: Account) => {
+    Modal.confirm({
+      title: 'Reactivar cuenta',
+      content: '¿Estás seguro de reactivar esta cuenta?',
+      onOk: () => {
+        return new Promise((resolve, reject) => {
+          fetchAccount(`sharedBoards/accounts/${account.id}`, 'PUT')
+            .then(() => {
+              notification.success({
+                message: 'Cuenta reactivada'
+              })
+              refreshTable()
+              resolve(null)
+            })
+            .catch(err => {
+              notification.error({
+                message: 'Error',
+                description: err
+              })
+              reject(err)
+            })
+        })
+      }
+    })
+  }
   return (
     <>
       <AccountsTable
@@ -88,6 +114,7 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
         onDelete={onDelete}
         createAccount={createAccount}
         onRenew={onRenew}
+        onReactivate={onReactivate}
       />
       <Modal
         open={isOpenForm}
