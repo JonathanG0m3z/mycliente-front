@@ -44,10 +44,10 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
             style={{ cursor: days <= 5 ? 'pointer' : undefined }}
             onClick={days <= 5
               ? () => {
-                setLoadingWhatsapp(true)
-                SendMsgWhatsapp.sendReminderByWhatsapp(record)
-                  .then(() => setLoadingWhatsapp(false))
-              }
+                  setLoadingWhatsapp(true)
+                  SendMsgWhatsapp.sendReminderByWhatsapp(record)
+                    .then(() => setLoadingWhatsapp(false))
+                }
               : undefined}
           >
             {'' + days}

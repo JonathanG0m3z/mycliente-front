@@ -2,7 +2,7 @@
 import { decryptValue } from '@/utils/cryptoHooks'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Dropdown, Tag } from 'antd'
+import { Button, Dropdown, Tag, Typography } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import PasswordColumn from '@/app/sales/table/PasswordColumn'
@@ -22,7 +22,16 @@ export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
       title: 'Cuenta',
       dataIndex: 'email',
       key: 'email',
-      align: 'center'
+      align: 'center',
+      render: (value: string) => (
+        <Typography.Text
+          copyable={{
+            text: value
+          }}
+        >
+          {value}
+        </Typography.Text>
+      )
     },
     {
       title: 'Perfiles disponibles',
