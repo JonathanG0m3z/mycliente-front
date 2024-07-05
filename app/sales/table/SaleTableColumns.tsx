@@ -42,11 +42,13 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
             bordered={days <= 5}
             icon={days <= 5 ? (loadingWhatsapp ? <Spin spinning size='small' /> : <WhatsAppOutlined />) : undefined}
             style={{ cursor: days <= 5 ? 'pointer' : undefined }}
-            onClick={() => {
-              setLoadingWhatsapp(true)
-              SendMsgWhatsapp.sendReminderByWhatsapp(record)
-                .then(() => setLoadingWhatsapp(false))
-            }}
+            onClick={days <= 5
+              ? () => {
+                setLoadingWhatsapp(true)
+                SendMsgWhatsapp.sendReminderByWhatsapp(record)
+                  .then(() => setLoadingWhatsapp(false))
+              }
+              : undefined}
           >
             {'' + days}
           </Tag>
@@ -98,7 +100,18 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
       title: 'Correo cliente',
       dataIndex: ['client', 'email'],
       key: 'client',
-      align: 'center'
+      align: 'center',
+      render: (value: string | null) => value
+        ? <>
+          <Typography.Text
+            copyable={{
+              text: value
+            }}
+          >
+            {value}
+          </Typography.Text>
+        </>
+        : <></>
     },
     {
       title: 'Fecha de expiración',
