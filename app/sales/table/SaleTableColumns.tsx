@@ -102,7 +102,7 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
       key: 'client',
       align: 'center',
       render: (value: string | null) => value
-        ? <>
+        ? (
           <Typography.Text
             copyable={{
               text: value
@@ -110,7 +110,7 @@ export const SaleTableColumns: (props: Props) => ColumnsType<Sale> = ({
           >
             {value}
           </Typography.Text>
-        </>
+          )
         : <></>
     },
     {
