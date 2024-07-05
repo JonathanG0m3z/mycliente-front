@@ -8,6 +8,7 @@ import {
   Menu,
   Modal,
   Row,
+  Tooltip,
   notification,
   theme
 } from 'antd'
@@ -19,6 +20,7 @@ import {
   faMoneyBill,
   faRightFromBracket,
   faShareNodes,
+  faStore,
   faUser
 } from '@fortawesome/free-solid-svg-icons'
 import { TokenType } from '@/utils/authMiddleware'
@@ -110,6 +112,13 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
       label: 'Tableros compartidos',
       icon: <FontAwesomeIcon icon={faShareNodes} />,
       onClick: () => router.push('/sharedBoards')
+    },
+    {
+      key: 'store',
+      label: '',
+      icon: <Tooltip title='Tienda'><FontAwesomeIcon icon={faStore} /></Tooltip>,
+      onClick: () => router.push('/store'),
+      disabled: !validatePermission('store')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [])

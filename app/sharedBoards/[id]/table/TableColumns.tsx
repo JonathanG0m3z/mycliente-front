@@ -11,6 +11,7 @@ import { decryptValue } from '@/utils/cryptoHooks'
 import { CustomMenuItem } from '@/interface/ContextMenu'
 import { SharedBoardAccountFilters } from '@/interface/SharedBoard'
 import GlobalModel from '@/model/GlobalModel'
+import { SyncOutlined } from '@ant-design/icons'
 
 interface Props {
   contextMenuOptions: CustomMenuItem[]
@@ -67,6 +68,17 @@ export const TableColumns: (
       dataIndex: 'expiration',
       key: 'expiration',
       render: value => dayjs(value).format('DD-MM-YYYY'),
+      align: 'center'
+    },
+    {
+      title: 'Estado',
+      dataIndex: 'status',
+      key: 'status',
+      render: value => value === 'ERROR'
+        ? <Tag color='red'>{value}</Tag>
+        : value === 'CREANDO'
+          ? <Tag color='processing' icon={<SyncOutlined spin />}>{value}</Tag>
+          : value === 'ACTIVA' ? <Tag color='green'>{value}</Tag> : <Tag color='blue'>{value}</Tag>,
       align: 'center'
     },
     {
