@@ -21,7 +21,7 @@ interface Props {
   onCancel: () => void
 }
 
-const LattvForm: React.FC<Props> = ({ onCancel }) => {
+const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
   const [form] = Form.useForm()
   const { loading: loadingSubmit, fetchApiData: createAccount } = useLazyFetch()
   const isDemo: boolean = Form.useWatch('demo', form)
@@ -49,7 +49,7 @@ const LattvForm: React.FC<Props> = ({ onCancel }) => {
       okText: 'Cerrar ventana',
       cancelText: 'Esperar'
     })
-    createAccount('bots/lattv', 'POST', {
+    createAccount('bots/iptvPremiun', 'POST', {
       ...values,
       password: encryptValue(values.password),
       months: values?.months || 1
@@ -137,13 +137,11 @@ const LattvForm: React.FC<Props> = ({ onCancel }) => {
               rules={[{ required: true, message: 'Campo requerido' }]}
             >
               <Select allowClear>
-                <Select.Option value={1}>1 mes (1.5 USD)</Select.Option>
-                <Select.Option value={2}>2 meses (3 USD)</Select.Option>
-                <Select.Option value={3}>3 meses + 15 días (4 USD) </Select.Option>
-                <Select.Option value={4}>4 meses (5 USD)</Select.Option>
-                <Select.Option value={6}>6 meses (6.5 USD)</Select.Option>
-                <Select.Option value={8}>8 meses (8.5 USD)</Select.Option>
-                <Select.Option value={12}>12 meses (12 USD) </Select.Option>
+                <Select.Option value={1}>1 mes (2 USD)</Select.Option>
+                <Select.Option value={2}>2 mese (4 USD)</Select.Option>
+                <Select.Option value={3}>3 meses (4.5 USD)</Select.Option>
+                <Select.Option value={6}>6 meses (8 USD) </Select.Option>
+                <Select.Option value={12}>12 meses (15 USD)</Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -165,25 +163,25 @@ const LattvForm: React.FC<Props> = ({ onCancel }) => {
         <Typography.Text
           copyable={{
             text: `*Velocidad mínima requerida: 25 Megas de Internet.*
-Nombre: LATTV
+Nombre: IPTV Premium
 Usuario: ${newAccountData?.username}
 Contraseña: ${newAccountData?.password}
-URL: http://xyz.lattv.com.co:25461
+URL: http://iptvpremium.ink:55577
 Vecha vencimiento: ${newAccountData?.exp
-                ? dayjs(newAccountData?.exp).format('DD/MM/YYYY hh:mm a')
+                ? dayjs(newAccountData?.exp).format('DD/MM/YYYY')
                 : ''
               }`
           }}
         >
           *Velocidad mínima requerida: 25 Megas de Internet.*
           <br />
-          Nombre: LATTV
+          Nombre: IPTV Premium
           <br />
           Usuario: {newAccountData?.username}
           <br />
           Contraseña: {newAccountData?.password}
           <br />
-          URL: http://xyz.lattv.com.co:25461
+          URL: http://iptvpremium.ink:55577
           <br />
           Vecha vencimiento:{' '}
           {newAccountData?.exp
@@ -199,4 +197,4 @@ Vecha vencimiento: ${newAccountData?.exp
   )
 }
 
-export default LattvForm
+export default IptvPremiunForm
