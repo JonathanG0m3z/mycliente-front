@@ -8,7 +8,7 @@ export class ContextMenuModel {
     itemList: CustomMenuItem[],
     disabledCondition?: (record: any) => boolean
   ) => MenuProps['items'] = (record, itemList, disabledCondition) => {
-      return (
+      const items = (
         itemList?.map(item => {
           if (!item) {
             throw new Error('Invalid item found in itemList')
@@ -24,5 +24,6 @@ export class ContextMenuModel {
           }
         }) ?? []
       )
+      return items.filter(item => item.showOption ? item.showOption(record) : true)
     }
 }

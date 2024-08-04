@@ -8,6 +8,7 @@ import {
 import { useLazyFetch } from '@/utils/useFetch'
 import {
   faCalendarCheck,
+  faClipboard,
   faEdit,
   faKey,
   faRepeat,
@@ -41,6 +42,7 @@ interface Props {
   createAccount: () => void
   onRenew: (record: Account) => void
   onReactivate: (record: Account) => void
+  onViewInfo: (record: Account) => void
 }
 export interface SharedBoardsTableRef {
   refresh: () => void
@@ -56,7 +58,7 @@ const DEFAULT_FILTERS: SharedBoardAccountFilters = {
 
 const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
   function AccountsTable (
-    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount, onRenew, onReactivate },
+    { sharedBoardId, onChangePassword, onEdit, onDelete, createAccount, onRenew, onReactivate, onViewInfo },
     ref
   ) {
     const {
@@ -102,6 +104,13 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
           onClick: onChangePassword
         },
         {
+          key: 'viewInfo',
+          label: 'Ver información',
+          icon: <FontAwesomeIcon icon={faClipboard} />,
+          disabled: false,
+          onClick: onViewInfo
+        },
+        {
           key: 'renew',
           label: 'Renovar cuenta',
           icon: <FontAwesomeIcon icon={faRepeat} />,
@@ -139,7 +148,8 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
             data?.permissions === 'admin' ||
             data?.permissions?.includes('ELIMINAR')
           ),
-          onClick: onReactivate
+          onClick: onReactivate,
+          showOption: (record) => !!record?.deleted_at
         }
       ],
       // eslint-disable-next-line react-hooks/exhaustive-deps

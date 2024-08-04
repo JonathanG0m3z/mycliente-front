@@ -185,7 +185,7 @@ Vecha vencimiento: ${newAccountData?.exp
           <br />
           Vecha vencimiento:{' '}
           {newAccountData?.exp
-            ? dayjs(newAccountData?.exp).format('DD/MM/YYYY hh:mm a')
+            ? dayjs(newAccountData?.exp).format('DD/MM/YYYY')
             : ''}
         </Typography.Text>
         <br />

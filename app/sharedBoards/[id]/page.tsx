@@ -7,6 +7,7 @@ import AccountsTable from './table/Table'
 import { Account } from '@/interface/Account'
 import { SharedBoardsTableRef } from '../table/SharedBoardTable'
 import { useLazyFetch } from '@/utils/useFetch'
+import ViewInfo from './table/ViewInfo'
 
 function SharedBoardView ({ params }: { params: { id: string } }) {
   const accountRef = useRef<SharedBoardsTableRef>(null)
@@ -104,6 +105,17 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
       }
     })
   }
+  /** VIEW INFO CODE */
+  const [viewInfoOpen, setViewInfoOpen] = useState(false)
+  const onViewInfo = useCallback((account: Account) => {
+    setViewInfoOpen(true)
+    setSelectedRecord(account)
+  }, [])
+
+  const closeViewInfo = useCallback(() => {
+    setViewInfoOpen(false)
+    setSelectedRecord(null)
+  }, [])
   return (
     <>
       <AccountsTable
@@ -115,6 +127,7 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
         createAccount={createAccount}
         onRenew={onRenew}
         onReactivate={onReactivate}
+        onViewInfo={onViewInfo}
       />
       <Modal
         open={isOpenForm}
@@ -131,6 +144,15 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
           isChangePassword={isChangePassword}
           isRenew={isRenew}
         />
+      </Modal>
+      <Modal
+        open={viewInfoOpen}
+        title='Información de cuenta'
+        onCancel={closeViewInfo}
+        footer={null}
+        destroyOnClose
+      >
+        <ViewInfo record={selectedRecord} onCancel={closeViewInfo} />
       </Modal>
     </>
   )
