@@ -28,7 +28,7 @@ export function useAuthMiddleware () {
   useEffect(() => {
     if (times > 0) return
     times++
-    if (path === '/login' || path === '/') return
+    if (path === '/login' || path === '/' || path === '/store') return
     const token = localStorage.getItem('token')
 
     if (!token) {
