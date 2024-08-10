@@ -138,7 +138,7 @@ const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
             >
               <Select allowClear>
                 <Select.Option value={1}>1 mes (2 USD)</Select.Option>
-                <Select.Option value={2}>2 mese (4 USD)</Select.Option>
+                <Select.Option value={2}>2 meses (4 USD)</Select.Option>
                 <Select.Option value={3}>3 meses (4.5 USD)</Select.Option>
                 <Select.Option value={6}>6 meses (8 USD) </Select.Option>
                 <Select.Option value={12}>12 meses (15 USD)</Select.Option>
