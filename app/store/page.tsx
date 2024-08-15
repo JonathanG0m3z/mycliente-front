@@ -80,7 +80,7 @@ const Page: React.FC = () => {
       <Col span={24}>
         <Descriptions title='Precios' items={items} />
       </Col>
-      <Col xs={22} sm={12} md={8} lg={6} xl={4}>
+      {/* <Col xs={22} sm={12} md={8} lg={6} xl={4}>
         <Card
           style={{ width: '100%' }}
           cover={
@@ -106,7 +106,7 @@ const Page: React.FC = () => {
             description='Servicio de IPTV a bajo costo'
           />
         </Card>
-      </Col>
+      </Col> */}
       <Col xs={22} sm={12} md={8} lg={6} xl={4}>
         <Card
           style={{ width: '100%' }}

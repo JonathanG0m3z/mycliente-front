@@ -41,22 +41,15 @@ const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
     onCancel()
   }
   const onFinish = (values: any) => {
-    Modal.confirm({
-      title: 'Bot ejecutado',
-      content:
-        'El bot tardará unos momentos en crear la cuenta. Puedes cerrar esta ventana mientras él trabaja y te llegará un correo de confirmación. O puedes esperar en esta ventana',
-      onOk: onCancel,
-      okText: 'Cerrar ventana',
-      cancelText: 'Esperar'
-    })
-    createAccount('bots/iptvPremiun', 'POST', {
+    createAccount('binance/buyOneService/iptvPemiun', 'POST', {
       ...values,
       password: encryptValue(values.password),
       months: values?.months || 1
     })
       .then((res: any) => {
-        onOpenDialog(res)
-        form.resetFields()
+        // onOpenDialog(res)
+        // form.resetFields()
+        res.checkoutUrl && window.open(res.checkoutUrl) && onCancel()
       })
       .catch(err => {
         notification.error({
