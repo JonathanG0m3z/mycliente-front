@@ -125,7 +125,7 @@ const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
           <Form.Item name='demo' label='Tipo de cuenta'>
             <Radio.Group>
               <Radio value={false}>Cuenta paga</Radio>
-              <Radio value>Demo</Radio>
+              <Radio disabled value>Demo</Radio>
             </Radio.Group>
           </Form.Item>
         </Col>

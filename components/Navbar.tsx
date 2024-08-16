@@ -8,7 +8,6 @@ import {
   Menu,
   Modal,
   Row,
-  Tooltip,
   notification,
   theme
 } from 'antd'
@@ -29,6 +28,7 @@ import { MenuProps } from 'antd/lib'
 import { usePathname, useRouter } from 'next/navigation'
 import { encryptValue } from '@/utils/cryptoHooks'
 import { validatePermission } from '@/utils/validatePermission'
+import { useFetch } from '@/utils/useFetch'
 
 const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 const { Header, Content, Footer } = Layout
@@ -85,53 +85,66 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
     })
   }
 
-  const navbarItems: ItemType<MenuItemType>[] = useMemo(() => [
-    {
-      key: 'sales',
-      label: 'Ventas',
-      icon: <FontAwesomeIcon icon={faMoneyBill} />,
-      onClick: () => router.push('/sales'),
-      disabled: !validatePermission('sales')
-    },
-    {
-      key: 'accounts',
-      label: 'Cuentas',
-      icon: <FontAwesomeIcon icon={faEnvelope} />,
-      onClick: () => router.push('/accounts'),
-      disabled: !validatePermission('accounts')
-    },
-    {
-      key: 'services',
-      label: 'Servicios',
-      icon: <FontAwesomeIcon icon={faCirclePlay} />,
-      onClick: () => router.push('/services'),
-      disabled: !validatePermission('services')
-    },
-    {
-      key: 'sharedBoards',
-      label: 'Tableros compartidos',
-      icon: <FontAwesomeIcon icon={faShareNodes} />,
-      onClick: () => router.push('/sharedBoards')
-    },
-    {
-      key: 'store',
-      label: '',
-      icon: <Tooltip title='Tienda'><FontAwesomeIcon icon={faStore} /></Tooltip>,
-      onClick: () => router.push('/store'),
-      disabled: !validatePermission('store')
-    }
+  const navbarItems: ItemType<MenuItemType>[] = useMemo(
+    () => [
+      {
+        key: 'sales',
+        label: 'Ventas',
+        icon: <FontAwesomeIcon icon={faMoneyBill} />,
+        onClick: () => router.push('/sales'),
+        disabled: !validatePermission('sales')
+      },
+      {
+        key: 'accounts',
+        label: 'Cuentas',
+        icon: <FontAwesomeIcon icon={faEnvelope} />,
+        onClick: () => router.push('/accounts'),
+        disabled: !validatePermission('accounts')
+      },
+      {
+        key: 'services',
+        label: 'Servicios',
+        icon: <FontAwesomeIcon icon={faCirclePlay} />,
+        onClick: () => router.push('/services'),
+        disabled: !validatePermission('services')
+      },
+      {
+        key: 'sharedBoards',
+        label: 'Tableros compartidos',
+        icon: <FontAwesomeIcon icon={faShareNodes} />,
+        onClick: () => router.push('/sharedBoards')
+      },
+      {
+        key: 'store',
+        label: 'Tienda',
+        icon: (
+          <FontAwesomeIcon icon={faStore} />
+        ),
+        onClick: () => router.push('/store'),
+        disabled: !validatePermission('store')
+      }
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [])
+    []
+  )
 
-  const avatarOptions: MenuProps['items'] = useMemo(() => [
-    {
-      key: 'log_out',
-      label: 'Cerrar sesión',
-      icon: <FontAwesomeIcon icon={faRightFromBracket} />,
-      onClick: closeSession
-    }
+  const avatarOptions: MenuProps['items'] = useMemo(
+    () => [
+      {
+        key: 'log_out',
+        label: 'Cerrar sesión',
+        icon: <FontAwesomeIcon icon={faRightFromBracket} />,
+        onClick: closeSession
+      }
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [])
+    []
+  )
+
+  const { data: user } = useFetch(
+    'users/getBalance',
+    'GET'
+  )
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -181,10 +194,11 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
         </div>
       </Content>
       <Footer style={{ textAlign: 'center', padding: 10 }}>
-        MyCliente ©{new Date().getFullYear()} Created by{' '}
+        {/* MyCliente ©{new Date().getFullYear()} Created by{' '}
         <a target='_blank' href='https://github.com/JonathanG0m3z'>
           JonathanG0m3z
-        </a>
+        </a> */}
+        Saldo: ${user?.balance ?? 0}
       </Footer>
     </Layout>
   )

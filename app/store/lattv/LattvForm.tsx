@@ -94,6 +94,7 @@ const LattvForm: React.FC<Props> = ({ onCancel }) => {
               autoComplete='off'
               placeholder='(Min. 8 caracteres)'
               allowClear
+              disabled
             />
           </Form.Item>
         </Col>
@@ -118,12 +119,13 @@ const LattvForm: React.FC<Props> = ({ onCancel }) => {
               autoComplete='off'
               placeholder='(Min. 8 caracteres)'
               allowClear
+              disabled
             />
           </Form.Item>
         </Col>
         <Col span={isDemo ? 24 : 12}>
           <Form.Item name='demo' label='Tipo de cuenta'>
-            <Radio.Group>
+            <Radio.Group disabled>
               <Radio value={false}>Cuenta paga</Radio>
               <Radio value>Demo</Radio>
             </Radio.Group>
@@ -136,7 +138,7 @@ const LattvForm: React.FC<Props> = ({ onCancel }) => {
               label='Meses'
               rules={[{ required: true, message: 'Campo requerido' }]}
             >
-              <Select allowClear>
+              <Select disabled allowClear>
                 <Select.Option value={1}>1 mes (1.5 USD)</Select.Option>
                 <Select.Option value={2}>2 meses (3 USD)</Select.Option>
                 <Select.Option value={3}>3 meses + 15 días (4 USD) </Select.Option>

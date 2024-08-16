@@ -2,7 +2,9 @@
 
 import {
   faEllipsisVertical,
-  faHandHoldingDollar
+  faHandHoldingDollar,
+  faMoneyBillTransfer,
+  faPersonCircleQuestion
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FloatButton, Modal, Spin, notification } from 'antd'
@@ -116,8 +118,50 @@ export default function Sales () {
     notification.success({
       message: 'Cliente editado exitosamente'
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  const onResetBalance = useCallback(() => {
+    Modal.confirm({
+      title: 'Resetear saldo',
+      content: '¿Estás seguro de resetear el saldo de los usuarios?',
+      onOk: () => {
+        return new Promise((resolve, reject) => {
+          fetchApi('users/resetBalance', 'DELETE')
+            .then(() => {
+              notification.success({
+                message: 'Saldo reseteado exitosamente'
+              })
+              resolve(null)
+            })
+            .catch(err => {
+              notification.error({
+                message: 'Error',
+                description: err
+              })
+              reject(err)
+            })
+        })
+      }
+    })
+  }, [fetchApi])
+  const onFetchClientBalance = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      fetchApi('users/getAdminBalance/642b717f-3557-4eaa-8402-420b054f0a94', 'GET')
+        .then(({ balance }) => {
+          notification.success({
+            message: `El saldo del cliente es: ${balance}`
+          })
+          resolve(null)
+        })
+        .catch(err => {
+          notification.error({
+            message: 'Error',
+            description: err
+          })
+          reject(err)
+        })
+    })
+  }, [fetchApi])
   return (
     <>
       <SalesTable
@@ -133,6 +177,16 @@ export default function Sales () {
         icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
         tooltip='Opciones'
       >
+        <FloatButton
+          onClick={onFetchClientBalance}
+          tooltip='Averiguar saldo cliente'
+          icon={<FontAwesomeIcon icon={faPersonCircleQuestion} />}
+        />
+        <FloatButton
+          onClick={onResetBalance}
+          tooltip='Resetear saldo'
+          icon={<FontAwesomeIcon icon={faMoneyBillTransfer} />}
+        />
         <FloatButton
           onClick={openForm}
           tooltip='Registrar venta'
@@ -193,7 +247,11 @@ export default function Sales () {
         destroyOnClose
       >
         <Suspense fallback={<Spin />}>
-          <ClientForm record={selectedClient} onCancel={onCloseClientForm} onSave={onSaveClient} />
+          <ClientForm
+            record={selectedClient}
+            onCancel={onCloseClientForm}
+            onSave={onSaveClient}
+          />
         </Suspense>
       </Modal>
     </>
