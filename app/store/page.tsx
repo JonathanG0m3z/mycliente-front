@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   Row,
+  Tabs,
   Typography
 } from 'antd'
 import Meta from 'antd/es/card/Meta'
@@ -15,6 +16,7 @@ import React, { useState } from 'react'
 import LattvForm from './lattv/LattvForm'
 import IptvPremiunForm from './iptvPremiun/IptvPremiunForm'
 import { DescriptionsProps } from 'antd/lib'
+import RenewForm from './iptvPremiun/RenewForm'
 
 type AvailableServices = 'LATTV' | 'IPTV PREMIUN' | null
 
@@ -146,7 +148,23 @@ const Page: React.FC = () => {
       >
         {selectedService === 'LATTV' && <LattvForm onCancel={onCloseModal} />}
         {selectedService === 'IPTV PREMIUN' && (
-          <IptvPremiunForm onCancel={onCloseModal} />
+          <Tabs
+            destroyInactiveTabPane
+            defaultActiveKey='create'
+            centered
+            items={[
+              {
+                key: 'create',
+                label: 'Crear cuenta',
+                children: <IptvPremiunForm onCancel={onCloseModal} />
+              },
+              {
+                key: 'renew',
+                label: 'Renovar cuenta',
+                children: <RenewForm onCancel={onCloseModal} />
+              }
+            ]}
+          />
         )}
       </Modal>
     </Row>
