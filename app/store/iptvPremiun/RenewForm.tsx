@@ -14,6 +14,9 @@ import {
 import dayjs from 'dayjs'
 import React from 'react'
 
+const NEXT_PUBLIC_IPTV_DISCOUNT = process.env.NEXT_PUBLIC_IPTV_DISCOUNT
+const { Text } = Typography
+
 interface Props {
   onCancel: () => void
 }
@@ -36,6 +39,8 @@ const RenewForm: React.FC<Props> = ({ onCancel }) => {
     setNewAccountData(null)
     onCancel()
   }
+  const discount: number = Number(NEXT_PUBLIC_IPTV_DISCOUNT ?? 0)
+  const isDiscount: boolean = !!NEXT_PUBLIC_IPTV_DISCOUNT
   const onFinish = (values: any) => {
     Modal.confirm({
       title: 'Bot ejecutado',
@@ -91,11 +96,11 @@ const RenewForm: React.FC<Props> = ({ onCancel }) => {
             rules={[{ required: true, message: 'Campo requerido' }]}
           >
             <Select allowClear>
-              <Select.Option value={1}>1 mes (2 USD)</Select.Option>
-              <Select.Option value={2}>2 meses (4 USD)</Select.Option>
-              <Select.Option value={3}>3 meses (4.5 USD)</Select.Option>
-              <Select.Option value={6}>6 meses (8 USD) </Select.Option>
-              <Select.Option value={12}>12 meses (15 USD)</Select.Option>
+              <Select.Option value={1}>1 mes <Text delete={isDiscount}>(2 USD)</Text>{isDiscount && `(${2 - (2 * discount / 100)})`}</Select.Option>
+              <Select.Option value={2}>2 meses <Text delete={isDiscount}>(4 USD)</Text>{isDiscount && `(${4 - (4 * discount / 100)})`}</Select.Option>
+              <Select.Option value={3}>3 meses <Text delete={isDiscount}>(4.5 USD)</Text>{isDiscount && `(${4.5 - (4.5 * discount / 100)})`}</Select.Option>
+              <Select.Option value={6}>6 meses <Text delete={isDiscount}>(8 USD)</Text>{isDiscount && `(${8 - (8 * discount / 100)})`}</Select.Option>
+              <Select.Option value={12}>12 meses <Text delete={isDiscount}>(15 USD)</Text>{isDiscount && `(${15 - (15 * discount / 100)})`}</Select.Option>
             </Select>
           </Form.Item>
         </Col>
