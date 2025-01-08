@@ -13,6 +13,7 @@ import { SalesTable, SalesTableRef } from './table/SalesTable'
 import { Sale } from '@/interface/Sale'
 import { useLazyFetch } from '@/utils/useFetch'
 import { Account } from '@/interface/Account'
+import UpdateBalanceForm from './updateBalance/UpdateBalanceForm'
 
 const ClientForm = lazy(() => import('./client/ClientForm'))
 const SalesForm = lazy(() => import('./form/SalesForm'))
@@ -120,30 +121,14 @@ export default function Sales () {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const onResetBalance = useCallback(() => {
-    Modal.confirm({
-      title: 'Resetear saldo',
-      content: '¿Estás seguro de resetear el saldo de los usuarios?',
-      onOk: () => {
-        return new Promise((resolve, reject) => {
-          fetchApi('users/resetBalance', 'DELETE')
-            .then(() => {
-              notification.success({
-                message: 'Saldo reseteado exitosamente'
-              })
-              resolve(null)
-            })
-            .catch(err => {
-              notification.error({
-                message: 'Error',
-                description: err
-              })
-              reject(err)
-            })
-        })
-      }
-    })
-  }, [fetchApi])
+  /** ACTUALIZAR SALDO */
+  const [updateBalanceFormOpen, setUpdatebalanceFormOpen] = useState(false)
+  const onUpdateBalance = useCallback(() => {
+    setUpdatebalanceFormOpen(true)
+  }, [])
+  const onCloseUpdateBalance = useCallback(() => {
+    setUpdatebalanceFormOpen(false)
+  }, [])
   const onFetchClientBalance = useCallback(() => {
     return new Promise((resolve, reject) => {
       fetchApi('users/getAdminBalance/642b717f-3557-4eaa-8402-420b054f0a94', 'GET')
@@ -183,8 +168,8 @@ export default function Sales () {
           icon={<FontAwesomeIcon icon={faPersonCircleQuestion} />}
         />
         <FloatButton
-          onClick={onResetBalance}
-          tooltip='Resetear saldo'
+          onClick={onUpdateBalance}
+          tooltip='Actualizar saldo'
           icon={<FontAwesomeIcon icon={faMoneyBillTransfer} />}
         />
         <FloatButton
@@ -252,6 +237,17 @@ export default function Sales () {
             onCancel={onCloseClientForm}
             onSave={onSaveClient}
           />
+        </Suspense>
+      </Modal>
+      <Modal
+        open={updateBalanceFormOpen}
+        title='Actualizar saldo'
+        onCancel={onCloseUpdateBalance}
+        footer={null}
+        destroyOnClose
+      >
+        <Suspense fallback={<Spin />}>
+          <UpdateBalanceForm onCancel={onCloseUpdateBalance} />
         </Suspense>
       </Modal>
     </>
