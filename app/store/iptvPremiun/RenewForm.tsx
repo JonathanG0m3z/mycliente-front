@@ -60,6 +60,7 @@ const RenewForm: React.FC<Props> = ({ onCancel }) => {
         form.resetFields()
       })
       .catch(err => {
+        Modal.destroyAll()
         notification.error({
           message: 'Error',
           description: err
