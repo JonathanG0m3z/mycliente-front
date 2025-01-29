@@ -66,6 +66,20 @@ const Page: React.FC = () => {
   ]
   return (
     <Row gutter={[16, 16]} justify='center' style={{ paddingTop: '1rem' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          textAlign: 'center',
+          alignContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Image src='/favicon.ico' width={45} height={45} alt='' preview={false} />
+        <Typography.Title level={1} style={{ color: '#393cb3', marginLeft: '3px' }}>yCliente</Typography.Title>
+      </div>
       <Col span={24}>
         <Row justify='center'>
           <Typography.Title level={2}>Condiciones</Typography.Title>
