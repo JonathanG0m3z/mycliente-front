@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   Row,
+  Space,
   Tabs,
   Typography
 } from 'antd'
@@ -131,13 +132,14 @@ const Page: React.FC = () => {
               alt='example'
               src='https://web.iptvpremium.ink/img/logo.png'
               style={{ width: '100%', height: '300px', objectFit: 'cover' }}
+              preview={false}
             />
           }
           actions={[
-            <DollarOutlined
-              key='buy'
-              onClick={() => onOpenModal('IPTV PREMIUN')}
-            />
+            <Space direction='horizontal' key='buy' onClick={() => onOpenModal('IPTV PREMIUN')}>
+              <DollarOutlined key='buy' />
+              Comprar
+            </Space>
           ]}
         >
           <Meta
