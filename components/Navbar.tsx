@@ -18,6 +18,7 @@ import {
   faEnvelope,
   faMoneyBill,
   faRightFromBracket,
+  faRobot,
   faShareNodes,
   faStore,
   faUser
@@ -122,6 +123,15 @@ const Navbar: (props: Props) => React.ReactNode = ({ children }: Props) => {
         ),
         onClick: () => router.push('/store'),
         disabled: !validatePermission('store')
+      },
+      {
+        key: 'botExecutions',
+        label: 'Bots',
+        icon: (
+          <FontAwesomeIcon icon={faRobot} />
+        ),
+        onClick: () => router.push('/botExecutions')
+        // disabled: !validatePermission('store')
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
