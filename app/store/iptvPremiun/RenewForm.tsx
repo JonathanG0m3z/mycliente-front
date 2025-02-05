@@ -42,14 +42,14 @@ const RenewForm: React.FC<Props> = ({ onCancel }) => {
   const discount: number = Number(NEXT_PUBLIC_IPTV_DISCOUNT ?? 0)
   const isDiscount: boolean = !!NEXT_PUBLIC_IPTV_DISCOUNT
   const onFinish = (values: any) => {
-    Modal.confirm({
-      title: 'Bot ejecutado',
-      content:
-        'El bot tardará unos momentos en crear la cuenta. Puedes cerrar esta ventana mientras él trabaja y te llegará un correo de confirmación. O puedes esperar en esta ventana',
-      onOk: onCancel,
-      okText: 'Cerrar ventana',
-      cancelText: 'Esperar'
-    })
+    // Modal.confirm({
+    //   title: 'Bot ejecutado',
+    //   content:
+    //     'El bot tardará unos momentos en crear la cuenta. Puedes cerrar esta ventana mientras él trabaja y te llegará un correo de confirmación. O puedes esperar en esta ventana',
+    //   onOk: onCancel,
+    //   okText: 'Cerrar ventana',
+    //   cancelText: 'Esperar'
+    // })
     createAccount('bots/iptvPremiun/renew', 'POST', {
       demo: false,
       account_id: values?.account?.length === 1 ? encryptValue(values?.account?.[0]?.value) : undefined,
@@ -66,6 +66,7 @@ const RenewForm: React.FC<Props> = ({ onCancel }) => {
           description: err
         })
       })
+    onCancel()
   }
   return (
     <Form
