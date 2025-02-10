@@ -1,29 +1,19 @@
 'use client'
-import { ContextMenuRef } from '@/components/ContextMenu'
-import { Account, AccountData } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
-import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faClipboard, faCopy, faSync } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
-import { AccountsTableColumns } from './AccountsTableColumns'
-import AccountssContextMenu from './AccountsContextMenu'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { BotExecutionsTableColumns } from './BotExecutionTableColumns'
+import { ContextMenuRef } from '@/components/ContextMenu'
 import { CustomMenuItem } from '@/interface/ContextMenu'
+import { BotExecution, BotExecutionData } from '@/interface/BotExecution'
+import BotExecutionsContextMenu from './BotExecutionsContextMenu'
 
 interface Props {
-  onEdit: (record: Account) => void
-  onDelete: (record: Account) => void
-  onRenew: (record: Account) => void
-}
-export interface AccountsTableRef {
-  refresh: () => void
+  onViewInfo: (record: BotExecution) => void
+  copyResponseToClipboard: (record: BotExecution) => void
+  //   onDelete: (record: SharedBoard) => void
 }
 
 const DEFAULT_FILTERS = {
@@ -31,16 +21,19 @@ const DEFAULT_FILTERS = {
   pageSize: 10
 }
 
-const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
-  { onEdit, onDelete, onRenew },
-  ref
-) {
-  const { data, loading, fetchApiData: getData } = useLazyFetch<AccountData>()
+const BotExecutionsTable: React.FC<Props> = ({
+  onViewInfo, copyResponseToClipboard
+}) => {
+  const {
+    data,
+    loading,
+    fetchApiData: getData
+  } = useLazyFetch<BotExecutionData>()
   const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
   const applyFilters = (filters = localFilters) => {
     setLocalFilters(filters)
     getData(
-      `accounts?page=${filters.page}&limit=${filters.pageSize}`,
+      `bots/executions?page=${filters.page}&limit=${filters.pageSize}`,
       'GET'
     ).catch(err =>
       notification.error({
@@ -51,7 +44,7 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
   }
   /** CONTEXT MENU */
   const contextMenuRef = useRef<ContextMenuRef>(null)
-  const [selectedRecord, setSelectedRecord] = useState<Account | null>(null)
+  const [selectedRecord, setSelectedRecord] = useState<BotExecution | null>(null)
   const onRow = (record: any) => ({
     onContextMenu: (e: any) => {
       setSelectedRecord(record)
@@ -61,33 +54,23 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
   const contextMenuOptions: CustomMenuItem[] = useMemo(
     () => [
       {
-        key: 'edit',
-        label: 'Editar cuenta',
-        icon: <FontAwesomeIcon icon={faEdit} />,
-        onClick: onEdit
+        key: 'viewInfo',
+        label: 'Ver información',
+        icon: <FontAwesomeIcon icon={faClipboard} />,
+        disabled: false,
+        onClick: onViewInfo
       },
       {
-        key: 'delete',
-        label: 'Eliminar cuenta',
-        icon: <FontAwesomeIcon icon={faTrash} />,
-        onClick: onDelete
-      },
-      {
-        key: 'renew',
-        label: 'Renovar',
-        icon: <FontAwesomeIcon icon={faRepeat} />,
-        onClick: onRenew
+        key: 'copyResponse',
+        label: 'Copiar respuesta bot',
+        icon: <FontAwesomeIcon icon={faCopy} />,
+        disabled: false,
+        onClick: copyResponseToClipboard
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
-
-  useImperativeHandle(ref, () => ({
-    refresh () {
-      applyFilters()
-    }
-  }))
 
   useEffect(() => {
     applyFilters()
@@ -97,14 +80,13 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
     <>
       <Table
         loading={loading}
-        dataSource={data?.accounts}
-        columns={AccountsTableColumns({
+        dataSource={data?.botExecutions}
+        columns={BotExecutionsTableColumns({
           contextMenuOptions
         })}
         scroll={{ x: 'max-content' }}
         pagination={false}
         onRow={record => onRow(record)}
-        rowKey={record => record.id}
       />
       <Row justify='center'>
         <Pagination
@@ -115,7 +97,7 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
             applyFilters({ page, pageSize })
           }}
           showSizeChanger
-          showTotal={total => `${data?.accounts?.length} de ${total} resultados`}
+          showTotal={total => `${data?.botExecutions?.length} de ${total} resultados`}
           disabled={loading}
           style={{ marginRight: 7 }}
           pageSizeOptions={[5, 10, 50, 100]}
@@ -129,13 +111,13 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
           />
         </Tooltip>
       </Row>
-      <AccountssContextMenu
+      <BotExecutionsContextMenu
         contextMenuRef={contextMenuRef}
         record={selectedRecord}
         items={contextMenuOptions}
       />
     </>
   )
-})
+}
 
-export default AccountsTable
+export default BotExecutionsTable

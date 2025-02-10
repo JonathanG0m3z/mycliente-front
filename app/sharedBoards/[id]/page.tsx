@@ -7,7 +7,7 @@ import AccountsTable from './table/Table'
 import { Account } from '@/interface/Account'
 import { SharedBoardsTableRef } from '../table/SharedBoardTable'
 import { useLazyFetch } from '@/utils/useFetch'
-import ViewInfo from './table/ViewInfo'
+import ViewInfo from '@/components/ViewInfo'
 
 function SharedBoardView ({ params }: { params: { id: string } }) {
   const accountRef = useRef<SharedBoardsTableRef>(null)
@@ -152,7 +152,7 @@ function SharedBoardView ({ params }: { params: { id: string } }) {
         footer={null}
         destroyOnClose
       >
-        <ViewInfo record={selectedRecord} onCancel={closeViewInfo} />
+        <ViewInfo accountId={selectedRecord?.id} onCancel={closeViewInfo} />
       </Modal>
     </>
   )

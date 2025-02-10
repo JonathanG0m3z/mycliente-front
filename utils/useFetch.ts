@@ -6,12 +6,12 @@ import { encryptValue } from './cryptoHooks'
 
 const NEXT_PUBLIC_BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
-export const useFetch = (
+export const useFetch = <T = any>(
   endPoint: string,
   method: string,
   body: any = undefined
 ) => {
-  const [data, setData] = useState<any | null>(null)
+  const [data, setData] = useState<T | null>(null)
   const [error, setError] = useState<any | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const router = useRouter()

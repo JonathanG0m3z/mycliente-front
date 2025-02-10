@@ -40,7 +40,7 @@ export const SalesTable = forwardRef<SalesTableRef, Props>(function SalesTable (
       `sales${SaleModel.transformFiltersToUrl(filters)}`,
       'GET'
     ).catch(err =>
-      notification.error({ message: 'Algo saió mal', description: err.message })
+      notification.error({ message: 'Algo salió mal', description: err.message })
     )
   }
   /** CONTEXT MENU */

@@ -49,7 +49,7 @@ const SharedBoardsTable = forwardRef<SharedBoardsTableRef, Props>(
         'GET'
       ).catch(err =>
         notification.error({
-          message: 'Algo saió mal',
+          message: 'Algo salió mal',
           description: err.message
         })
       )
