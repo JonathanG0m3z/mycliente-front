@@ -143,12 +143,12 @@ const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
               rules={[{ required: true, message: 'Campo requerido' }]}
             >
               <Select allowClear>
-                <Select.Option value={1}>1 mes <Text delete={isDiscount}>(2 USD)</Text>{isDiscount && `(${2 - (2 * discount / 100)})`}</Select.Option>
-                <Select.Option value={1.5}>1 mes + 15 días (2 USD)</Select.Option>
-                <Select.Option value={2}>2 meses <Text delete={isDiscount}>(4 USD)</Text>{isDiscount && `(${4 - (4 * discount / 100)})`}</Select.Option>
-                <Select.Option value={3}>3 meses <Text delete={isDiscount}>(4.5 USD)</Text>{isDiscount && `(${4.5 - (4.5 * discount / 100)})`}</Select.Option>
-                <Select.Option value={6}>6 meses <Text delete={isDiscount}>(8 USD)</Text>{isDiscount && `(${8 - (8 * discount / 100)})`}</Select.Option>
-                <Select.Option value={12}>12 meses <Text delete={isDiscount}>(15 USD)</Text>{isDiscount && `(${15 - (15 * discount / 100)})`}</Select.Option>
+                <Select.Option value={1}>1 mes <Text delete={isDiscount}>(1.5 USD)</Text>{isDiscount && `(${2 - (2 * discount / 100)})`}</Select.Option>
+                <Select.Option value={1.5}>1 mes + 15 días (1.5 USD)</Select.Option>
+                <Select.Option value={2}>2 meses <Text delete={isDiscount}>(2.75 USD)</Text>{isDiscount && `(${4 - (4 * discount / 100)})`}</Select.Option>
+                <Select.Option value={3}>3 meses <Text delete={isDiscount}>(3.5 USD)</Text>{isDiscount && `(${4.5 - (4.5 * discount / 100)})`}</Select.Option>
+                <Select.Option value={6}>6 meses <Text delete={isDiscount}>(6.5 USD)</Text>{isDiscount && `(${8 - (8 * discount / 100)})`}</Select.Option>
+                <Select.Option value={12}>12 meses <Text delete={isDiscount}>(12 USD)</Text>{isDiscount && `(${15 - (15 * discount / 100)})`}</Select.Option>
               </Select>
             </Form.Item>
           </Col>
