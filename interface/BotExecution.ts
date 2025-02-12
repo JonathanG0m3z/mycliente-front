@@ -17,6 +17,7 @@ export interface BotExecution {
     userId: string;
     user: {
         name: string;
+        picture: string;
     }
 }
 

@@ -63,9 +63,9 @@ export const BotExecutionsTableColumns: (
       dataIndex: ['user', 'name'],
       key: 'user',
       align: 'center',
-      render: value => (
+      render: (value, record) => (
         <Tooltip title={value}>
-          <Avatar style={{ backgroundColor: '#f56a00' }}>{value[0]}</Avatar>
+          <Avatar style={{ backgroundColor: '#f56a00' }} src={record.user.picture}>{value[0]}</Avatar>
         </Tooltip>
       )
     },
