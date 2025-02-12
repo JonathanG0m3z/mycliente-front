@@ -15,6 +15,9 @@ export interface BotExecution {
     status: string;
     updatedAt: Date;
     userId: string;
+    user: {
+        name: string;
+    }
 }
 
 export interface BotExecutionData {
