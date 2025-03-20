@@ -35,6 +35,7 @@ class SharedBoardModel {
     const url = `?page=${filters.page}&limit=${filters.pageSize}&search=${filters.search}
 &is_deleted=${filters.is_deleted === undefined ? '' : filters.is_deleted}
 &begin_date=${beginDate}&end_date=${endDate}
+&service=${filters.service?.map(({ value }) => value) ?? ''}
 &order=${filters.order}`
     return url
   }

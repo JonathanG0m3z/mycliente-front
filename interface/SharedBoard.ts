@@ -2,6 +2,7 @@
 
 import type { Dayjs } from 'dayjs'
 import { AccountData } from './Account'
+import { LabeledValue } from 'antd/es/select'
 
 export interface SharedBoard {
     createdAt: Date;
@@ -28,4 +29,5 @@ export interface SharedBoardAccountFilters {
     is_deleted?: boolean
     expiration_range?: [Dayjs, Dayjs]
     order?: string
+    service?: LabeledValue[]
 }

@@ -1,3 +1,4 @@
+import RemoteCombobox from '@/components/RemoteCombobox'
 import { SharedBoardAccountFilters } from '@/interface/SharedBoard'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,6 +17,22 @@ const FiltersForm = ({ currentFilters, onChangeFilters, onClose }: Props) => {
   }
   return (
     <Form layout='vertical' initialValues={currentFilters} onFinish={onFinish}>
+      <Col span={24}>
+        <Form.Item
+          name='service'
+          label='Servicio'
+        >
+          <RemoteCombobox
+            originalQuery='services/combobox'
+            pageSize={5}
+            dataKey='services'
+            optionValueKey='id'
+            optionLabelKey='name'
+            mode='multiple'
+            maxTagCount='responsive'
+          />
+        </Form.Item>
+      </Col>
       <Col span={24}>
         <Form.Item name='expiration_range' label='Fecha de expiración'>
           <DatePicker.RangePicker
