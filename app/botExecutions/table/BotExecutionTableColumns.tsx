@@ -1,13 +1,13 @@
 'use client'
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical, faStopwatch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, Button, Dropdown, Tag, Tooltip } from 'antd'
+import { Avatar, Button, Dropdown, Space, Tag, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { CustomMenuItem } from '@/interface/ContextMenu'
 import dayjs from 'dayjs'
 import { BotExecution } from '@/interface/BotExecution'
-import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, CloseCircleOutlined, DollarOutlined, SyncOutlined } from '@ant-design/icons'
 import { ReactNode } from 'react'
 
 interface Props {
@@ -21,6 +21,14 @@ const BotExecutionStatus: { [key: string]: ReactNode | undefined } = {
   RENOVADA: <Tag color='green' icon={<CheckCircleOutlined />}>RENOVADA</Tag>
 }
 
+const getParamsJson = (params: any) => {
+  try {
+    return JSON.parse(params?.body ?? {})
+  } catch {
+    return {}
+  }
+}
+
 export const BotExecutionsTableColumns: (
   props: Props
 ) => ColumnsType<BotExecution> = ({ contextMenuOptions }) => {
@@ -30,7 +38,17 @@ export const BotExecutionsTableColumns: (
       dataIndex: 'status',
       key: 'status',
       align: 'center',
-      render: value => BotExecutionStatus[value] ?? value
+      render: (value, record) => {
+        const paramsJson = getParamsJson(record?.params)
+        return (
+          <Space direction='horizontal'>
+            {BotExecutionStatus[value] ?? value}
+            {
+              paramsJson?.demo === true && <FontAwesomeIcon icon={faStopwatch} />
+            }
+          </Space>
+        )
+      }
     },
     {
       title: 'Fecha creacion',
@@ -46,11 +64,23 @@ export const BotExecutionsTableColumns: (
       align: 'center'
     },
     {
-      title: 'Servicio',
-      dataIndex: ['account', 'service', 'name'],
-      key: 'service',
-      align: 'center'
+      title: 'Meses',
+      dataIndex: 'params',
+      key: 'params',
+      align: 'center',
+      render: (value, record) => {
+        const paramsJson = getParamsJson(record?.params)
+        const months = paramsJson?.months
+        const hasPassword = !!paramsJson?.password
+        return <Tag color='default' icon={hasPassword ? <DollarOutlined /> : <SyncOutlined spin />}>{months}</Tag>
+      }
     },
+    // {
+    //   title: 'Servicio',
+    //   dataIndex: ['account', 'service', 'name'],
+    //   key: 'service',
+    //   align: 'center'
+    // },
     {
       title: 'Última actualización',
       dataIndex: 'updatedAt',
