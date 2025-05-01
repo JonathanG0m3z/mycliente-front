@@ -72,7 +72,7 @@ export const BotExecutionsTableColumns: (
         const paramsJson = getParamsJson(record?.params)
         const months = paramsJson?.months
         const hasPassword = !!paramsJson?.password
-        return <Tag color='default' icon={hasPassword ? <DollarOutlined /> : <SyncOutlined spin />}>{months}</Tag>
+        return <Tag color='default' icon={hasPassword ? <DollarOutlined /> : <SyncOutlined />}>{months}</Tag>
       }
     },
     // {
