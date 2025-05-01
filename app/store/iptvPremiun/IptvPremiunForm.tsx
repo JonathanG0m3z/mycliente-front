@@ -26,6 +26,7 @@ interface Props {
 
 const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
   const [form] = Form.useForm()
+  const username = Form.useWatch('username', form)
   const { loading: loadingSubmit, fetchApiData: createAccount } = useLazyFetch()
   const isDemo: boolean = Form.useWatch('demo', form)
   const [informationModalOpen, setInformationModalOpen] = React.useState(false)
@@ -114,6 +115,14 @@ const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
                 validator: (_, value) => {
                   if (value && value.trim() !== value) {
                     return Promise.reject(new Error('El valor no puede contener espacios en blanco'))
+                  }
+                  return Promise.resolve()
+                }
+              },
+              {
+                validator: (_, value) => {
+                  if (value === username) {
+                    return Promise.reject(new Error('La contraseña y usuario no pueden ser las mismas'))
                   }
                   return Promise.resolve()
                 }
