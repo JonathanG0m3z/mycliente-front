@@ -44,7 +44,7 @@ export const BotExecutionsTableColumns: (
           <Space direction='horizontal'>
             {BotExecutionStatus[value] ?? value}
             {
-              paramsJson?.demo === true && <FontAwesomeIcon icon={faStopwatch} />
+              paramsJson?.demo === true && <Tooltip title='Demo'><FontAwesomeIcon icon={faStopwatch} /></Tooltip>
             }
           </Space>
         )
@@ -72,7 +72,7 @@ export const BotExecutionsTableColumns: (
         const paramsJson = getParamsJson(record?.params)
         const months = paramsJson?.months
         const hasPassword = !!paramsJson?.password
-        return <Tag color='default' icon={hasPassword ? <DollarOutlined /> : <SyncOutlined />}>{months}</Tag>
+        return <Tooltip title={hasPassword ? 'Creación' : 'Renovación'}><Tag color='default' icon={hasPassword ? <DollarOutlined /> : <SyncOutlined />}>{months}</Tag></Tooltip>
       }
     },
     // {
