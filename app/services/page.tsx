@@ -39,7 +39,7 @@ const Services = () => {
     Modal.confirm({
       title: '¿Estás seguro de eliminar este servicio?',
       content:
-        'Al hacerlo se eliminarán todas las cuentas y ventas asociadas a este servicio',
+        'No podrás deshacer esta accion.',
       okType: 'danger',
       okButtonProps: { type: 'primary' },
       okText: 'Sí, eliminar',
