@@ -4,10 +4,12 @@ import { useCallback, useRef, useState } from 'react'
 import AccountsTable, { AccountsTableRef } from './table/AccountsTable'
 import { Account } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
-import { Modal, notification } from 'antd'
-import AccountsToolbar from './AccountsToolbar'
+import { FloatButton, Modal, notification } from 'antd'
+// import AccountsToolbar from './AccountsToolbar'
 import AccountsForm from './create/AccountsForm'
 import RenewAccountForm from './renew/RenewAccountForm'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 const Accounts = () => {
   const AccountsTableRef = useRef<AccountsTableRef>(null)
@@ -33,7 +35,7 @@ const Accounts = () => {
   const onEdit = useCallback((record: Account) => {
     setSelectedAccount(record)
     openForm()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   /** DELETE */
   const { fetchApiData: fetchDelete } = useLazyFetch()
@@ -80,13 +82,25 @@ const Accounts = () => {
   }, [])
   return (
     <>
-      <AccountsToolbar onCreate={openForm} />
+      {/* <AccountsToolbar /> */}
       <AccountsTable
         ref={AccountsTableRef}
         onEdit={onEdit}
         onDelete={onDelete}
         onRenew={openRenew}
       />
+      <FloatButton.Group
+        trigger='click'
+        style={{ right: 24 }}
+        icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
+        tooltip='Opciones'
+      >
+        <FloatButton
+          onClick={openForm}
+          tooltip='Registrar cuenta'
+          icon={<FontAwesomeIcon icon={faPlus} />}
+        />
+      </FloatButton.Group>
       <Modal
         open={isOpenForm}
         title={selectedAccount ? 'Editar cuenta' : 'Registrar cuenta'}

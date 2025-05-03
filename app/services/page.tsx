@@ -2,10 +2,12 @@
 
 import { useCallback, useRef, useState } from 'react'
 import ServicesTable, { ServicesTableRef } from './table/ServicesTable'
-import { Modal, notification } from 'antd'
+import { FloatButton, Modal, notification } from 'antd'
 import { Service } from '@/interface/Service'
 import { useLazyFetch } from '@/utils/useFetch'
 import ServicesForm from './form/ServicesForm'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 const Services = () => {
   const ServicesTableRef = useRef<ServicesTableRef>(null)
@@ -68,7 +70,19 @@ const Services = () => {
   }
   return (
     <>
-      <ServicesTable onDelete={onDelete} onEdit={onEdit} onCreate={openForm} ref={ServicesTableRef} />
+      <ServicesTable onDelete={onDelete} onEdit={onEdit} ref={ServicesTableRef} />
+      <FloatButton.Group
+        trigger='click'
+        style={{ right: 24 }}
+        icon={<FontAwesomeIcon icon={faEllipsisVertical} />}
+        tooltip='Opciones'
+      >
+        <FloatButton
+          onClick={openForm}
+          tooltip='Crear servicio'
+          icon={<FontAwesomeIcon icon={faPlus} />}
+        />
+      </FloatButton.Group>
       <Modal
         open={isOpenForm}
         title={selectedService ? 'Editar servicio' : 'Registrar servicio'}

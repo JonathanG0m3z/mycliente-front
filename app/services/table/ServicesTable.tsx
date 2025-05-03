@@ -16,13 +16,12 @@ import {
 } from 'react'
 import ServicesContextMenu from './ServicesContextMenu'
 import { ServicesTableColumns } from './ServicesTableColumns'
-import ServicesToolbar from './ServicesToolbar'
+// import ServicesToolbar from './ServicesToolbar'
 import { CustomMenuItem } from '@/interface/ContextMenu'
 
 interface Props {
   onEdit: (record: Service) => void
   onDelete: (record: Service) => void
-  onCreate: () => void
 }
 export interface ServicesTableRef {
   refresh: () => void
@@ -33,7 +32,7 @@ const DEFAULT_FILTERS = {
   pageSize: 10
 }
 const ServicesTable = forwardRef<ServicesTableRef, Props>(
-  function ServicesTable ({ onEdit, onDelete, onCreate }, ref) {
+  function ServicesTable ({ onEdit, onDelete }, ref) {
     const { data, loading, fetchApiData: getData } = useLazyFetch<ServiceData>()
     const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
     const applyFilters = (filters = localFilters) => {
@@ -88,7 +87,7 @@ const ServicesTable = forwardRef<ServicesTableRef, Props>(
     }, [])
     return (
       <>
-        <ServicesToolbar onCreate={onCreate} />
+        {/* <ServicesToolbar onCreate={onCreate} /> */}
         <Table
           loading={loading}
           dataSource={data?.services}

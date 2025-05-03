@@ -1,18 +1,18 @@
-'use client'
-import { Button, Row } from 'antd'
+// 'use client'
+// import { Button, Row } from 'antd'
 
-interface Props {
-    onCreate: () => void
-}
+// // interface Props {
+// //     onCreate: () => void
+// // }
 
-const AccountsToolbar = ({ onCreate }: Props) => {
-  return (
-    <Row>
-      <Button shape='round' type='primary' onClick={onCreate}>
-        Crear
-      </Button>
-    </Row>
-  )
-}
+// const AccountsToolbar = () => {
+//   return (
+//     <Row>
+//       <Button shape='round' type='primary' onClick={onCreate}>
+//         Crear
+//       </Button>
+//     </Row>
+//   )
+// }
 
-export default AccountsToolbar
+// export default AccountsToolbar

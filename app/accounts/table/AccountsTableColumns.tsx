@@ -9,10 +9,12 @@ import PasswordColumn from '@/app/sales/table/PasswordColumn'
 import { Account } from '@/interface/Account'
 import { ContextMenuModel } from '@/utils/GlobalModel'
 import { CustomMenuItem } from '@/interface/ContextMenu'
+import { getPayload } from '@/utils/getPayload'
 
 interface Props {
   contextMenuOptions: CustomMenuItem[]
 }
+const userId = getPayload()?.id
 
 export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
   contextMenuOptions
@@ -93,7 +95,8 @@ export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
           menu={{
             items: ContextMenuModel.createMenuContext(
               record,
-              contextMenuOptions
+              contextMenuOptions,
+              (record) => record?.userId !== userId || record?.createdInStore === true
             )
           }}
           trigger={['click']}
