@@ -96,7 +96,7 @@ export const AccountsTableColumns: (props: Props) => ColumnsType<Account> = ({
             items: ContextMenuModel.createMenuContext(
               record,
               contextMenuOptions,
-              (record) => record?.userId !== userId || record?.createdInStore === true
+              (record) => record?.userId !== userId || record?.createdInStore === true || record?.sharedBoardId
             )
           }}
           trigger={['click']}

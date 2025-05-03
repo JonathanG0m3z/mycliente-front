@@ -20,7 +20,7 @@ const AccountssContextMenu = ({ record, contextMenuRef, items }: Props) => {
       items={ContextMenuModel.createMenuContext(
         record,
         items,
-        record => record?.userId !== userId || record?.createdInStore === true
+        record => record?.userId !== userId || record?.createdInStore === true || record?.sharedBoardId
       )}
     />
   )

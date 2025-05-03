@@ -2,7 +2,7 @@
 import { Sale } from '@/interface/Sale'
 import { deleteSpaces } from '@/utils/deleteSpaces'
 import { WhatsAppOutlined } from '@ant-design/icons'
-import { faPlay, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Col, Row, Tooltip, Typography, notification } from 'antd'
 import dayjs from 'dayjs'
@@ -91,13 +91,13 @@ Nueva fecha de vencimiento: ${dayjs(sale?.expiration).format('DD-MM-YYYY')}`)
                 disabled={!sale.client.phone || sale.client.phone === null}
               />
             </Tooltip>
-            <Tooltip title='También renovar cuenta'>
+            {/* <Tooltip title='También renovar cuenta'>
               <Button
                 type='primary'
                 icon={<FontAwesomeIcon icon={faPlay} />}
                 onClick={() => onRenewAccount(sale.account)}
               />
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title='Cerrar'>
               <Button
                 danger
