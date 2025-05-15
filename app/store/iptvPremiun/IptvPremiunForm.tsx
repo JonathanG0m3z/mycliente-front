@@ -6,15 +6,13 @@ import {
   Button,
   Col,
   Form,
-  Input,
-  Modal,
-  notification,
+  Input, notification,
   Radio,
   Row,
   Select,
   Typography
 } from 'antd'
-import dayjs from 'dayjs'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const NEXT_PUBLIC_IPTV_DISCOUNT = process.env.NEXT_PUBLIC_IPTV_DISCOUNT
@@ -26,46 +24,25 @@ interface Props {
 
 const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
   const [form] = Form.useForm()
+  const router = useRouter()
   const username = Form.useWatch('username', form)
   const { loading: loadingSubmit, fetchApiData: createAccount } = useLazyFetch()
   const isDemo: boolean = Form.useWatch('demo', form)
-  const [informationModalOpen, setInformationModalOpen] = React.useState(false)
-  const [newAccountData, setNewAccountData] = React.useState<{
-    exp: string
-    username: string
-    password: string
-  } | null>(null)
-  const onOpenDialog = (data: any) => {
-    setInformationModalOpen(true)
-    setNewAccountData(data)
-  }
-  const onCloseDialog = () => {
-    setInformationModalOpen(false)
-    setNewAccountData(null)
-    onCancel()
-  }
   const discount: number = Number(NEXT_PUBLIC_IPTV_DISCOUNT ?? 0)
   const isDiscount: boolean = !!NEXT_PUBLIC_IPTV_DISCOUNT
   const onFinish = (values: any) => {
-    Modal.confirm({
-      title: 'Bot ejecutado',
-      content:
-        'El bot tardará unos momentos en crear la cuenta. Puedes cerrar esta ventana mientras él trabaja y te llegará un correo de confirmación. O puedes esperar en esta ventana',
-      onOk: onCancel,
-      okText: 'Cerrar ventana',
-      cancelText: 'Esperar'
-    })
     createAccount('bots/iptvPremiun', 'POST', {
       ...values,
       password: encryptValue(values.password),
       months: values?.months || 1
     })
       .then((res: any) => {
-        onOpenDialog(res)
+        notification.success(res)
         form.resetFields()
+        onCancel()
+        router.push('/botExecutions')
       })
       .catch(err => {
-        Modal.destroyAll()
         notification.error({
           message: 'Error',
           description: err
@@ -175,40 +152,6 @@ const IptvPremiunForm: React.FC<Props> = ({ onCancel }) => {
           </Button>
         </Form.Item>
       </Row>
-      <Modal open={informationModalOpen} onCancel={onCloseDialog} footer={null}>
-        <Typography.Text
-          copyable={{
-            text: `*Velocidad mínima requerida: 25 Megas de Internet.*
-Nombre: IPTV Premium
-Usuario: ${newAccountData?.username}
-Contraseña: ${newAccountData?.password}
-URL: http://iptvpremium.ink:55577
-Vecha vencimiento: ${newAccountData?.exp
-                ? dayjs(newAccountData?.exp).format('DD/MM/YYYY')
-                : ''
-              }`
-          }}
-        >
-          *Velocidad mínima requerida: 25 Megas de Internet.*
-          <br />
-          Nombre: IPTV Premium
-          <br />
-          Usuario: {newAccountData?.username}
-          <br />
-          Contraseña: {newAccountData?.password}
-          <br />
-          URL: http://iptvpremium.ink:55577
-          <br />
-          Vecha vencimiento:{' '}
-          {newAccountData?.exp
-            ? dayjs(newAccountData?.exp).format('DD/MM/YYYY')
-            : ''}
-        </Typography.Text>
-        <br />
-        <Button type='primary' onClick={onCancel} shape='round'>
-          Aceptar
-        </Button>
-      </Modal>
     </Form>
   )
 }
