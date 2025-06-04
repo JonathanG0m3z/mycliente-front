@@ -82,11 +82,16 @@ export const BotExecutionsTableColumns: (
     //   align: 'center'
     // },
     {
-      title: 'Última actualización',
+      title: 'Tiempo de ejecución',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       align: 'center',
-      render: value => dayjs(value).format('DD-MM-YYYY HH:mm:ss')
+      render: (value, record) => {
+        const diff = dayjs(value).diff(dayjs(record.createdAt), 'seconds')
+        const minutes = Math.floor(diff / 60)
+        const seconds = diff % 60
+        return `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`
+      }
     },
     {
       title: 'Usuario',
