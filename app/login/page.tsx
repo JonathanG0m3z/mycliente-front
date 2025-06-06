@@ -75,6 +75,8 @@ export default function Login () {
                 de trabajar.
               </p>
             </div>
+            <div>
+            </div>
           </div>
         </Col>
         <Col
