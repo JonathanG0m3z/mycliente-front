@@ -2,16 +2,54 @@
 
 import { useCallback, useRef, useState } from 'react'
 import AccountsTable, { AccountsTableRef } from './table/AccountsTable'
-import { Account } from '@/interface/Account'
+import { Account, AccountFilters, AccountData } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
-import { FloatButton, Modal, notification } from 'antd'
+import {
+  FloatButton,
+  Modal,
+  notification,
+  Button,
+  Col,
+  Badge,
+  Input,
+  Drawer
+} from 'antd'
 // import AccountsToolbar from './AccountsToolbar'
 import AccountsForm from './create/AccountsForm'
 import RenewAccountForm from './renew/RenewAccountForm'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faEllipsisVertical,
+  faPlus,
+  faSliders
+} from '@fortawesome/free-solid-svg-icons'
+import FiltersForm from './table/FiltersForm'
 
-const Accounts = () => {
+interface Props {
+  filters: AccountFilters
+  onChangeFilters: (filters: AccountFilters) => void
+  onCreate: () => void
+  tableData: AccountData | null
+}
+
+const Accounts = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
+  const [timer, setTimer] = useState<any | null>(null)
+
+  const onChangeToolbarFilters = (filters: AccountFilters) => {
+    onChangeFilters({ ...filters, page: 1 })
+  }
+
+  const handleSearchChange = (value: string) => {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    setTimer(
+      setTimeout(() => {
+        onChangeToolbarFilters({ ...filters, search: value })
+      }, 300)
+    )
+  }
+
   const AccountsTableRef = useRef<AccountsTableRef>(null)
   const refreshTable = () => {
     AccountsTableRef.current?.refresh()
@@ -80,9 +118,31 @@ const Accounts = () => {
     })
     refreshTable()
   }, [])
+  const [showFilters, setShowFilters] = useState(false)
+  const openFilters = useCallback(() => {
+    setShowFilters(true)
+  }, [])
+  const closeFilters = useCallback(() => {
+    setShowFilters(false)
+  }, [])
   return (
     <>
       {/* <AccountsToolbar /> */}
+      <Col
+        flex='auto'
+        style={{ display: 'flex', alignItems: 'center', padding: '8px' }}
+      >
+        <Input.Search
+          onChange={e => handleSearchChange(e.target.value)}
+          allowClear
+          style={{ flex: 1, marginRight: '8px' }}
+        />
+        <Badge size='small' style={{ color: 'white' }} color='#5A54F9'>
+          <Button shape='circle' onClick={openFilters}>
+            <FontAwesomeIcon icon={faSliders} />
+          </Button>
+        </Badge>
+      </Col>
       <AccountsTable
         ref={AccountsTableRef}
         onEdit={onEdit}
@@ -127,6 +187,18 @@ const Accounts = () => {
           record={selectedAccount}
         />
       </Modal>
+      <Drawer
+        open={showFilters}
+        title='Filtros'
+        onClose={closeFilters}
+        destroyOnClose
+      >
+        <FiltersForm
+          currentFilters={filters}
+          onChangeFilters={onChangeToolbarFilters}
+          onClose={closeFilters}
+        />
+      </Drawer>
     </>
   )
 }
