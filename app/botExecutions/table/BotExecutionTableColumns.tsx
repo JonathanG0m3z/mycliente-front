@@ -1,5 +1,5 @@
 'use client'
-import { faEllipsisVertical, faStopwatch } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisVertical, faStopwatch, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Avatar, Button, Dropdown, Space, Tag, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/es/table'
@@ -45,6 +45,9 @@ export const BotExecutionsTableColumns: (
             {BotExecutionStatus[value] ?? value}
             {
               paramsJson?.demo === true && <Tooltip title='Demo'><FontAwesomeIcon icon={faStopwatch} /></Tooltip>
+            }
+            {
+              record?.response?.error && <Tooltip title={record?.response?.error}><FontAwesomeIcon color='orange' icon={faTriangleExclamation} /></Tooltip>
             }
           </Space>
         )
