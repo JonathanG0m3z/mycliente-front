@@ -171,7 +171,7 @@ Nombre: LATTV
 Usuario: ${newAccountData?.username}
 Contraseña: ${newAccountData?.password}
 URL: http://xyz.lattv.com.co:25461
-Vecha vencimiento: ${newAccountData?.exp
+Fecha vencimiento: ${newAccountData?.exp
                 ? dayjs(newAccountData?.exp).format('DD/MM/YYYY hh:mm a')
                 : ''
               }`
@@ -187,7 +187,7 @@ Vecha vencimiento: ${newAccountData?.exp
           <br />
           URL: http://xyz.lattv.com.co:25461
           <br />
-          Vecha vencimiento:{' '}
+          Fecha vencimiento:{' '}
           {newAccountData?.exp
             ? dayjs(newAccountData?.exp).format('DD/MM/YYYY hh:mm a')
             : ''}
