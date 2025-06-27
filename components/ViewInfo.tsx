@@ -25,7 +25,7 @@ Nombre: IPTV Premium
 Usuario: ${data?.email}
 Contraseña: ${decryptValue(data?.password ?? '')}
 URL: http://iptvpremium.ink:55577
-Vecha vencimiento: ${
+Fecha vencimiento: ${
     data?.expiration ? dayjs(data?.expiration).format('DD/MM/YYYY') : ''
   }`
 
@@ -41,14 +41,14 @@ Vecha vencimiento: ${
       <br />
       URL: http://iptvpremium.ink:55577
       <br />
-      Vecha vencimiento:{' '}
+      Fecha vencimiento:{' '}
       {data?.expiration ? dayjs(data?.expiration).format('DD/MM/YYYY') : ''}
     </>
   )
   const defaultCopyText = `*Cuenta de ${data?.service.name}*
 Email: ${data?.email}
 Contraseña: ${decryptValue(data?.password ?? '')}
-Vecha vencimiento: ${
+Fecha vencimiento: ${
     data?.expiration ? dayjs(data?.expiration).format('DD/MM/YYYY') : ''
   }`
   const defaultHtml = (
@@ -59,7 +59,7 @@ Vecha vencimiento: ${
       <br />
       Contraseña: {decryptValue(data?.password ?? '')}
       <br />
-      Vecha vencimiento:{' '}
+      Fecha vencimiento:{' '}
       {data?.expiration ? dayjs(data?.expiration).format('DD/MM/YYYY') : ''}
     </>
   )
