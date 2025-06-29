@@ -6,6 +6,7 @@ import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
 import AccountModel from '@/model/Account'
+import dayjs from 'dayjs'
 import {
   forwardRef,
   useEffect,
@@ -33,6 +34,7 @@ const DEFAULT_FILTERS: AccountFilters = {
   pageSize: 10,
   search: '',
   is_deleted: false,
+  expiration_range: [dayjs().subtract(5, 'day'), dayjs().add(3, 'month')],
   order: 'expiration ASC'
 }
 

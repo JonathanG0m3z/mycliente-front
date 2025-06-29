@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
+import dayjs from 'dayjs'
 import AccountsTable, { AccountsTableRef } from './table/AccountsTable'
 import { Account, AccountFilters } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
@@ -31,6 +32,7 @@ const DEFAULT_FILTERS: AccountFilters = {
   pageSize: 10,
   search: '',
   is_deleted: false,
+  expiration_range: [dayjs().subtract(5, 'day'), dayjs().add(3, 'month')],
   order: 'expiration ASC'
 }
 
