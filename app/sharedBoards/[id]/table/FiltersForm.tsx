@@ -3,6 +3,7 @@ import { SharedBoardAccountFilters } from '@/interface/SharedBoard'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Col, DatePicker, Form, Select } from 'antd'
+import dayjs from 'dayjs'
 
 interface Props {
   currentFilters: SharedBoardAccountFilters
@@ -16,7 +17,14 @@ const FiltersForm = ({ currentFilters, onChangeFilters, onClose }: Props) => {
     onClose()
   }
   return (
-    <Form layout='vertical' initialValues={currentFilters} onFinish={onFinish}>
+    <Form
+      layout='vertical'
+      initialValues={{
+        ...currentFilters,
+        expiration_range: currentFilters.expiration_range?.length ? [dayjs(currentFilters.expiration_range[0]), dayjs(currentFilters.expiration_range[1])] : undefined
+      }}
+      onFinish={onFinish}
+    >
       <Col span={24}>
         <Form.Item
           name='service'

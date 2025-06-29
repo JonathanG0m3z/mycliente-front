@@ -25,7 +25,7 @@ import {
   useRef,
   useState
 } from 'react'
-import useUrlState from '@/utils/useUrlState'
+import useUrlFilters from '@/utils/useUrlFilters'
 import { TableColumns } from './TableColumns'
 import ContextMenu from './ContextMenu'
 import { Account } from '@/interface/Account'
@@ -68,7 +68,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
       fetchApiData: getData
     } = useLazyFetch<SharedBoardAccountsData>()
     const [filtersInUrl, setFiltersInUrl] =
-      useUrlState<SharedBoardAccountFilters>('filters', DEFAULT_FILTERS)
+      useUrlFilters<SharedBoardAccountFilters>('filters', DEFAULT_FILTERS)
     const [localFilters, setLocalFilters] =
       useState<SharedBoardAccountFilters>(filtersInUrl)
     const applyFilters = (filters: SharedBoardAccountFilters = localFilters) => {

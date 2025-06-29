@@ -20,20 +20,22 @@ export function useUrlState<T extends object> (key: string, defaultValue: T) {
     return parseParam<T>(searchParams.get(key), defaultValue)
   }, [searchParams, key, defaultValue])
 
+  const createURL = useCallback((updater: (params: URLSearchParams) => void) => {
+    const params = new URLSearchParams(searchParams.toString())
+    updater(params)
+    router.replace(`${pathname}?${params.toString()}`)
+  }, [searchParams, router, pathname])
+
   const setValue = useCallback(
     (val: T) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(key, encodeURIComponent(JSON.stringify(val)))
-      router.replace(`${pathname}?${params.toString()}`)
+      createURL(params => params.set(key, encodeURIComponent(JSON.stringify(val))))
     },
-    [searchParams, key, router, pathname]
+    [key, createURL]
   )
 
   const remove = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.delete(key)
-    router.replace(`${pathname}?${params.toString()}`)
-  }, [searchParams, key, router, pathname])
+    createURL(params => params.delete(key))
+  }, [key, createURL])
 
   return [value, setValue, remove] as const
 }

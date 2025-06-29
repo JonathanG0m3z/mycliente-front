@@ -44,6 +44,7 @@ class SharedBoardModel {
     let count = 0
     if (filters.expiration_range?.length) count++
     if (filters.is_deleted !== undefined) count++
+    if (filters.service?.length) count++
     return count
   }
 }
