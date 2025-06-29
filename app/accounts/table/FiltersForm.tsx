@@ -1,12 +1,12 @@
 import RemoteCombobox from '@/components/RemoteCombobox'
-import { SharedBoardAccountFilters } from '@/interface/SharedBoard'
+import { AccountFilters } from '@/interface/Account'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Col, DatePicker, Form, Select } from 'antd'
 
 interface Props {
-  currentFilters: SharedBoardAccountFilters
-  onChangeFilters: (filters: SharedBoardAccountFilters) => void
+  currentFilters: AccountFilters
+  onChangeFilters: (filters: AccountFilters) => void
   onClose: () => void
 }
 
