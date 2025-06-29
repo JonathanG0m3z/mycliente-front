@@ -1,17 +1,64 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
+import dayjs from 'dayjs'
 import AccountsTable, { AccountsTableRef } from './table/AccountsTable'
-import { Account } from '@/interface/Account'
+import { Account, AccountFilters } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
-import { FloatButton, Modal, notification } from 'antd'
+import {
+  FloatButton,
+  Modal,
+  notification,
+  Button,
+  Col,
+  Badge,
+  Input,
+  Drawer
+} from 'antd'
 // import AccountsToolbar from './AccountsToolbar'
 import AccountsForm from './create/AccountsForm'
 import RenewAccountForm from './renew/RenewAccountForm'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faEllipsisVertical,
+  faPlus,
+  faSliders
+} from '@fortawesome/free-solid-svg-icons'
+import FiltersForm from './table/FiltersForm'
+import AccountModel from '@/model/Account'
+
+const DEFAULT_FILTERS: AccountFilters = {
+  page: 1,
+  pageSize: 10,
+  search: '',
+  is_deleted: false,
+  expiration_range: [dayjs().subtract(5, 'day'), dayjs().add(3, 'month')],
+  order: 'expiration ASC'
+}
 
 const Accounts = () => {
+  const [filters, setFilters] = useState<AccountFilters>(DEFAULT_FILTERS)
+  const onChangeFilters = (newFilters: AccountFilters) => {
+    setFilters(newFilters)
+    AccountsTableRef.current?.setFilters(newFilters)
+  }
+  const [timer, setTimer] = useState<any | null>(null)
+
+  const onChangeToolbarFilters = (filters: AccountFilters) => {
+    onChangeFilters({ ...filters, page: 1 })
+  }
+
+  const handleSearchChange = (value: string) => {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    setTimer(
+      setTimeout(() => {
+        onChangeToolbarFilters({ ...filters, search: value })
+      }, 300)
+    )
+  }
+
   const AccountsTableRef = useRef<AccountsTableRef>(null)
   const refreshTable = () => {
     AccountsTableRef.current?.refresh()
@@ -80,9 +127,36 @@ const Accounts = () => {
     })
     refreshTable()
   }, [])
+  const [showFilters, setShowFilters] = useState(false)
+  const openFilters = useCallback(() => {
+    setShowFilters(true)
+  }, [])
+  const closeFilters = useCallback(() => {
+    setShowFilters(false)
+  }, [])
   return (
     <>
       {/* <AccountsToolbar /> */}
+      <Col
+        flex='auto'
+        style={{ display: 'flex', alignItems: 'center', padding: '8px' }}
+      >
+        <Input.Search
+          onChange={e => handleSearchChange(e.target.value)}
+          allowClear
+          style={{ flex: 1, marginRight: '8px' }}
+        />
+        <Badge
+          size='small'
+          style={{ color: 'white' }}
+          count={AccountModel.countActiveFilters(filters)}
+          color='#5A54F9'
+        >
+          <Button shape='circle' onClick={openFilters}>
+            <FontAwesomeIcon icon={faSliders} />
+          </Button>
+        </Badge>
+      </Col>
       <AccountsTable
         ref={AccountsTableRef}
         onEdit={onEdit}
@@ -127,6 +201,18 @@ const Accounts = () => {
           record={selectedAccount}
         />
       </Modal>
+      <Drawer
+        open={showFilters}
+        title='Filtros'
+        onClose={closeFilters}
+        destroyOnClose
+      >
+        <FiltersForm
+          currentFilters={filters}
+          onChangeFilters={onChangeToolbarFilters}
+          onClose={closeFilters}
+        />
+      </Drawer>
     </>
   )
 }
