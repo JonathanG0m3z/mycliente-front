@@ -1,10 +1,11 @@
 'use client'
 import { ContextMenuRef } from '@/components/ContextMenu'
-import { Account, AccountData } from '@/interface/Account'
+import { Account, AccountData, AccountFilters } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
 import { faEdit, faRepeat, faSync, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Pagination, Row, Table, Tooltip, notification } from 'antd'
+import AccountModel from '@/model/Account'
 import {
   forwardRef,
   useEffect,
@@ -24,11 +25,15 @@ interface Props {
 }
 export interface AccountsTableRef {
   refresh: () => void
+  setFilters: (filters: AccountFilters) => void
 }
 
-const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS: AccountFilters = {
   page: 1,
-  pageSize: 10
+  pageSize: 10,
+  search: '',
+  is_deleted: false,
+  order: 'expiration ASC'
 }
 
 const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
@@ -36,11 +41,11 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch<AccountData>()
-  const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
-  const applyFilters = (filters = localFilters) => {
+  const [localFilters, setLocalFilters] = useState<AccountFilters>(DEFAULT_FILTERS)
+  const applyFilters = (filters: AccountFilters = localFilters) => {
     setLocalFilters(filters)
     getData(
-      `accounts?page=${filters.page}&limit=${filters.pageSize}`,
+      `accounts${AccountModel.transformFiltersToUrl(filters)}`,
       'GET'
     ).catch(err =>
       notification.error({
@@ -86,6 +91,9 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
   useImperativeHandle(ref, () => ({
     refresh () {
       applyFilters()
+    },
+    setFilters (filters: AccountFilters) {
+      applyFilters(filters)
     }
   }))
 
@@ -112,7 +120,7 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
           pageSize={localFilters?.pageSize}
           total={data?.total}
           onChange={(page, pageSize) => {
-            applyFilters({ page, pageSize })
+            applyFilters({ ...localFilters, page, pageSize })
           }}
           showSizeChanger
           showTotal={total => `${data?.accounts?.length} de ${total} resultados`}

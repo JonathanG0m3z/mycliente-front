@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 import AccountsTable, { AccountsTableRef } from './table/AccountsTable'
-import { Account, AccountFilters, AccountData } from '@/interface/Account'
+import { Account, AccountFilters } from '@/interface/Account'
 import { useLazyFetch } from '@/utils/useFetch'
 import {
   FloatButton,
@@ -24,15 +24,22 @@ import {
   faSliders
 } from '@fortawesome/free-solid-svg-icons'
 import FiltersForm from './table/FiltersForm'
+import AccountModel from '@/model/Account'
 
-interface Props {
-  filters: AccountFilters
-  onChangeFilters: (filters: AccountFilters) => void
-  onCreate: () => void
-  tableData: AccountData | null
+const DEFAULT_FILTERS: AccountFilters = {
+  page: 1,
+  pageSize: 10,
+  search: '',
+  is_deleted: false,
+  order: 'expiration ASC'
 }
 
-const Accounts = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
+const Accounts = () => {
+  const [filters, setFilters] = useState<AccountFilters>(DEFAULT_FILTERS)
+  const onChangeFilters = (newFilters: AccountFilters) => {
+    setFilters(newFilters)
+    AccountsTableRef.current?.setFilters(newFilters)
+  }
   const [timer, setTimer] = useState<any | null>(null)
 
   const onChangeToolbarFilters = (filters: AccountFilters) => {
@@ -137,7 +144,12 @@ const Accounts = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
           allowClear
           style={{ flex: 1, marginRight: '8px' }}
         />
-        <Badge size='small' style={{ color: 'white' }} color='#5A54F9'>
+        <Badge
+          size='small'
+          style={{ color: 'white' }}
+          count={AccountModel.countActiveFilters(filters)}
+          color='#5A54F9'
+        >
           <Button shape='circle' onClick={openFilters}>
             <FontAwesomeIcon icon={faSliders} />
           </Button>
