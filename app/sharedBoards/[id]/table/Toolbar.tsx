@@ -64,7 +64,9 @@ const Toolbar = ({ onCreate, onChangeFilters, filters, tableData }: Props) => {
 
   return (
     <>
-      <Form>
+      <Form
+        initialValues={filters}
+      >
         <Row
           gutter={[8, 8]}
           justify='space-between'

@@ -25,6 +25,7 @@ import {
   useRef,
   useState
 } from 'react'
+import useUrlFilters from '@/utils/useUrlFilters'
 import { TableColumns } from './TableColumns'
 import ContextMenu from './ContextMenu'
 import { Account } from '@/interface/Account'
@@ -66,10 +67,13 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
       loading,
       fetchApiData: getData
     } = useLazyFetch<SharedBoardAccountsData>()
+    const [filtersInUrl, setFiltersInUrl] =
+      useUrlFilters<SharedBoardAccountFilters>('filters', DEFAULT_FILTERS)
     const [localFilters, setLocalFilters] =
-      useState<SharedBoardAccountFilters>(DEFAULT_FILTERS)
-    const applyFilters = (filters = localFilters) => {
+      useState<SharedBoardAccountFilters>(filtersInUrl)
+    const applyFilters = (filters: SharedBoardAccountFilters = localFilters) => {
       setLocalFilters(filters)
+      setFiltersInUrl(filters)
       getData(
         `sharedBoards/accounts/${sharedBoardId}${SharedBoardModel.transformFilterToUrl(filters)}`,
         'GET'
@@ -167,9 +171,14 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     }
 
     useEffect(() => {
-      applyFilters()
+      setLocalFilters(filtersInUrl)
+      applyFilters(filtersInUrl)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+      setLocalFilters(filtersInUrl)
+    }, [filtersInUrl])
     return (
       <>
         <Toolbar tableData={data} onCreate={createAccount} onChangeFilters={applyFilters} filters={localFilters} />
