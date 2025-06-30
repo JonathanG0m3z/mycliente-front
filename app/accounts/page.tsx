@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import AccountsTable, { AccountsTableRef } from './table/AccountsTable'
 import { Account, AccountFilters } from '@/interface/Account'
@@ -26,6 +26,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import FiltersForm from './table/FiltersForm'
 import AccountModel from '@/model/Account'
+import useUrlFilters from '@/utils/useUrlFilters'
 
 const DEFAULT_FILTERS: AccountFilters = {
   page: 1,
@@ -37,11 +38,24 @@ const DEFAULT_FILTERS: AccountFilters = {
 }
 
 const Accounts = () => {
-  const [filters, setFilters] = useState<AccountFilters>(DEFAULT_FILTERS)
+  const [filtersInUrl, setFiltersInUrl] =
+    useUrlFilters<AccountFilters>('filters', DEFAULT_FILTERS)
+  const [filters, setFilters] = useState<AccountFilters>(filtersInUrl)
   const onChangeFilters = (newFilters: AccountFilters) => {
     setFilters(newFilters)
+    setFiltersInUrl(newFilters)
     AccountsTableRef.current?.setFilters(newFilters)
   }
+  const onTableFiltersChange = (newFilters: AccountFilters) => {
+    setFilters(newFilters)
+    setFiltersInUrl(newFilters)
+  }
+
+  useEffect(() => {
+    setFilters(filtersInUrl)
+    AccountsTableRef.current?.setFilters(filtersInUrl)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersInUrl])
   const [timer, setTimer] = useState<any | null>(null)
 
   const onChangeToolbarFilters = (filters: AccountFilters) => {
@@ -143,6 +157,7 @@ const Accounts = () => {
       >
         <Input.Search
           onChange={e => handleSearchChange(e.target.value)}
+          value={filters.search}
           allowClear
           style={{ flex: 1, marginRight: '8px' }}
         />
@@ -162,6 +177,7 @@ const Accounts = () => {
         onEdit={onEdit}
         onDelete={onDelete}
         onRenew={openRenew}
+        onFiltersChange={onTableFiltersChange}
       />
       <FloatButton.Group
         trigger='click'

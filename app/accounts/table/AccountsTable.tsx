@@ -23,6 +23,7 @@ interface Props {
   onEdit: (record: Account) => void
   onDelete: (record: Account) => void
   onRenew: (record: Account) => void
+  onFiltersChange?: (filters: AccountFilters) => void
 }
 export interface AccountsTableRef {
   refresh: () => void
@@ -39,17 +40,18 @@ const DEFAULT_FILTERS: AccountFilters = {
 }
 
 const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
-  { onEdit, onDelete, onRenew },
+  { onEdit, onDelete, onRenew, onFiltersChange },
   ref
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch<AccountData>()
   const [localFilters, setLocalFilters] = useState<AccountFilters>(DEFAULT_FILTERS)
-  const applyFilters = (filters: AccountFilters = localFilters) => {
-    setLocalFilters(filters)
-    getData(
-      `accounts${AccountModel.transformFiltersToUrl(filters)}`,
-      'GET'
-    ).catch(err =>
+const applyFilters = (filters: AccountFilters = localFilters) => {
+  setLocalFilters(filters)
+  onFiltersChange?.(filters)
+  getData(
+    `accounts${AccountModel.transformFiltersToUrl(filters)}`,
+    'GET'
+  ).catch(err =>
       notification.error({
         message: 'Algo salió mal',
         description: err.message
