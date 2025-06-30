@@ -8,25 +8,18 @@ import { useLazyFetch } from '@/utils/useFetch'
 import {
   FloatButton,
   Modal,
-  notification,
-  Button,
-  Col,
-  Badge,
-  Input,
-  Drawer
+  notification, Drawer
 } from 'antd'
-// import AccountsToolbar from './AccountsToolbar'
 import AccountsForm from './create/AccountsForm'
 import RenewAccountForm from './renew/RenewAccountForm'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEllipsisVertical,
-  faPlus,
-  faSliders
+  faPlus
 } from '@fortawesome/free-solid-svg-icons'
 import FiltersForm from './table/FiltersForm'
-import AccountModel from '@/model/Account'
 import useUrlFilters from '@/utils/useUrlFilters'
+import AccountsToolbar from './AccountsToolbar'
 
 const DEFAULT_FILTERS: AccountFilters = {
   page: 1,
@@ -40,19 +33,15 @@ const DEFAULT_FILTERS: AccountFilters = {
 const Accounts = () => {
   const [filtersInUrl, setFiltersInUrl] =
     useUrlFilters<AccountFilters>('filters', DEFAULT_FILTERS)
-  const [filters, setFilters] = useState<AccountFilters>(filtersInUrl)
   const onChangeFilters = (newFilters: AccountFilters) => {
-    setFilters(newFilters)
     setFiltersInUrl(newFilters)
     AccountsTableRef.current?.setFilters(newFilters)
   }
   const onTableFiltersChange = (newFilters: AccountFilters) => {
-    setFilters(newFilters)
     setFiltersInUrl(newFilters)
   }
 
   useEffect(() => {
-    setFilters(filtersInUrl)
     AccountsTableRef.current?.setFilters(filtersInUrl)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtersInUrl])
@@ -68,7 +57,7 @@ const Accounts = () => {
     }
     setTimer(
       setTimeout(() => {
-        onChangeToolbarFilters({ ...filters, search: value })
+        onChangeToolbarFilters({ ...filtersInUrl, search: value })
       }, 300)
     )
   }
@@ -150,28 +139,11 @@ const Accounts = () => {
   }, [])
   return (
     <>
-      {/* <AccountsToolbar /> */}
-      <Col
-        flex='auto'
-        style={{ display: 'flex', alignItems: 'center', padding: '8px' }}
-      >
-        <Input.Search
-          onChange={e => handleSearchChange(e.target.value)}
-          value={filters.search}
-          allowClear
-          style={{ flex: 1, marginRight: '8px' }}
-        />
-        <Badge
-          size='small'
-          style={{ color: 'white' }}
-          count={AccountModel.countActiveFilters(filters)}
-          color='#5A54F9'
-        >
-          <Button shape='circle' onClick={openFilters}>
-            <FontAwesomeIcon icon={faSliders} />
-          </Button>
-        </Badge>
-      </Col>
+      <AccountsToolbar
+        filters={filtersInUrl}
+        handleSearchChange={handleSearchChange}
+        openFilters={openFilters}
+      />
       <AccountsTable
         ref={AccountsTableRef}
         onEdit={onEdit}
@@ -224,7 +196,7 @@ const Accounts = () => {
         destroyOnClose
       >
         <FiltersForm
-          currentFilters={filters}
+          currentFilters={filtersInUrl}
           onChangeFilters={onChangeToolbarFilters}
           onClose={closeFilters}
         />

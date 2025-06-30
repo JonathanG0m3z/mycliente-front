@@ -45,13 +45,13 @@ const AccountsTable = forwardRef<AccountsTableRef, Props>(function SalesTable (
 ) {
   const { data, loading, fetchApiData: getData } = useLazyFetch<AccountData>()
   const [localFilters, setLocalFilters] = useState<AccountFilters>(DEFAULT_FILTERS)
-const applyFilters = (filters: AccountFilters = localFilters) => {
-  setLocalFilters(filters)
-  onFiltersChange?.(filters)
-  getData(
-    `accounts${AccountModel.transformFiltersToUrl(filters)}`,
-    'GET'
-  ).catch(err =>
+  const applyFilters = (filters: AccountFilters = localFilters) => {
+    setLocalFilters(filters)
+    onFiltersChange?.(filters)
+    getData(
+      `accounts${AccountModel.transformFiltersToUrl(filters)}`,
+      'GET'
+    ).catch(err =>
       notification.error({
         message: 'Algo salió mal',
         description: err.message

@@ -69,10 +69,7 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     } = useLazyFetch<SharedBoardAccountsData>()
     const [filtersInUrl, setFiltersInUrl] =
       useUrlFilters<SharedBoardAccountFilters>('filters', DEFAULT_FILTERS)
-    const [localFilters, setLocalFilters] =
-      useState<SharedBoardAccountFilters>(filtersInUrl)
-    const applyFilters = (filters: SharedBoardAccountFilters = localFilters) => {
-      setLocalFilters(filters)
+    const applyFilters = (filters: SharedBoardAccountFilters = filtersInUrl) => {
       setFiltersInUrl(filters)
       getData(
         `sharedBoards/accounts/${sharedBoardId}${SharedBoardModel.transformFilterToUrl(filters)}`,
@@ -167,25 +164,21 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
     }))
 
     const onChangeOrder = (pagination: any, filters: any, sorter: SorterResult<Account>) => {
-      applyFilters({ ...localFilters, order: GlobalModel.generateOrder(sorter) })
+      applyFilters({ ...filtersInUrl, order: GlobalModel.generateOrder(sorter) })
     }
 
     useEffect(() => {
-      setLocalFilters(filtersInUrl)
       applyFilters(filtersInUrl)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    useEffect(() => {
-      setLocalFilters(filtersInUrl)
-    }, [filtersInUrl])
     return (
       <>
-        <Toolbar tableData={data} onCreate={createAccount} onChangeFilters={applyFilters} filters={localFilters} />
+        <Toolbar tableData={data} onCreate={createAccount} onChangeFilters={applyFilters} filters={filtersInUrl} />
         <Table
           loading={loading}
           dataSource={data?.accounts}
-          columns={TableColumns({ contextMenuOptions, filters: localFilters })}
+          columns={TableColumns({ contextMenuOptions, filters: filtersInUrl })}
           scroll={{ x: 'max-content' }}
           pagination={false}
           onRow={record => onRow(record)}
@@ -194,11 +187,11 @@ const AccountsTable = forwardRef<SharedBoardsTableRef, Props>(
         />
         <Row justify='center'>
           <Pagination
-            current={localFilters?.page}
-            pageSize={localFilters?.pageSize}
+            current={filtersInUrl?.page}
+            pageSize={filtersInUrl?.pageSize}
             total={data?.total}
             onChange={(page, pageSize) => {
-              applyFilters({ ...localFilters, page, pageSize })
+              applyFilters({ ...filtersInUrl, page, pageSize })
             }}
             showSizeChanger
             showTotal={total =>
