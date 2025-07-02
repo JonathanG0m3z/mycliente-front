@@ -7,13 +7,17 @@ import {
   faPersonCircleQuestion
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { FloatButton, Modal, Spin, notification } from 'antd'
-import { Suspense, lazy, useCallback, useRef, useState } from 'react'
+import { FloatButton, Modal, Spin, notification, Drawer } from 'antd' // Drawer añadido aquí
+import { Suspense, lazy, useCallback, useRef, useState, useEffect } from 'react' // useEffect, useState añadidos aquí
 import { SalesTable, SalesTableRef } from './table/SalesTable'
-import { Sale } from '@/interface/Sale'
+import { Sale, SaleFilters } from '@/interface/Sale'
 import { useLazyFetch } from '@/utils/useFetch'
 import { Account } from '@/interface/Account'
 import UpdateBalanceForm from './updateBalance/UpdateBalanceForm'
+import useUrlFilters from '@/utils/useUrlFilters'
+import SalesToolbar from './table/SalesToolbar'
+import FiltersForm from './table/FiltersForm'
+import dayjs from 'dayjs'
 
 const ClientForm = lazy(() => import('./client/ClientForm'))
 const SalesForm = lazy(() => import('./form/SalesForm'))
@@ -22,8 +26,47 @@ const RenewAccountForm = lazy(
   () => import('../accounts/renew/RenewAccountForm')
 )
 
+const DEFAULT_SALE_FILTERS: SaleFilters = {
+  page: 1,
+  pageSize: 10,
+  search: '',
+  is_deleted: false,
+  expiration_range: [
+    dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
+    dayjs().add(3, 'month').format('YYYY-MM-DD')
+  ],
+  order: 'expiration ASC',
+};
+
 export default function Sales () {
   const salesTableRef = useRef<SalesTableRef>(null)
+
+  const [filtersInUrl, setFiltersInUrl] =
+    useUrlFilters<SaleFilters>('sale_filters', DEFAULT_SALE_FILTERS)
+
+  const [showFiltersDrawer, setShowFiltersDrawer] = useState(false)
+  const openFiltersDrawer = useCallback(() => {
+    setShowFiltersDrawer(true)
+  }, [])
+  const closeFiltersDrawer = useCallback(() => {
+    setShowFiltersDrawer(false)
+  }, [])
+
+  const onChangeMainFilters = useCallback((newPartialFilters: Partial<SaleFilters>) => {
+    const updatedFilters = { ...filtersInUrl, ...newPartialFilters, page: 1 }
+    setFiltersInUrl(updatedFilters)
+  }, [filtersInUrl, setFiltersInUrl])
+
+  const onTableFiltersChange = useCallback((newFilters: SaleFilters) => {
+    setFiltersInUrl(newFilters)
+  }, [setFiltersInUrl])
+
+  useEffect(() => {
+    if (salesTableRef.current) {
+        salesTableRef.current.setFilters(filtersInUrl)
+    }
+  }, [filtersInUrl])
+
   const [isOpenForm, setIsOpenForm] = useState(false)
   const openForm = useCallback(() => {
     setIsOpenForm(true)
@@ -34,16 +77,18 @@ export default function Sales () {
   }, [])
   const onSaveSale = useCallback(() => {
     salesTableRef.current?.refresh()
-  }, [])
+    closeForm();
+    notification.success({ message: 'Venta guardada' });
+  }, [closeForm])
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null)
-  /** EDIT */
+
+  const { fetchApiData: fetchApi } = useLazyFetch()
+
   const onEdit = useCallback((record: Sale) => {
     setSelectedSale(record)
     openForm()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  /** DELETE */
-  const { fetchApiData: fetchApi } = useLazyFetch()
+  }, [openForm])
+
   const onDelete = (record: Sale) => {
     Modal.confirm({
       title: 'Eliminar venta',
@@ -61,7 +106,7 @@ export default function Sales () {
             .catch(err => {
               notification.error({
                 message: 'Error',
-                description: err
+                description: err.message || err
               })
               reject(err)
             })
@@ -69,7 +114,7 @@ export default function Sales () {
       }
     })
   }
-  /** RENEW */
+
   const [renewIsOpen, setRenewIsOpen] = useState(false)
   const openRenew = useCallback((record: Sale) => {
     setSelectedSale(record)
@@ -81,12 +126,14 @@ export default function Sales () {
   }, [])
   const onSaveRenew = useCallback(() => {
     salesTableRef.current?.refresh()
-  }, [])
-  /** RENEW ACCOUNT */
+    closeRenew();
+    notification.success({ message: 'Venta renovada' });
+  }, [closeRenew])
+
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
   const [renewAccountFormOpen, setRenewAccountFormOpen] = useState(false)
-  const onRenewAccount = useCallback((sale: Sale['account']) => {
-    const account = sale
+  const onRenewAccount = useCallback((saleAccount: Sale['account']) => { // Renombrada la variable para evitar conflicto
+    const account = saleAccount
     setSelectedAccount(account)
     setRenewAccountFormOpen(true)
   }, [])
@@ -99,8 +146,9 @@ export default function Sales () {
     notification.success({
       message: 'Cuenta renovada exitosamente'
     })
-  }, [])
-  /** EDIT CLIENT */
+    onCloseRenewAccountForm()
+  }, [onCloseRenewAccountForm])
+
   const [selectedClient, setSelectedClient] = useState<Sale['client'] | null>(
     null
   )
@@ -119,9 +167,8 @@ export default function Sales () {
     notification.success({
       message: 'Cliente editado exitosamente'
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  /** ACTUALIZAR SALDO */
+  }, [onCloseClientForm])
+
   const [updateBalanceFormOpen, setUpdatebalanceFormOpen] = useState(false)
   const onUpdateBalance = useCallback(() => {
     setUpdatebalanceFormOpen(true)
@@ -131,6 +178,7 @@ export default function Sales () {
   }, [])
   const onFetchClientBalance = useCallback(() => {
     return new Promise((resolve, reject) => {
+      // TODO: El ID del admin no debería estar hardcodeado.
       fetchApi('users/getAdminBalance/642b717f-3557-4eaa-8402-420b054f0a94', 'GET')
         .then(({ balance }) => {
           notification.success({
@@ -141,20 +189,28 @@ export default function Sales () {
         .catch(err => {
           notification.error({
             message: 'Error',
-            description: err
+            description: err.message || err
           })
           reject(err)
         })
     })
   }, [fetchApi])
+
+
   return (
     <>
+      <SalesToolbar
+        filters={filtersInUrl}
+        onChangeFilters={onChangeMainFilters}
+        openFilters={openFiltersDrawer}
+      />
       <SalesTable
         ref={salesTableRef}
         onEdit={onEdit}
         onDelete={onDelete}
         onRenew={openRenew}
         onEditClient={onEditClient}
+        onFiltersChange={onTableFiltersChange}
       />
       <FloatButton.Group
         trigger='click'
@@ -250,6 +306,20 @@ export default function Sales () {
           <UpdateBalanceForm onCancel={onCloseUpdateBalance} />
         </Suspense>
       </Modal>
+
+      <Drawer
+        open={showFiltersDrawer}
+        title='Filtros de Ventas'
+        onClose={closeFiltersDrawer}
+        destroyOnClose
+        width={300}
+      >
+        <FiltersForm
+          currentFilters={filtersInUrl}
+          onChangeFilters={onChangeMainFilters}
+          onClose={closeFiltersDrawer}
+        />
+      </Drawer>
     </>
   )
 }

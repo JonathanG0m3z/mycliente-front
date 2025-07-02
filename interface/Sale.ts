@@ -56,4 +56,8 @@ export type SaleFilters = {
   page: number
   pageSize: number
   search: string
+  service?: string[] | number[] // IDs de los servicios
+  expiration_range?: [string, string] // Fechas como string ISO o formateadas
+  is_deleted?: boolean
+  order?: string
 }
