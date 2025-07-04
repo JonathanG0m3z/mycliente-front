@@ -4,32 +4,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Badge, Button, Col, Form, Input, Row } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
-import SharedBoardModel from '@/model/SharedBoard'
+// import SharedBoardModel from '@/model/SharedBoard' // Ya no se usa
+import SaleModel from '@/model/Sale' // Importar SaleModel
 import { SaleFilters } from '@/interface/Sale'
 
 interface Props {
   filters: SaleFilters
   onChangeFilters: (filters: SaleFilters) => void
+  openFilters: () => void // Nueva prop
 }
 
 const SalesToolbar = ({
   onChangeFilters,
-  filters
+  filters,
+  openFilters // Recibir la nueva prop
 }: Props) => {
   const [timer, setTimer] = useState<any | null>(null)
   const router = useRouter()
 
-  const onChangeToolbarFilters = (filters: SaleFilters) => {
-    onChangeFilters({ ...filters, page: 1 })
+  const onChangeToolbarFilters = (newFilters: SaleFilters) => { // Renombrado para claridad
+    onChangeFilters({ ...filters, ...newFilters, page: 1 })
   }
 
   const handleSearchChange = (value: string) => {
+    // Actualizar solo el search en filters, y dejar que onChangeToolbarFilters maneje el resto
+    const currentFilters = filters
     if (timer) {
       clearTimeout(timer)
     }
     setTimer(
       setTimeout(() => {
-        onChangeToolbarFilters({ ...filters, search: value })
+        onChangeToolbarFilters({ ...currentFilters, search: value })
       }, 300)
     )
   }
@@ -39,18 +44,9 @@ const SalesToolbar = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /** FILTER DRAWER CODE */
-  //   const [showFilters, setShowFilters] = useState(false)
-  //   const openFilters = useCallback(() => {
-  //     setShowFilters(true)
-  //   }, [])
-  //   const closeFilters = useCallback(() => {
-  //     setShowFilters(false)
-  //   }, [])
-
   return (
     <>
-      <Form>
+      <Form> {/* Considerar si este Form es necesario aquí si solo contiene el input y botones */}
         <Row
           gutter={[8, 8]}
           justify='space-between'
@@ -63,39 +59,28 @@ const SalesToolbar = ({
             </Button>
           </Col>
           <Col flex='auto'>
-            <Form.Item name='search' noStyle>
-              <Input.Search
-                onChange={e => handleSearchChange(e.target.value)}
-                allowClear
-              />
-            </Form.Item>
+            {/* El Form.Item no es estrictamente necesario si el Input.Search maneja su propio estado o se pasa via filters */}
+            <Input.Search
+              value={filters.search} // Controlar el valor desde los filtros
+              onChange={e => handleSearchChange(e.target.value)}
+              allowClear
+            />
           </Col>
           <Col flex='none'>
             <Badge
               size='small'
               style={{ color: 'white' }}
-              count={SharedBoardModel.countActiveFilters(filters)}
+              count={SaleModel.countActiveFilters(filters)} // Usar SaleModel
               color='#5A54F9'
             >
-              <Button disabled shape='circle' onClick={() => {}}>
+              <Button shape='circle' onClick={openFilters} /* Habilitar y usar openFilters */>
                 <FontAwesomeIcon icon={faSliders} />
               </Button>
             </Badge>
           </Col>
         </Row>
       </Form>
-      {/* <Drawer
-        open={showFilters}
-        title='Filtros'
-        onClose={closeFilters}
-        destroyOnClose
-      >
-        <FiltersForm
-          currentFilters={filters}
-          onChangeFilters={onChangeToolbarFilters}
-          onClose={closeFilters}
-        />
-      </Drawer> */}
+      {/* El Drawer y FiltersForm se manejarán en app/sales/page.tsx */}
     </>
   )
 }
